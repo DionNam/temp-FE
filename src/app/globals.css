@@ -406,14 +406,6 @@
 
 /* Mobile optimizations to prevent infinite loading */
 @media (max-width: 768px) {
-  /* Prevent layout thrashing */
-  * {
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-  }
-  
   /* Optimize animations for mobile */
   .animate-pulse {
     animation-duration: 1.5s;

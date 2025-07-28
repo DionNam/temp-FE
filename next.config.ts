@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   experimental: {
-    optimizePackageImports: ['lucide-react', 'motion'],
+    optimizePackageImports: ['lucide-react'],
   },
   images: {
     formats: ['image/webp', 'image/avif'],
@@ -12,11 +12,6 @@ const nextConfig: NextConfig = {
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
-  },
-  // Prevent infinite loading on mobile
-  onDemandEntries: {
-    maxInactiveAge: 25 * 1000,
-    pagesBufferLength: 2,
   },
 };
 

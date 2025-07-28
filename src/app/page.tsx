@@ -1,37 +1,45 @@
 "use client";
 
-import React, { useState, useEffect, Suspense, lazy, memo, useMemo, useCallback, useRef } from 'react';
+import React, { useState, useEffect, Suspense, lazy, memo, useMemo, useCallback, useRef, Component, ReactNode } from 'react';
 import Image from 'next/image';
 import { DemoDialogProps, DemoFormData, HeroSectionProps, CTASectionProps } from '@/types';
 import { useNavbar } from '@/hooks/useNavbar';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 
+// Simple Error Boundary Component
+class ErrorBoundary extends Component<{ children: ReactNode; fallback: ReactNode }, { hasError: boolean }> {
+  constructor(props: { children: ReactNode; fallback: ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(): { hasError: boolean } {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('Error caught by boundary:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback;
+    }
+
+    return this.props.children;
+  }
+}
+
 // const CompanyLogos = lazy(() => 
 //   import('../components/landing/CompanyLogos')
 //     .then(module => ({ default: module.CompanyLogos || module.default }))
 //     .catch(() => ({ default: CompanyLogosPlaceholder }))
 // );
-const QuoteSection = lazy(() => 
-  import('../components/landing/QuoteSection')
-    .then(module => ({ default: module.QuoteSection || module.default }))
-    .catch(() => ({ default: QuoteSectionPlaceholder }))
-);
-const FeaturesSection = lazy(() => 
-  import('../components/landing/FeaturesSection')
-    .then(module => ({ default: module.FeaturesSection || module.default }))
-    .catch(() => ({ default: FeaturesSectionPlaceholder }))
-);
-const PricingSection = lazy(() => 
-  import('../components/landing/PricingSection')
-    .then(module => ({ default: module.PricingSection || module.default }))
-    .catch(() => ({ default: PricingSectionPlaceholder }))
-);
-const FAQSection = lazy(() => 
-  import('../components/landing/FAQSection')
-    .then(module => ({ default: module.FAQSection || module.default }))
-    .catch(() => ({ default: FAQSectionPlaceholder }))
-);
+const QuoteSection = lazy(() => import('../components/landing/QuoteSection'));
+const FeaturesSection = lazy(() => import('../components/landing/FeaturesSection'));
+const PricingSection = lazy(() => import('../components/landing/PricingSection'));
+const FAQSection = lazy(() => import('../components/landing/FAQSection'));
 
 const typography = {
   h1: "font-manrope font-semibold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-tight",
@@ -474,7 +482,7 @@ function LandingPage() {
   const [email, setEmail] = useState<string>('');
   const [isYearly, setIsYearly] = useState<boolean>(true);
   const [expandedFaq, setExpandedFaq] = useState<number[]>([1]);
-  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [isMounted, setIsMounted] = useState<boolean>(false);
   
   const {
     showDemoDialog,
@@ -493,20 +501,13 @@ function LandingPage() {
     }
   }, [email]);
 
-  // Detect mobile device
+  // Ensure component is mounted before handling dialog
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
+    setIsMounted(true);
   }, []);
 
   useEffect(() => {
-    if (showDemoDialog) {
+    if (showDemoDialog && isMounted) {
       scrollPositionRef.current = window.scrollY;
       
       document.body.style.overflow = 'hidden';
@@ -526,7 +527,7 @@ function LandingPage() {
         });
       };
     }
-  }, [showDemoDialog]);
+  }, [showDemoDialog, isMounted]);
 
   useEffect(() => {
     const preloadImages = [
@@ -571,33 +572,29 @@ function LandingPage() {
       </div>
       
       <div className="flex-grow flex flex-col relative z-0">
-        {/* Load sections immediately on mobile to prevent infinite loading */}
-        {isMobile ? (
-          <>
+        <Suspense fallback={<QuoteSectionPlaceholder />}>
+          <ErrorBoundary fallback={<QuoteSectionPlaceholder />}>
             <QuoteSection />
+          </ErrorBoundary>
+        </Suspense>
+        
+        <Suspense fallback={<FeaturesSectionPlaceholder />}>
+          <ErrorBoundary fallback={<FeaturesSectionPlaceholder />}>
             <FeaturesSection />
+          </ErrorBoundary>
+        </Suspense>
+        
+        <Suspense fallback={<PricingSectionPlaceholder />}>
+          <ErrorBoundary fallback={<PricingSectionPlaceholder />}>
             <PricingSection isYearly={isYearly} setIsYearly={setIsYearly} />
+          </ErrorBoundary>
+        </Suspense>
+        
+        <Suspense fallback={<FAQSectionPlaceholder />}>
+          <ErrorBoundary fallback={<FAQSectionPlaceholder />}>
             <FAQSection expandedFaq={expandedFaq} setExpandedFaq={setExpandedFaq} />
-          </>
-        ) : (
-          <>
-            <Suspense fallback={<QuoteSectionPlaceholder />}>
-              <QuoteSection />
-            </Suspense>
-            
-            <Suspense fallback={<FeaturesSectionPlaceholder />}>
-              <FeaturesSection />
-            </Suspense>
-            
-            <Suspense fallback={<PricingSectionPlaceholder />}>
-              <PricingSection isYearly={isYearly} setIsYearly={setIsYearly} />
-            </Suspense>
-            
-            <Suspense fallback={<FAQSectionPlaceholder />}>
-              <FAQSection expandedFaq={expandedFaq} setExpandedFaq={setExpandedFaq} />
-            </Suspense>
-          </>
-        )}
+          </ErrorBoundary>
+        </Suspense>
 
         <div className="mt-auto">
           <CTASection onDashboardClick={handleDashboardClick} />
@@ -609,14 +606,9 @@ function LandingPage() {
         .font-manrope {
           font-family: var(--font-manrope), system-ui, sans-serif;
         }
-        @media (max-width: 768px) {
-          .animate-pulse {
-            animation-duration: 1.5s;
-          }
-        }
       `}</style>
 
-      {showDemoDialog && (
+      {showDemoDialog && isMounted && (
         <DemoDialog 
           isOpen={showDemoDialog}
           onClose={handleCloseDialog}
