@@ -54,14 +54,14 @@ const DemoDialog = ({
     "More than 1 year",
   ];
 
-  if (typeof window !== "undefined") {
-    document.body.style.overflow = "hidden";
-  }
+  // if (typeof window !== "undefined") {
+  //   document.body.style.overflow = "hidden";
+  // }
 
   const handleClose = () => {
-    if (typeof window !== "undefined") {
-      document.body.style.overflow = "";
-    }
+    // if (typeof window !== "undefined") {
+    //   document.body.style.overflow = "";
+    // }
     onClose();
   };
 
@@ -412,7 +412,7 @@ function LandingPage() {
     handleSetDemoForm,
   } = useNavbar();
 
-  const scrollPositionRef = useRef<number>(0);
+  // const scrollPositionRef = useRef<number>(0);
 
   const handleEmailSubmit = useCallback(() => {
     if (email) {
@@ -424,21 +424,21 @@ function LandingPage() {
     setIsMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (showDemoDialog && isMounted) {
-      scrollPositionRef.current = window.scrollY;
+  // useEffect(() => {
+  //   if (showDemoDialog && isMounted) {
+  //     scrollPositionRef.current = window.scrollY;
 
-      document.body.style.overflow = "hidden";
+  //     document.body.style.overflow = "hidden";
 
-      return () => {
-        document.body.style.overflow = "";
+  //     return () => {
+  //       document.body.style.overflow = "";
 
-        setTimeout(() => {
-          window.scrollTo(0, scrollPositionRef.current);
-        }, 0);
-      };
-    }
-  }, [showDemoDialog, isMounted]);
+  //       setTimeout(() => {
+  //         window.scrollTo(0, scrollPositionRef.current);
+  //       }, 0);
+  //     };
+  //   }
+  // }, [showDemoDialog, isMounted]);
 
   return (
     <>
@@ -457,10 +457,8 @@ function LandingPage() {
       >
         <div className="relative flex-shrink-0 pb-8 sm:pb-12 md:pb-16 lg:pb-20">
           <div
-            className="relative z-10 rounded-[24px] mx-4 mt-1 sm:mt-2 md:mt-3 lg:mt-4 overflow-hidden"
+            className="relative z-10 rounded-[24px] mx-4 mt-1 sm:mt-2 md:mt-3 lg:mt-4 overflow-hidden h-[100vh]"
             style={{
-              height: "clamp(1000px, 110vh, 2200px)",
-              minHeight: "1000px",
               backgroundImage: "url(/background.svg)",
               backgroundSize: "cover",
               backgroundPosition: "top center",
@@ -500,12 +498,6 @@ function LandingPage() {
             <Footer />
           </div>
         </div>
-
-        {/* <style jsx>{`
-          .font-manrope {
-            font-family: var(--font-manrope), system-ui, sans-serif;
-          }
-        `}</style> */}
 
         {showDemoDialog && isMounted && (
           <div className="md:transform-none">
