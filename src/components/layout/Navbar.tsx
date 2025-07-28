@@ -23,7 +23,7 @@ const Navbar = memo(function Navbar({ onLoginClick, onDashboardClick }: HeaderPr
           <div className="hidden lg:flex items-center space-x-8">
             <a href="#features" className="text-white/90 hover:text-white transition-colors font-medium">기능</a>
             <a href="#pricing" className="text-white/90 hover:text-white transition-colors font-medium">가격정책</a>
-            <a href="/blog" className="text-white/90 hover:text-white transition-colors font-medium">블로그</a>
+            <a href="#blog" className="text-white/90 hover:text-white transition-colors font-medium">블로그</a>
           </div>
 
           <div className="flex items-center space-x-1 sm:space-x-2">

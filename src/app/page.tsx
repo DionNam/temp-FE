@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, Suspense, lazy, memo, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, Suspense, lazy, memo, useMemo, useCallback, useRef } from 'react';
 import Image from 'next/image';
-import { DemoDialogProps, DemoFormData, HeaderProps, HeroSectionProps, CTASectionProps } from '@/types';
+import { DemoDialogProps, DemoFormData, HeroSectionProps, CTASectionProps } from '@/types';
 import { useNavbar } from '@/hooks/useNavbar';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
@@ -179,13 +179,15 @@ const DemoDialog = memo(function DemoDialog({ isOpen, onClose, formData, setForm
     "More than 1 year"
   ], []);
 
+  const scrollPositionRef = useRef<number>(0);
+
   useEffect(() => {
     if (isOpen) {
-      const scrollY = window.scrollY;
+      scrollPositionRef.current = window.scrollY;
       
       document.body.style.overflow = 'hidden';
       document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
+      document.body.style.top = `-${scrollPositionRef.current}px`;
       document.body.style.width = '100%';
       
       return () => {
@@ -194,7 +196,10 @@ const DemoDialog = memo(function DemoDialog({ isOpen, onClose, formData, setForm
         document.body.style.top = '';
         document.body.style.width = '';
         
-        window.scrollTo(0, scrollY);
+        // Use requestAnimationFrame to prevent layout thrashing
+        requestAnimationFrame(() => {
+          window.scrollTo(0, scrollPositionRef.current);
+        });
       };
     }
   }, [isOpen]);
@@ -469,6 +474,7 @@ function LandingPage() {
   const [email, setEmail] = useState<string>('');
   const [isYearly, setIsYearly] = useState<boolean>(true);
   const [expandedFaq, setExpandedFaq] = useState<number[]>([1]);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
   
   const {
     showDemoDialog,
@@ -479,19 +485,33 @@ function LandingPage() {
     handleSetDemoForm
   } = useNavbar();
 
+  const scrollPositionRef = useRef<number>(0);
+
   const handleEmailSubmit = useCallback(() => {
     if (email) {
       window.location.href = `/login?email=${encodeURIComponent(email)}`;
     }
   }, [email]);
 
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   useEffect(() => {
     if (showDemoDialog) {
-      const scrollY = window.scrollY;
+      scrollPositionRef.current = window.scrollY;
       
       document.body.style.overflow = 'hidden';
       document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
+      document.body.style.top = `-${scrollPositionRef.current}px`;
       document.body.style.width = '100%';
       
       return () => {
@@ -500,7 +520,10 @@ function LandingPage() {
         document.body.style.top = '';
         document.body.style.width = '';
         
-        window.scrollTo(0, scrollY);
+        // Use requestAnimationFrame to prevent layout thrashing
+        requestAnimationFrame(() => {
+          window.scrollTo(0, scrollPositionRef.current);
+        });
       };
     }
   }, [showDemoDialog]);
@@ -548,25 +571,33 @@ function LandingPage() {
       </div>
       
       <div className="flex-grow flex flex-col relative z-0">
-        {/* <Suspense fallback={<CompanyLogosPlaceholder />}>
-          <CompanyLogos />
-        </Suspense> */}
-        
-        <Suspense fallback={<QuoteSectionPlaceholder />}>
-          <QuoteSection />
-        </Suspense>
-        
-        <Suspense fallback={<FeaturesSectionPlaceholder />}>
-          <FeaturesSection />
-        </Suspense>
-        
-        <Suspense fallback={<PricingSectionPlaceholder />}>
-          <PricingSection isYearly={isYearly} setIsYearly={setIsYearly} />
-        </Suspense>
-        
-        <Suspense fallback={<FAQSectionPlaceholder />}>
-          <FAQSection expandedFaq={expandedFaq} setExpandedFaq={setExpandedFaq} />
-        </Suspense>
+        {/* Load sections immediately on mobile to prevent infinite loading */}
+        {isMobile ? (
+          <>
+            <QuoteSection />
+            <FeaturesSection />
+            <PricingSection isYearly={isYearly} setIsYearly={setIsYearly} />
+            <FAQSection expandedFaq={expandedFaq} setExpandedFaq={setExpandedFaq} />
+          </>
+        ) : (
+          <>
+            <Suspense fallback={<QuoteSectionPlaceholder />}>
+              <QuoteSection />
+            </Suspense>
+            
+            <Suspense fallback={<FeaturesSectionPlaceholder />}>
+              <FeaturesSection />
+            </Suspense>
+            
+            <Suspense fallback={<PricingSectionPlaceholder />}>
+              <PricingSection isYearly={isYearly} setIsYearly={setIsYearly} />
+            </Suspense>
+            
+            <Suspense fallback={<FAQSectionPlaceholder />}>
+              <FAQSection expandedFaq={expandedFaq} setExpandedFaq={setExpandedFaq} />
+            </Suspense>
+          </>
+        )}
 
         <div className="mt-auto">
           <CTASection onDashboardClick={handleDashboardClick} />

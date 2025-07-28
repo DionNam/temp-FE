@@ -22,7 +22,25 @@ const typography = {
 } as const;
 
 // Dummy blog detail data
-const blogDetailData: { [key: string]: any } = {
+const blogDetailData: Record<string, {
+  title: string;
+  excerpt: string;
+  author: string;
+  date: string;
+  category: string;
+  image: string;
+  heroImage: string;
+  content: {
+    sections: Array<
+      | { type: "hero"; title: string; subtitle: string; metadata: { category: string; author: string; date: string } }
+      | { type: "image"; image: string; overlayText: string; subtitle: string; watermark: string }
+      | { type: "text"; content: string; highlight?: string }
+      | { type: "heading"; title: string }
+      | { type: "comparison"; image: string; cards: Array<{ title: string; icon: string; description: string; color: string }>; note?: string }
+      | { type: "note"; content: string }
+    >;
+  };
+}> = {
   '2025-seo-future': {
     title: "2025년 SEO의 미래: AI가 주도하는 검색 최적화의 대전환",
     excerpt: "기존의 검색엔진을 위한 콘텐츠만으로는 부족합니다. ChatGPT, Perplexity, Gemini와 같은 AI 플랫폼을 위한 새로운 표준인 'GEO(Generative Engine Optimization)'가 등장했습니다.",
@@ -223,7 +241,7 @@ export default function BlogDetailPage({ params }: { params: Promise<{ slug: str
       {/* Content Sections */}
       <section className="relative px-4 sm:px-6 lg:px-8 pb-16 md:pb-20 lg:pb-24">
         <div className="max-w-7xl mx-auto">
-          {blogDetail.content.sections.map((section: any, index: number) => (
+          {blogDetail.content.sections.map((section, index) => (
             <div key={index} className="mb-8">
               {section.type === 'image' && (
                 <div className="relative mb-8 flex justify-center">
@@ -299,9 +317,9 @@ export default function BlogDetailPage({ params }: { params: Promise<{ slug: str
                 </div>
               )}
 
-              {section.note && (
+              {section.type === 'note' && (
                 <p className={`${typography.body} text-gray-500 italic text-center mb-6 max-w-4xl mx-auto`}>
-                  {section.note}
+                  {section.content}
                 </p>
               )}
             </div>

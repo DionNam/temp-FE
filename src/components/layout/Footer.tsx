@@ -43,7 +43,7 @@ const Footer = memo(function Footer() {
                 Docs
               </a>
               <a 
-                href="/blog" 
+                href="#blog" 
                 className="text-gray-400 hover:text-gray-900 transition-colors font-medium text-sm md:text-base py-2 sm:py-1 hover:underline focus:outline-none focus:underline"
               >
                 Blog
