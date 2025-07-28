@@ -404,7 +404,7 @@
   overflow: hidden;
 }
 
-/* Mobile optimizations to prevent infinite loading */
+/* Mobile performance optimizations */
 @media (max-width: 768px) {
   /* Optimize animations for mobile */
   .animate-pulse {
@@ -430,8 +430,29 @@
       transition-duration: 0.01ms !important;
     }
   }
+  
+  /* Mobile-specific scroll behavior */
+  .scroll-smooth {
+    scroll-behavior: auto;
+  }
+  
+  /* Prevent layout thrashing on mobile */
+  * {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+  
+  /* Optimize fixed positioning for mobile */
+  .fixed {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+  
+  /* Prevent horizontal overflow */
+  body {
+    overflow-x: hidden;
+  }
 }
-
 /* Prevent infinite scroll loops */
 .scroll-smooth {
   scroll-behavior: smooth;
@@ -442,3 +463,4 @@
     scroll-behavior: auto;
   }
 }
+
