@@ -22,7 +22,7 @@ export const FeaturesSection = memo(function FeaturesSection() {
       subtitle: "ChatGPT, Gemini에서 우리 브랜드가 언급되는지 확인하고, AI가 우리를 어떻게 인식하는지 분석하여 개선점을 찾습니다.",
       imagePosition: "right",
       gradient: "from-blue-400 to-purple-500",
-      image: "/diagnosis.png"
+      image: "/diagnosis.webp"
     },
     {
       icon: (
@@ -33,7 +33,7 @@ export const FeaturesSection = memo(function FeaturesSection() {
       subtitle: "부정적 콘텐츠나 잘못된 정보가 생성형 AI에 학습되지 않도록 차단하고, 브랜드 이미지를 보호하는 전략을 수립합니다.",
       imagePosition: "left",
       gradient: "from-green-400 to-blue-500",
-      image: "/prescription.png" 
+      image: "/prescription.webp" 
     },
     {
       icon: (
@@ -44,7 +44,7 @@ export const FeaturesSection = memo(function FeaturesSection() {
       subtitle: "다양한 검색 시나리오에서 우리 브랜드의 언급 빈도와 순위 변화를 추적하여 지속적인 개선점을 파악합니다.",
       imagePosition: "right",
       gradient: "from-purple-400 to-pink-500",
-      image: "/tracking.png" 
+      image: "/tracking.webp" 
     }
   ], []);
 
@@ -56,10 +56,10 @@ export const FeaturesSection = memo(function FeaturesSection() {
             FEATURES
           </p>
           <h2 className={`${typography.h2} text-gray-900 mb-6`}>
-            진단하고, 차단하고, 변화를 추적하세요
+            진단하고, 처방하고, 변화를 추적하세요
           </h2>
           <p className={`${typography.subtitle} text-neutral-500 max-w-2xl mx-auto`}>
-            ShowOnAI의 핵심 기능들로 브랜드의 디지털 가시성을 완벽하게 관리하세요
+            당신의 브랜드가 AI 검색에서 빛나도록..
           </p>
         </div>
         

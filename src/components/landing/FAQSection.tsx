@@ -41,10 +41,25 @@ export function FAQSection({ expandedFaq, setExpandedFaq }: FAQSectionProps) {
   ];
 
   const toggleFaq = (index: number) => {
-    if (expandedFaq.includes(index)) {
-      setExpandedFaq(expandedFaq.filter(id => id !== index));
+    if (index === 0) {
+      toggleAllFaqs();
     } else {
-      setExpandedFaq([...expandedFaq, index]);
+      if (expandedFaq.includes(index)) {
+        setExpandedFaq(expandedFaq.filter(id => id !== index));
+      } else {
+        setExpandedFaq([...expandedFaq, index]);
+      }
+    }
+  };
+
+  const toggleAllFaqs = () => {
+    const allIndexes = faqs.map((_, i) => i).slice(1);
+    const areAllOpen = allIndexes.every(index => expandedFaq.includes(index));
+
+    if (areAllOpen) {
+      setExpandedFaq([]);
+    } else {
+      setExpandedFaq([0, ...allIndexes]);
     }
   };
 
@@ -75,7 +90,9 @@ export function FAQSection({ expandedFaq, setExpandedFaq }: FAQSectionProps) {
                 </h3>
                 
                 <span className="text-neutral-700 text-lg sm:text-xl md:text-2xl font-light flex-shrink-0 bg-blue-50 rounded-md px-1.5 sm:px-2 py-0.5 min-w-[32px] sm:min-w-[36px] md:min-w-[40px] flex items-center justify-center">
-                  {expandedFaq.includes(index) ? '−' : '+'}
+                  {index === 0
+                    ? faqs.length - 1 === expandedFaq.length - 1 ? '−' : '+'
+                    : expandedFaq.includes(index) ? '−' : '+'}
                 </span>
               </button>
               

@@ -3,7 +3,7 @@
 import React, { memo } from 'react';
 
 const typography = {
-  h2: "font-manrope font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl leading-tight",
+  h2: "font-manrope font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl leading-tight",
 } as const;
 
 export const QuoteSection = memo(function QuoteSection() {
