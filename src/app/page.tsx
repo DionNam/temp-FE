@@ -332,9 +332,9 @@ function CTASection({ onDashboardClick }: CTASectionProps) {
   return (
     <section className="relative px-3 sm:px-4 lg:px-8 pt-3 sm:pt-4 md:pt-8 lg:pt-12">
       <div className="relative rounded-t-xl sm:rounded-t-2xl md:rounded-t-3xl overflow-hidden flex items-center justify-center min-h-[250px] sm:min-h-[300px] md:min-h-[400px]" style={{
-        // backgroundImage: 'url(/above-footer.svg)',
-        // backgroundSize: 'cover',
-        // backgroundPosition: 'center'
+        backgroundImage: 'url(/above-footer.svg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
       }}>
         <div className="relative z-10 flex flex-col items-center justify-center text-center py-8 sm:py-12 md:py-16 lg:py-20 px-4 sm:px-6 md:px-8">
           <h2 className={`${typography.h2} text-white mb-4 sm:mb-6 md:mb-8 max-w-4xl px-2`}>
@@ -389,9 +389,9 @@ function LandingPage() {
           style={{ 
             height: 'clamp(1000px, 110vh, 2200px)',
             minHeight: '1000px',
-            backgroundImage: 'url(/background.svg)', 
-            backgroundSize: 'cover', 
-            backgroundPosition: 'top center' 
+            // backgroundImage: 'url(/background.svg)', 
+            // backgroundSize: 'cover', 
+            // backgroundPosition: 'top center' 
           }}
         >
           <Navbar 
