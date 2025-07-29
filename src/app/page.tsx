@@ -389,9 +389,9 @@ function LandingPage() {
           style={{ 
             height: 'clamp(1000px, 110vh, 2200px)',
             minHeight: '1000px',
-            // backgroundImage: 'url(/background.svg)', 
-            // backgroundSize: 'cover', 
-            // backgroundPosition: 'top center' 
+            backgroundImage: 'url(/background.svg)', 
+            backgroundSize: 'cover', 
+            backgroundPosition: 'top center' 
           }}
         >
           <Navbar 
