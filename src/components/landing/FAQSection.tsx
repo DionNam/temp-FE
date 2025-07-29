@@ -12,7 +12,6 @@ interface FAQSectionProps {
   setExpandedFaq: (expandedFaq: number[]) => void;
 }
 
-// Fixed version without problematic useCallback and useMemo
 export function FAQSection({ expandedFaq, setExpandedFaq }: FAQSectionProps) {
   const faqs = [
     {

@@ -15,7 +15,6 @@ interface PricingSectionProps {
   setIsYearly: (isYearly: boolean) => void;
 }
 
-// Fixed version without problematic useCallback and useMemo
 export function PricingSection({ isYearly, setIsYearly }: PricingSectionProps) {
   const plans = [
     {

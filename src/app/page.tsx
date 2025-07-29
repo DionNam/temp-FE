@@ -4,14 +4,11 @@ import React, { useState, useCallback } from 'react';
 import Image from 'next/image';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
-
-// Direct imports instead of dynamic
 import QuoteSection from '../components/landing/QuoteSection';
 import FeaturesSection from '../components/landing/FeaturesSection';
 import PricingSection from '../components/landing/PricingSection';
 import FAQSection from '../components/landing/FAQSection';
 
-// Simple types without duplication
 interface DemoFormData {
   name: string;
   employees: string;
@@ -49,7 +46,6 @@ const typography = {
   price: "font-manrope font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl",
 } as const;
 
-// Simplified hook without problematic logic
 function useSimpleNavbar() {
   const [showDemoDialog, setShowDemoDialog] = useState(false);
   const [demoForm, setDemoForm] = useState<DemoFormData>({
@@ -81,7 +77,6 @@ function useSimpleNavbar() {
   };
 }
 
-// Simplified Dialog Component
 function DemoDialog({ isOpen, onClose, formData, setFormData }: DemoDialogProps) {
   const employeeOptions = [
     "1-10 employees",
@@ -258,7 +253,6 @@ function DemoDialog({ isOpen, onClose, formData, setFormData }: DemoDialogProps)
   );
 }
 
-// Simplified Hero Section
 function HeroSection({ email, setEmail, onEmailSubmit }: HeroSectionProps) {
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -338,9 +332,9 @@ function CTASection({ onDashboardClick }: CTASectionProps) {
   return (
     <section className="relative px-3 sm:px-4 lg:px-8 pt-3 sm:pt-4 md:pt-8 lg:pt-12">
       <div className="relative rounded-t-xl sm:rounded-t-2xl md:rounded-t-3xl overflow-hidden flex items-center justify-center min-h-[250px] sm:min-h-[300px] md:min-h-[400px]" style={{
-        backgroundImage: 'url(/above-footer.svg)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
+        // backgroundImage: 'url(/above-footer.svg)',
+        // backgroundSize: 'cover',
+        // backgroundPosition: 'center'
       }}>
         <div className="relative z-10 flex flex-col items-center justify-center text-center py-8 sm:py-12 md:py-16 lg:py-20 px-4 sm:px-6 md:px-8">
           <h2 className={`${typography.h2} text-white mb-4 sm:mb-6 md:mb-8 max-w-4xl px-2`}>
@@ -388,16 +382,16 @@ function LandingPage() {
   }, [email]);
 
   return (
-    <div className="min-h-screen bg-blue-50 font-manrope flex flex-col" style={{backgroundImage:'url(/landing-page.svg)', backgroundSize: 'cover', backgroundPosition: 'top center' }}>
+    <div className="min-h-screen bg-blue-50 font-manrope flex flex-col">
       <div className="relative flex-shrink-0 pb-8 sm:pb-12 md:pb-16 lg:pb-20">        
         <div 
           className="relative z-10 rounded-[24px] mx-4 mt-1 sm:mt-2 md:mt-3 lg:mt-4 overflow-hidden" 
           style={{ 
             height: 'clamp(1000px, 110vh, 2200px)',
             minHeight: '1000px',
-            backgroundImage: 'url(/background.svg)', 
-            backgroundSize: 'cover', 
-            backgroundPosition: 'top center' 
+            // backgroundImage: 'url(/background.svg)', 
+            // backgroundSize: 'cover', 
+            // backgroundPosition: 'top center' 
           }}
         >
           <Navbar 
