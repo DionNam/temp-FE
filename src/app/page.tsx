@@ -382,7 +382,7 @@ function LandingPage() {
   }, [email]);
 
   return (
-    <div className="min-h-screen bg-blue-50 font-manrope flex flex-col">
+    <div className="min-h-screen bg-blue-50 font-manrope flex flex-col" style={{backgroundImage:'url(/landing-page.svg)', backgroundSize: 'cover', backgroundPosition: 'top center' }}>
       <div className="relative flex-shrink-0 pb-8 sm:pb-12 md:pb-16 lg:pb-20">        
         <div 
           className="relative z-10 rounded-[24px] mx-4 mt-1 sm:mt-2 md:mt-3 lg:mt-4 overflow-hidden" 
