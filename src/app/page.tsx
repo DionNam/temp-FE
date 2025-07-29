@@ -331,21 +331,11 @@ function HeroSection({ email, setEmail, onEmailSubmit }: HeroSectionProps) {
 function CTASection({ onDashboardClick }: CTASectionProps) {
   return (
     <section className="relative px-3 sm:px-4 lg:px-8 pt-3 sm:pt-4 md:pt-8 lg:pt-12">
-      {/* SOLUSI: Gunakan Next.js Image untuk above-footer background juga */}
-      <div className="relative rounded-t-xl sm:rounded-t-2xl md:rounded-t-3xl overflow-hidden flex items-center justify-center min-h-[250px] sm:min-h-[300px] md:min-h-[400px]">
-        
-        {/* Background Image dengan Next.js Image */}
-        <Image
-          src="/above-footer.svg"
-          alt="CTA Background"
-          fill
-          className="object-cover object-center"
-          sizes="100vw"
-        />
-        
-        {/* Fallback gradient */}
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-800 to-gray-900 -z-10" />
-        
+      <div className="relative rounded-t-xl sm:rounded-t-2xl md:rounded-t-3xl overflow-hidden flex items-center justify-center min-h-[250px] sm:min-h-[300px] md:min-h-[400px]" style={{
+        backgroundImage: 'url(/above-footer.svg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
+      }}>
         <div className="relative z-10 flex flex-col items-center justify-center text-center py-8 sm:py-12 md:py-16 lg:py-20 px-4 sm:px-6 md:px-8">
           <h2 className={`${typography.h2} text-white mb-4 sm:mb-6 md:mb-8 max-w-4xl px-2`}>
             ShowOnAI와 함께,<br />
@@ -392,39 +382,28 @@ function LandingPage() {
   }, [email]);
 
   return (
-    <div className="min-h-screen bg-blue-50 font-manrope flex flex-col" style={{backgroundImage: 'url(/landing-page.svg)', backgroundSize: 'cover', backgroundPosition: 'top center' }}>
-      {/* Main background container tanpa inline style backgroundImage */}
+    <div className="min-h-screen bg-blue-50 font-manrope flex flex-col" style={{backgroundImage:'url(/landing-page.svg)', backgroundSize: 'cover', backgroundPosition: 'top center' }}>
       <div className="relative flex-shrink-0 pb-8 sm:pb-12 md:pb-16 lg:pb-20">        
-        {/* Hero section dengan Next.js Image sebagai background */}
-        <div className="relative rounded-[24px] mx-4 mt-1 sm:mt-2 md:mt-3 lg:mt-4 overflow-hidden min-h-[1000px]">
-          
-          {/* SOLUSI UTAMA: Next.js Image sebagai Background */}
-          <Image
-            src="/background.svg"
-            alt="Hero Background"
-            fill
-            className="object-cover object-top"
-            priority
-            sizes="(max-width: 768px) 100vw, 100vw"
-            quality={80} // Optimasi quality untuk mobile
+        <div 
+          className="relative z-10 rounded-[24px] mx-4 mt-1 sm:mt-2 md:mt-3 lg:mt-4 overflow-hidden" 
+          style={{ 
+            height: 'clamp(1000px, 110vh, 2200px)',
+            minHeight: '1000px',
+            // backgroundImage: 'url(/background.svg)', 
+            // backgroundSize: 'cover', 
+            // backgroundPosition: 'top center' 
+          }}
+        >
+          <Navbar 
+            onLoginClick={handleLoginClick}
+            onDashboardClick={handleDashboardClick}
           />
           
-          {/* Fallback gradient jika image tidak load */}
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-blue-800 -z-10" />
-          
-          {/* Content dengan z-index tinggi */}
-          <div className="relative z-20">
-            <Navbar 
-              onLoginClick={handleLoginClick}
-              onDashboardClick={handleDashboardClick}
-            />
-            
-            <HeroSection 
-              email={email}
-              setEmail={setEmail}
-              onEmailSubmit={handleEmailSubmit}
-            />
-          </div>
+          <HeroSection 
+            email={email}
+            setEmail={setEmail}
+            onEmailSubmit={handleEmailSubmit}
+          />
         </div>
       </div>
       
