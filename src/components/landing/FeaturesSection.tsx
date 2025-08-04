@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, useMemo, useState, useEffect } from 'react';
+import React, { memo, useMemo, useState } from 'react';
 import Image from 'next/image';
 
 const typography = {
@@ -73,10 +73,6 @@ export const FeaturesSection = memo(function FeaturesSection() {
     if (isRightSwipe) {
       setCurrentSlide((prev) => (prev - 1 + features.length) % features.length);
     }
-  };
-
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index);
   };
 
   const nextSlide = () => {
