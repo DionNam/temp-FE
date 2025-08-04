@@ -3,9 +3,10 @@
 import React from 'react';
 
 const typography = {
-  h2: "font-manrope font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl leading-tight",
+  h2: "font-manrope font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-tight",
   h3: "font-manrope font-semibold text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed",
   body: "font-manrope font-normal text-sm sm:text-base leading-relaxed",
+  subtitle: "font-manrope font-normal text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl leading-relaxed",
   caption: "font-manrope font-medium text-xs sm:text-sm uppercase tracking-wider",
   price: "font-manrope font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl",
 } as const;

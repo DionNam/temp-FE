@@ -4,10 +4,11 @@ import React, { memo, useMemo, useState } from 'react';
 import Image from 'next/image';
 
 const typography = {
-  h2: "font-manrope font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl leading-tight",
+  h2: "font-manrope font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-tight",
   title: "font-manrope font-semibold text-lg sm:text-xl md:text-2xl lg:text-3xl leading-relaxed",
   title2: "font-manrope font-semibold text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed",
   subtitle: "font-manrope font-normal text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl leading-relaxed",
+  body: "font-manrope font-normal text-sm sm:text-base leading-relaxed",
   caption: "font-manrope font-medium text-xs sm:text-sm uppercase tracking-wider",
 } as const;
 
@@ -87,13 +88,15 @@ export const FeaturesSection = memo(function FeaturesSection() {
     <section id="features" className="relative py-12 md:py-24 px-0 sm:px-1 lg:px-8">      
       <div className="relative z-10 max-w-5/6 mx-auto">
         <div className="text-center mb-16 md:mb-24">
-          <p className={`${typography.caption} text-blue-600 mb-4`}>
+          <p className={`${typography.caption} text-blue-600 mb-2 sm:mb-3 md:mb-4`}>
             FEATURES
           </p>
-          <h2 className={`${typography.h2} text-gray-900 mb-6`}>
-            진단하고, 처방하고, 변화를 추적하세요
-          </h2>
-          <p className={`${typography.subtitle} text-neutral-500 max-w-2xl mx-auto`}>
+          <div className="mx-auto max-w-[60%] sm:max-w-xl md:max-w-2xl">
+            <h2 className={`${typography.h2} text-gray-900 mb-2 sm:mb-3 md:mb-4`}>
+              진단하고, 처방하고, 변화를 추적하세요
+            </h2>
+          </div>
+          <p className={`${typography.body} text-neutral-500 mb-4 sm:mb-6 md:mb-8 px-2`}>
             당신의 브랜드가 AI 검색에서 빛나도록..
           </p>
         </div>
