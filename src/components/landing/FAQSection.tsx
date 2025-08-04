@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, useMemo, useCallback } from 'react';
+import React from 'react';
 
 const typography = {
   caption: "font-manrope font-medium text-xs sm:text-sm uppercase tracking-wider",
@@ -12,8 +12,8 @@ interface FAQSectionProps {
   setExpandedFaq: (expandedFaq: number[]) => void;
 }
 
-export const FAQSection = memo<FAQSectionProps>(function FAQSection({ expandedFaq, setExpandedFaq }) {
-  const faqs = useMemo(() => [
+export function FAQSection({ expandedFaq, setExpandedFaq }: FAQSectionProps) {
+  const faqs = [
     {
       question: "Dropdown Closed",
       answer: ""
@@ -38,15 +38,30 @@ export const FAQSection = memo<FAQSectionProps>(function FAQSection({ expandedFa
       question: "어떻게 한국 시장에 최적화되어 있나요?",
       answer: "ShowOnAI는 한국의 독특한 검색 환경과 콘텐츠 소비 흐름에 맞춰 GEO 전략을 설계합니다. 구글뿐 아니라 네이버 키워드 데이터를 함께 분석하고, ChatGPT나 Gemini와 같은 글로벌 생성형 AI는 물론, WRTN과 같은 한국형 생성형 AI 검색 플랫폼까지 최적화 범위에 포함합니다."
     }
-  ], []);
+  ];
 
-  const toggleFaq = useCallback((index: number) => {
-    if (expandedFaq.includes(index)) {
-      setExpandedFaq(expandedFaq.filter(id => id !== index));
+  const toggleFaq = (index: number) => {
+    if (index === 0) {
+      toggleAllFaqs();
     } else {
-      setExpandedFaq([...expandedFaq, index]);
+      if (expandedFaq.includes(index)) {
+        setExpandedFaq(expandedFaq.filter(id => id !== index));
+      } else {
+        setExpandedFaq([...expandedFaq, index]);
+      }
     }
-  }, [expandedFaq, setExpandedFaq]);
+  };
+
+  const toggleAllFaqs = () => {
+    const allIndexes = faqs.map((_, i) => i).slice(1);
+    const areAllOpen = allIndexes.every(index => expandedFaq.includes(index));
+
+    if (areAllOpen) {
+      setExpandedFaq([]);
+    } else {
+      setExpandedFaq([0, ...allIndexes]);
+    }
+  };
 
   return (
     <section className="relative py-6 sm:py-8 md:py-12 lg:py-24 px-3 sm:px-4 lg:px-8">
@@ -67,7 +82,7 @@ export const FAQSection = memo<FAQSectionProps>(function FAQSection({ expandedFa
           {faqs.map((faq, index) => (
             <div key={index} className={index < faqs.length - 1 ? 'border-b border-gray-200' : ''}>
               <button 
-                className="w-full px-3 sm:px-4 md:px-6 py-3 sm:py-4 md:py-5 flex items-center justify-between text-left hover:bg-gray-50 transition-colors focus:outline-none focus:bg-gray-50 active:bg-gray-100"
+                className="w-full px-3 sm:px-4 md:px-6 py-3 sm:py-4 md:py-5 flex items-center justify-between text-left hover:bg-gray-50 focus:outline-none focus:bg-gray-50 active:bg-gray-100"
                 onClick={() => toggleFaq(index)}
               >
                 <h3 className="text-neutral-950 font-semibold text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl pr-2 sm:pr-3 md:pr-4 leading-snug sm:leading-normal">
@@ -75,7 +90,9 @@ export const FAQSection = memo<FAQSectionProps>(function FAQSection({ expandedFa
                 </h3>
                 
                 <span className="text-neutral-700 text-lg sm:text-xl md:text-2xl font-light flex-shrink-0 bg-blue-50 rounded-md px-1.5 sm:px-2 py-0.5 min-w-[32px] sm:min-w-[36px] md:min-w-[40px] flex items-center justify-center">
-                  {expandedFaq.includes(index) ? '−' : '+'}
+                  {index === 0
+                    ? faqs.length - 1 === expandedFaq.length - 1 ? '−' : '+'
+                    : expandedFaq.includes(index) ? '−' : '+'}
                 </span>
               </button>
               
@@ -92,6 +109,6 @@ export const FAQSection = memo<FAQSectionProps>(function FAQSection({ expandedFa
       </div>
     </section>
   );
-});
+}
 
 export default FAQSection;

@@ -1,47 +1,38 @@
 "use client";
 
-import React, { useState, useEffect, memo, useMemo, useCallback, Suspense } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
-import dynamic from 'next/dynamic';
-import { DemoDialogProps, DemoFormData, HeroSectionProps, CTASectionProps } from '@/types';
-import { useNavbar } from '@/hooks/useNavbar';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
+import QuoteSection from '../components/landing/QuoteSection';
+import FeaturesSection from '../components/landing/FeaturesSection';
+import PricingSection from '../components/landing/PricingSection';
+import FAQSection from '../components/landing/FAQSection';
 
-// Fixed dynamic imports - keep SSR but add proper error boundaries
-const QuoteSection = dynamic(() => 
-  import('../components/landing/QuoteSection').catch(() => ({
-    default: QuoteSectionPlaceholder
-  })), {
-  loading: () => <QuoteSectionPlaceholder />,
-  ssr: true
-});
+interface DemoFormData {
+  name: string;
+  employees: string;
+  timeline: string;
+  agency: string;
+}
 
-const FeaturesSection = dynamic(() => 
-  import('../components/landing/FeaturesSection').catch(() => ({
-    default: FeaturesSectionPlaceholder
-  })), {
-  loading: () => <FeaturesSectionPlaceholder />,
-  ssr: true
-});
+interface DemoDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  formData: DemoFormData;
+  setFormData: React.Dispatch<React.SetStateAction<DemoFormData>>;
+}
 
-const PricingSection = dynamic(() => 
-  import('../components/landing/PricingSection').catch(() => ({
-    default: PricingSectionPlaceholder
-  })), {
-  loading: () => <PricingSectionPlaceholder />,
-  ssr: true
-});
+interface HeroSectionProps {
+  email: string;
+  setEmail: (email: string) => void;
+  onEmailSubmit: () => void;
+}
 
-const FAQSection = dynamic(() => 
-  import('../components/landing/FAQSection').catch(() => ({
-    default: FAQSectionPlaceholder
-  })), {
-  loading: () => <FAQSectionPlaceholder />,
-  ssr: true
-});
+interface CTASectionProps {
+  onDashboardClick: () => void;
+}
 
-// EXACT same typography as original
 const typography = {
   h1: "font-manrope font-semibold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-tight",
   h2: "font-manrope font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl leading-tight",
@@ -55,156 +46,74 @@ const typography = {
   price: "font-manrope font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl",
 } as const;
 
-// EXACT same placeholder components as original - but with performance fixes
-const QuoteSectionPlaceholder = memo(function QuoteSectionPlaceholder() {
-  return (
-    <section className="relative py-12 md:py-24 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-5/6 mx-auto">
-        <div className="text-right mb-12 md:mb-24">
-          <div className="max-w-4xl ml-auto space-y-4">
-            <div className="h-8 bg-gray-200 animate-pulse rounded w-3/4 ml-auto" />
-            <div className="h-6 bg-gray-200 animate-pulse rounded w-1/4 ml-auto" />
-          </div>
-        </div>
-        <div className="text-left space-y-4">
-          <div className="h-8 bg-gray-200 animate-pulse rounded w-1/3" />
-          <div className="h-8 bg-blue-200 animate-pulse rounded w-1/2" />
-        </div>
-      </div>
-    </section>
-  );
-});
+function useSimpleNavbar() {
+  const [showDemoDialog, setShowDemoDialog] = useState(false);
+  const [demoForm, setDemoForm] = useState<DemoFormData>({
+    name: '',
+    employees: '',
+    timeline: '',
+    agency: ''
+  });
 
-const FeaturesSectionPlaceholder = memo(function FeaturesSectionPlaceholder() {
-  return (
-    <section className="relative py-12 md:py-24 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-5/6 mx-auto">
-        <div className="text-center mb-16 md:mb-24 space-y-4">
-          <div className="h-4 bg-blue-200 animate-pulse rounded w-24 mx-auto" />
-          <div className="h-10 bg-gray-200 animate-pulse rounded w-1/2 mx-auto" />
-        </div>
-        <div className="space-y-16 md:space-y-24">
-          {Array.from({ length: 3 }, (_, index) => (
-            <div key={index} className="flex flex-col lg:flex-row items-center gap-8 md:gap-16">
-              <div className="flex-1 space-y-4">
-                <div className="w-16 h-16 bg-gray-200 animate-pulse rounded" />
-                <div className="h-8 bg-gray-200 animate-pulse rounded w-1/2" />
-                <div className="h-6 bg-gray-200 animate-pulse rounded w-3/4" />
-              </div>
-              <div className="flex-1">
-                <div className="w-full h-[400px] md:h-[500px] bg-gray-200 animate-pulse rounded-2xl" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-});
+  const handleLoginClick = () => {
+    window.location.href = '/login';
+  };
 
-const PricingSectionPlaceholder = memo(function PricingSectionPlaceholder() {
-  return (
-    <section className="relative py-6 sm:py-8 md:py-12 lg:py-24 px-3 sm:px-4 lg:px-8">
-      <div className="w-full mx-auto">
-        <div className="text-center mb-6 sm:mb-8 md:mb-12 lg:mb-16 space-y-4">
-          <div className="h-4 bg-blue-200 animate-pulse rounded w-20 mx-auto" />
-          <div className="h-10 bg-gray-200 animate-pulse rounded w-1/3 mx-auto" />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-8 max-w-6xl mx-auto">
-          {Array.from({ length: 3 }, (_, index) => (
-            <div key={index} className="bg-white rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-6 lg:p-8 shadow-lg border border-gray-200">
-              <div className="space-y-4">
-                <div className="h-8 bg-gray-200 animate-pulse rounded w-1/2" />
-                <div className="h-4 bg-gray-200 animate-pulse rounded" />
-                <div className="h-12 bg-gray-200 animate-pulse rounded w-1/3" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-});
+  const handleDashboardClick = () => {
+    setShowDemoDialog(true);
+  };
 
-const FAQSectionPlaceholder = memo(function FAQSectionPlaceholder() {
-  return (
-    <section className="relative py-6 sm:py-8 md:py-12 lg:py-24 px-3 sm:px-4 lg:px-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-6 sm:mb-8 md:mb-12 lg:mb-16 space-y-4">
-          <div className="h-4 bg-blue-200 animate-pulse rounded w-32 mx-auto" />
-          <div className="h-10 bg-gray-200 animate-pulse rounded w-1/3 mx-auto" />
-        </div>
-        <div className="bg-white rounded-lg sm:rounded-xl border border-gray-200 overflow-hidden shadow-sm">
-          {Array.from({ length: 5 }, (_, index) => (
-            <div key={index} className={`p-4 ${index < 4 ? 'border-b border-gray-200' : ''}`}>
-              <div className="h-6 bg-gray-200 animate-pulse rounded w-3/4" />
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-});
+  const handleCloseDialog = () => {
+    setShowDemoDialog(false);
+  };
 
-// EXACT same Dialog Component as original - but with performance fixes
-const DemoDialog = memo(function DemoDialog({ isOpen, onClose, formData, setFormData }: DemoDialogProps) {
-  const employeeOptions = useMemo(() => [
+  return {
+    showDemoDialog,
+    demoForm,
+    handleLoginClick,
+    handleDashboardClick,
+    handleCloseDialog,
+    setDemoForm
+  };
+}
+
+function DemoDialog({ isOpen, onClose, formData, setFormData }: DemoDialogProps) {
+  const employeeOptions = [
     "1-10 employees",
     "11-50 employees", 
     "51-200 employees",
     "201-1000 employees",
     "1000+ employees"
-  ], []);
+  ];
 
-  const timelineOptions = useMemo(() => [
+  const timelineOptions = [
     "Within 1 month",
     "1-3 months",
     "3-6 months", 
     "6-12 months",
     "More than 1 year"
-  ], []);
+  ];
 
-  // Fixed scroll lock with proper cleanup
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const scrollY = window.scrollY;
-    const body = document.body;
-    const originalStyle = body.style.cssText;
-    
-    body.style.cssText = `
-      overflow: hidden;
-      position: fixed;
-      top: -${scrollY}px;
-      width: 100%;
-    `;
-    
-    return () => {
-      body.style.cssText = originalStyle;
-      window.scrollTo(0, scrollY);
-    };
-  }, [isOpen]);
-
-  const handleSubmit = useCallback((e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
     onClose();
-  }, [formData, onClose]);
+  };
 
-  const handleInputChange = useCallback((field: keyof DemoFormData, value: string) => {
+  const handleInputChange = (field: keyof DemoFormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-  }, [setFormData]);
+  };
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
       <div 
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/50"
         onClick={onClose}
       />
       
-      <div className="relative bg-white rounded-xl md:rounded-2xl lg:rounded-3xl p-4 sm:p-6 md:p-8 w-full max-w-sm sm:max-w-md md:max-w-4xl shadow-2xl border border-gray-100 transform transition-all duration-300 scale-100 max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-white rounded-xl md:rounded-2xl lg:rounded-3xl p-4 sm:p-6 md:p-8 w-full max-w-sm sm:max-w-md md:max-w-4xl shadow-2xl border border-gray-100 max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
         <div className="mb-4 sm:mb-6">
           <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-blue-50 rounded-lg md:rounded-xl flex items-center justify-center mb-3 sm:mb-4">
             <Image 
@@ -213,7 +122,6 @@ const DemoDialog = memo(function DemoDialog({ isOpen, onClose, formData, setForm
               width={24} 
               height={24} 
               className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6"
-              loading="lazy"
             />
           </div>
           
@@ -239,9 +147,8 @@ const DemoDialog = memo(function DemoDialog({ isOpen, onClose, formData, setForm
               value={formData.name}
               onChange={(e) => handleInputChange('name', e.target.value)}
               placeholder="Enter Your Name"
-              className="w-full px-3 py-2.5 sm:px-3 sm:py-3 md:px-4 md:py-4 bg-gray-50 border-0 rounded-lg text-gray-700 text-xs sm:text-sm outline-none transition-all focus:bg-white focus:shadow-lg focus:ring-2 focus:ring-blue-500/20 placeholder-gray-400"
+              className="w-full px-3 py-2.5 sm:px-3 sm:py-3 md:px-4 md:py-4 bg-gray-50 border-0 rounded-lg text-gray-700 text-xs sm:text-sm outline-none focus:bg-white focus:shadow-lg focus:ring-2 focus:ring-blue-500/20 placeholder-gray-400"
               required
-              aria-label="Name"
             />
           </div>
 
@@ -253,17 +160,16 @@ const DemoDialog = memo(function DemoDialog({ isOpen, onClose, formData, setForm
               <select
                 value={formData.employees}
                 onChange={(e) => handleInputChange('employees', e.target.value)}
-                className="w-full px-3 py-2.5 sm:px-3 sm:py-3 md:px-4 md:py-4 bg-gray-50 border-0 rounded-lg text-gray-700 text-xs sm:text-sm outline-none appearance-none transition-all focus:bg-white focus:shadow-lg focus:ring-2 focus:ring-blue-500/20 cursor-pointer hover:bg-gray-100"
+                className="w-full px-3 py-2.5 sm:px-3 sm:py-3 md:px-4 md:py-4 bg-gray-50 border-0 rounded-lg text-gray-700 text-xs sm:text-sm outline-none appearance-none focus:bg-white focus:shadow-lg focus:ring-2 focus:ring-blue-500/20 cursor-pointer hover:bg-gray-100"
                 required
-                aria-label="Number of Employees"
               >
-                <option value="" disabled className="text-gray-400">Select Number of Employees Category</option>
+                <option value="" disabled>Select Number of Employees Category</option>
                 {employeeOptions.map((option, index) => (
-                  <option key={index} value={option} className="text-gray-700 py-2">{option}</option>
+                  <option key={index} value={option}>{option}</option>
                 ))}
               </select>
               <div className="absolute right-2 sm:right-3 md:right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                <svg className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-gray-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </div>
@@ -278,17 +184,16 @@ const DemoDialog = memo(function DemoDialog({ isOpen, onClose, formData, setForm
               <select
                 value={formData.timeline}
                 onChange={(e) => handleInputChange('timeline', e.target.value)}
-                className="w-full px-3 py-2.5 sm:px-3 sm:py-3 md:px-4 md:py-4 bg-gray-50 border-0 rounded-lg text-gray-700 text-xs sm:text-sm outline-none appearance-none transition-all focus:bg-white focus:shadow-lg focus:ring-2 focus:ring-blue-500/20 cursor-pointer hover:bg-gray-100"
+                className="w-full px-3 py-2.5 sm:px-3 sm:py-3 md:px-4 md:py-4 bg-gray-50 border-0 rounded-lg text-gray-700 text-xs sm:text-sm outline-none appearance-none focus:bg-white focus:shadow-lg focus:ring-2 focus:ring-blue-500/20 cursor-pointer hover:bg-gray-100"
                 required
-                aria-label="Timeline for Investing in GEO Strategy"
               >
-                <option value="" disabled className="text-gray-400">Select Timeline for Investing in GEO Strategy</option>
+                <option value="" disabled>Select Timeline for Investing in GEO Strategy</option>
                 {timelineOptions.map((option, index) => (
-                  <option key={index} value={option} className="text-gray-700 py-2">{option}</option>
+                  <option key={index} value={option}>{option}</option>
                 ))}
               </select>
               <div className="absolute right-2 sm:right-3 md:right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                <svg className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-gray-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </div>
@@ -309,7 +214,7 @@ const DemoDialog = memo(function DemoDialog({ isOpen, onClose, formData, setForm
                     value="yes"
                     checked={formData.agency === 'yes'}
                     onChange={(e) => handleInputChange('agency', e.target.value)}
-                    className="w-4 h-4 border-gray-300 focus:ring-0 focus:ring-offset-0"
+                    className="w-4 h-4 border-gray-300"
                     style={{ accentColor: '#2353DF' }}
                   />
                   <span className="ml-2 text-xs sm:text-sm text-gray-700 font-medium">Yes</span>
@@ -322,7 +227,7 @@ const DemoDialog = memo(function DemoDialog({ isOpen, onClose, formData, setForm
                     value="no"
                     checked={formData.agency === 'no'}
                     onChange={(e) => handleInputChange('agency', e.target.value)}
-                    className="w-4 h-4 border-gray-300 focus:ring-0 focus:ring-offset-0"
+                    className="w-4 h-4 border-gray-300"
                     style={{ accentColor: '#2353DF' }}
                   />
                   <span className="ml-2 text-xs sm:text-sm text-gray-700 font-medium">No</span>
@@ -334,10 +239,10 @@ const DemoDialog = memo(function DemoDialog({ isOpen, onClose, formData, setForm
           <div className="flex justify-center md:justify-end pt-2 sm:pt-3 md:pt-4">
             <button
               type="submit"
-              className="w-full sm:w-full md:w-auto bg-gray-900 text-white py-2.5 sm:py-3 px-4 sm:px-6 md:px-8 rounded-lg font-medium hover:bg-gray-800 transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-gray-900/20"
+              className="w-full sm:w-full md:w-auto bg-gray-900 text-white py-2.5 sm:py-3 px-4 sm:px-6 md:px-8 rounded-lg font-medium hover:bg-gray-800 flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm shadow-lg"
             >
               Continue
-              <svg className="w-3 h-3 sm:w-4 sm:h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </button>
@@ -346,52 +251,50 @@ const DemoDialog = memo(function DemoDialog({ isOpen, onClose, formData, setForm
       </div>
     </div>
   );
-});
+}
 
-// EXACT same Hero Section as original - but with optimized image loading
-const HeroSection = memo(function HeroSection({ email, setEmail, onEmailSubmit }: HeroSectionProps) {
-  const handleEmailChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+function HeroSection({ email, setEmail, onEmailSubmit }: HeroSectionProps) {
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
-  }, [setEmail]);
+  };
 
-  const handleSubmit = useCallback((e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onEmailSubmit();
-  }, [onEmailSubmit]);
+  };
 
   return (
-    <section className="relative flex justify-center px-4 sm:px-6 lg:px-8 py-4 sm:py-6 md:py-8 lg:py-16 pb-8 sm:pb-12 md:pb-16 lg:pb-20">
-      <div className="relative z-10 max-w-6xl mx-auto text-center w-full">
-        <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-white/20 backdrop-blur-sm rounded-full px-2.5 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 border border-white/30 mb-3 sm:mb-4 md:mb-6">
-          <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 bg-white rounded-full"></div>
-          <span className="text-white text-xs sm:text-xs md:text-sm font-medium">TRACKED. RANKED. VISITED.</span>
+    <section className="relative flex flex-col items-center w-full px-0 py-4 sm:py-6 md:py-8 lg:py-16 pb-8 sm:pb-12 md:pb-16 lg:pb-20 mt-6 sm:mt-0">
+      <div className="relative z-10 w-full max-w-sm md:max-w-6xl mx-auto text-center">
+        <div className="inline-flex items-center gap-1.5 md:gap-2 bg-white/20 backdrop-blur-sm rounded-full px-3 md:px-4 py-1.5 md:py-2 border border-white/30 mb-10 md:mb-6">
+          <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-white rounded-full"></div>
+          <span className="text-white text-sm font-medium">TRACKED. RANKED. VISITED.</span>
         </div>
 
-        <h1 className={`${typography.h1} text-white mb-3 sm:mb-4 md:mb-6 max-w-5xl mx-auto px-2`}>
-          국내 시장의 AI 검색 최적화를 위한
-          단 하나의 솔루션, ShowOnAI
+        <h1 className={`font-manrope font-bold text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white mb-6 md:mb-6 leading-tight px-6 max-w-5xl mx-auto ${typography?.h1 || ''}`}>
+          국내 시장의 AI 검색 최적화를 위한 단 하나의 솔루션, ShowOnAI
         </h1>
 
-        <p className={`${typography.subtitle} text-gray-200 mb-4 sm:mb-6 md:mb-8 lg:mb-12 max-w-4xl mx-auto px-3 sm:px-4`}>
-          국내 사용자 데이터와 검색 환경을 기반으로, 브랜드에 최적화된 SEO 전략을 수립합니다.<br className="hidden sm:block" />
+        <p className={`font-manrope text-sm md:text-base lg:text-lg text-gray-200 mb-10 md:mb-12 leading-relaxed px-3 md:px-4 max-w-4xl mx-auto ${typography?.subtitle || ''}`}>
+          국내 사용자 데이터와 검색 환경을 기반으로, 브랜드에 최적화된 SEO 전략을 수립합니다.
+          <br className="hidden sm:block" />
           자체 R&D를 통해 축적한 SEO 기술과 실행 중심 컨설팅으로 결과를 만듭니다.
         </p>
         
-        <div className="flex justify-center px-3 sm:px-4 mb-8 sm:mb-8 md:mb-12 lg:mb-16">
-          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-center w-full max-w-xs sm:max-w-lg md:max-w-xl lg:max-w-2xl gap-2 sm:gap-0">
-            <div className="flex items-center w-full h-9 sm:h-10 md:h-12 lg:h-14 px-1 sm:px-1 md:px-2 rounded-full border border-gray-200 bg-white shadow-2xl">
+        <div className="flex justify-center px-3 md:px-4 mb-12 md:mb-16">
+          <form onSubmit={handleSubmit} className="w-full max-w-xs md:max-w-xl lg:max-w-2xl">
+            <div className="flex items-center w-full h-12 md:h-14 px-2 rounded-full border border-gray-200 bg-white shadow-lg md:shadow-2xl">
               <input
                 type="email"
                 placeholder="회사 이메일을 입력하세요"
                 value={email}
                 onChange={handleEmailChange}
-                className="flex-1 ml-1.5 sm:ml-2 md:ml-4 bg-transparent border-none outline-none text-gray-600 placeholder-gray-400 text-xs sm:text-sm md:text-base lg:text-lg"
+                className="flex-1 ml-3 md:ml-4 bg-transparent border-none outline-none text-gray-600 placeholder-gray-400 text-sm md:text-base lg:text-lg"
                 required
-                aria-label="Company Email"
               />
               <button
                 type="submit"
-                className="ml-1 sm:ml-1 md:ml-2 px-2 sm:px-2.5 md:px-4 lg:px-6 py-1 md:py-1 lg:py-2 rounded-full bg-black text-white font-semibold text-xs sm:text-xs md:text-sm lg:text-lg hover:bg-gray-800 transition-colors active:scale-95 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-gray-900/20"
+                className="ml-2 px-4 md:px-6 py-2 rounded-full bg-black text-white font-semibold text-sm md:text-sm lg:text-lg hover:bg-gray-800 whitespace-nowrap"
               >
                 무료 진단 받기
               </button>
@@ -399,88 +302,113 @@ const HeroSection = memo(function HeroSection({ email, setEmail, onEmailSubmit }
           </form>
         </div>
 
-        <div className="hidden sm:flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-10 mt-4 sm:mt-6 md:mt-8 lg:mt-12 px-4">
-          <div className="w-full max-w-[500px] sm:max-w-[650px] md:max-w-[750px] lg:max-w-[850px] xl:max-w-[950px] 2xl:max-w-[1050px]">
+        <div className="mt-8 md:mt-12">
+          <div className="hidden md:block w-full max-w-7xl mx-auto">
             <Image 
-              src="/brand-mentions.svg" 
-              alt="Brand Mentions Chart" 
-              width={700}
-              height={336}
+              src="/brand-sov.webp" 
+              alt="Brand SOV Analytics" 
+              width={3500} 
+              height={1866}
               className="w-full h-auto"
-              loading="lazy"
-              placeholder="blur"
-              blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAwIiBoZWlnaHQ9IjMzNiIgdmlld0JveD0iMCAwIDcwMCAzMzYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjcwMCIgaGVpZ2h0PSIzMzYiIGZpbGw9IiNmZmZmZmYiIG9wYWNpdHk9IjAuNSIvPjwvc3ZnPg=="
-            />
-          </div>
-          
-          <div className="w-full max-w-[130px] sm:max-w-[180px] md:max-w-[230px] lg:max-w-[280px] xl:max-w-[330px] 2xl:max-w-[380px] mt-8 sm:mt-10 md:mt-12 lg:mt-16">
-            <Image 
-              src="/sov.svg" 
-              alt="Share of Voice Chart" 
-              width={380}
-              height={380}
-              className="w-full h-auto"
-              loading="lazy"
-              placeholder="blur"
-              blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzgwIiBoZWlnaHQ9IjM4MCIgdmlld0JveD0iMCAwIDM4MCAzODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjM4MCIgaGVpZ2h0PSIzODAiIGZpbGw9IiNmZmZmZmYiIG9wYWNpdHk9IjAuNSIvPjwvc3ZnPg=="
             />
           </div>
         </div>
       </div>
     </section>
   );
-});
+}
 
-// EXACT same CTA Section as original
-const CTASection = memo(function CTASection({ onDashboardClick }: CTASectionProps) {
+function CTASection({ onDashboardClick }: CTASectionProps) {
   return (
     <section className="relative px-3 sm:px-4 lg:px-8 pt-3 sm:pt-4 md:pt-8 lg:pt-12">
-      <div className="relative rounded-t-xl sm:rounded-t-2xl md:rounded-t-3xl overflow-hidden flex items-center justify-center min-h-[250px] sm:min-h-[300px] md:min-h-[400px]" style={{
-        backgroundImage: 'url(/above-footer.svg)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
-      }}>
-        <div className="relative z-10 flex flex-col items-center justify-center text-center py-8 sm:py-12 md:py-16 lg:py-20 px-4 sm:px-6 md:px-8">
-          <h2 className={`${typography.h2} text-white mb-4 sm:mb-6 md:mb-8 max-w-4xl px-2`}>
-            ShowOnAI와 함께,<br />
-            제로 클릭 시대의 브랜드 자리를 먼저 선점하세요.
-          </h2>
-          
-          <button 
-            onClick={onDashboardClick}
-            className="inline-flex items-center gap-1.5 sm:gap-2 bg-black text-white px-3 sm:px-4 md:px-6 lg:px-8 py-2 sm:py-2.5 md:py-3 lg:py-4 rounded-lg sm:rounded-xl md:rounded-[20px] font-medium text-xs sm:text-sm md:text-base hover:bg-gray-800 transition-colors shadow-lg active:scale-95 focus:outline-none focus:ring-2 focus:ring-gray-900/20"
-          >
-            데모 요청
-            <Image 
-              src="/chat.svg" 
-              alt="Chat" 
-              width={16} 
-              height={16} 
-              className="w-3 h-3 sm:w-3 sm:h-3 md:w-4 md:h-4"
-              loading="lazy"
-            />
-          </button>
+      <div className="relative rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden flex items-center justify-center min-h-[250px] sm:min-h-[300px] md:min-h-[400px]">
+        <div
+          className="absolute inset-0 block md:hidden rounded-xl"
+          style={{
+            backgroundImage: 'url(/above-footer-mobile.webp)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        />
+
+        <div 
+          className="absolute inset-0 hidden md:block rounded-t-3xl"
+          style={{
+            backgroundImage: 'url(/above-footer.webp)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        />
+
+        <div className="relative z-10 flex flex-col items-center justify-center text-center py-8 sm:py-12 md:py-16 lg:py-20 px-4 sm:px-6 md:px-8 w-full">
+          <div className="block md:hidden w-full max-w-sm flex-col items-center justify-between h-full min-h-[220px] py-6">
+            <div className="mt-auto mb-6">
+              <h2 className="text-white text-2xl sm:text-3xl font-semibold leading-tight text-center">
+                ShowOnAI와 함께,<br />
+                제로 클릭 시대의 브랜드<br />
+                자리를 먼저 선점하세요.
+              </h2>
+            </div>
+            
+            <div className="mb-auto">
+              <button 
+                onClick={onDashboardClick}
+                className="inline-flex items-center justify-center gap-2 bg-gray-900 text-white px-5 py-2.5 rounded-[18px] font-medium text-sm hover:bg-gray-800 shadow-md transition-all duration-200 w-full max-w-[160px]"
+              >
+                데모 요청
+                <Image 
+                  src="/chat.svg" 
+                  alt="Chat" 
+                  width={16} 
+                  height={16} 
+                  className="w-4 h-4"
+                />
+              </button>
+            </div>
+          </div>
+
+          {/* Desktop Layout */}
+          <div className="hidden md:block">
+            <h2 className="text-white text-2xl md:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6 md:mb-8 max-w-4xl px-2">
+              ShowOnAI와 함께,<br />
+              제로 클릭 시대의 브랜드 자리를 먼저 선점하세요.
+            </h2>
+            
+            <button 
+              onClick={onDashboardClick}
+              className="inline-flex items-center gap-2 bg-black text-white px-8 md:px-10 py-2 md:py-2.5 rounded-xl md:rounded-2xl font-medium text-sm md:text-base hover:bg-gray-800 shadow-lg transition-all duration-200"
+            >
+              데모 요청
+              <Image 
+                src="/chat.svg" 
+                alt="Chat" 
+                width={16} 
+                height={16} 
+                className="w-4 h-4"
+              />
+            </button>
+          </div>
+
         </div>
       </div>
     </section>
   );
-});
+}
 
-// Main Landing Page Component - Performance optimized but design preserved
 function LandingPage() {
-  const [email, setEmail] = useState<string>('');
-  const [isYearly, setIsYearly] = useState<boolean>(true);
-  const [expandedFaq, setExpandedFaq] = useState<number[]>([1]);
-  const [isClient, setIsClient] = useState<boolean>(false);
-  
+  const [email, setEmail] = useState('');
+  const [isYearly, setIsYearly] = useState(true);
+  const [expandedFaq, setExpandedFaq] = useState([1]);
+  const [backgroundImage, setBackgroundImage] = useState('/background.webp');
+
   const {
     showDemoDialog,
     demoForm,
     handleLoginClick,
     handleDashboardClick,
     handleCloseDialog,
-    handleSetDemoForm
-  } = useNavbar();
+    setDemoForm
+  } = useSimpleNavbar();
 
   const handleEmailSubmit = useCallback(() => {
     if (email && email.includes('@')) {
@@ -488,88 +416,32 @@ function LandingPage() {
     }
   }, [email]);
 
-  // Fix hydration issues
   useEffect(() => {
-    setIsClient(true);
+    const checkScreenSize = () => {
+      if (window.innerWidth < 640) {
+        setBackgroundImage('/background-mobile.webp');
+      } else {
+        setBackgroundImage('/background.webp');
+      }
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
-  // Optimized scroll lock with better cleanup
-  useEffect(() => {
-    if (!showDemoDialog) return;
-
-    const scrollY = window.scrollY;
-    const body = document.body;
-    const originalOverflow = body.style.overflow;
-    const originalPosition = body.style.position;
-    const originalTop = body.style.top;
-    const originalWidth = body.style.width;
-    
-    body.style.overflow = 'hidden';
-    body.style.position = 'fixed';
-    body.style.top = `-${scrollY}px`;
-    body.style.width = '100%';
-    
-    return () => {
-      body.style.overflow = originalOverflow;
-      body.style.position = originalPosition;
-      body.style.top = originalTop;
-      body.style.width = originalWidth;
-      window.scrollTo(0, scrollY);
-    };
-  }, [showDemoDialog]);
-
-  // Optimized image preloading with error handling
-  useEffect(() => {
-    if (!isClient) return;
-
-    const preloadImages = [
-      '/showonai-white.svg',
-      '/brand-mentions.svg',
-      '/sov.svg'
-    ];
-
-    const imagePromises = preloadImages.map(src => {
-      return new Promise<void>((resolve) => {
-        const img = new window.Image();
-        img.onload = () => resolve();
-        img.onerror = () => resolve(); // Continue even if image fails
-        img.src = src;
-      });
-    });
-
-    Promise.allSettled(imagePromises).then(() => {
-      // Images loaded or failed, continue anyway
-    });
-  }, [isClient]);
-
-  // Add error boundary for dynamic imports
-  const [hasError] = useState<boolean>(false);
-
-  if (hasError) {
-    return (
-      <div className="min-h-screen bg-blue-50 font-manrope scroll-smooth flex flex-col items-center justify-center">
-        <div className="text-center p-8">
-          <h2 className="text-2xl font-bold mb-4">Something went wrong</h2>
-          <button 
-            onClick={() => window.location.reload()}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-          >
-            Refresh Page
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-blue-50 font-manrope scroll-smooth flex flex-col" style={{backgroundImage:'url(/landing-page.svg)', backgroundSize: 'cover', backgroundPosition: 'top center' }}>
+    <div className="min-h-screen bg-blue-50 font-manrope flex flex-col" style={{backgroundImage:'url(/landing-page.svg)', backgroundSize: 'cover', backgroundPosition: 'top center' }}>
       <div className="relative flex-shrink-0 pb-8 sm:pb-12 md:pb-16 lg:pb-20">        
         <div 
-          className="relative z-10 rounded-[24px] mx-4 mt-1 sm:mt-2 md:mt-3 lg:mt-4 overflow-hidden" 
+          className="relative z-10 overflow-hidden 
+                    rounded-[0px] sm:rounded-[24px] 
+                    mx-0 sm:mx-4 
+                    mt-0 sm:mt-2 md:mt-3 lg:mt-4" 
           style={{ 
             height: 'clamp(1000px, 110vh, 2200px)',
             minHeight: '1000px',
-            backgroundImage: 'url(/background.svg)', 
+            backgroundImage: `url(${backgroundImage})`,
             backgroundSize: 'cover', 
             backgroundPosition: 'top center' 
           }}
@@ -588,56 +460,25 @@ function LandingPage() {
       </div>
       
       <div className="flex-grow flex flex-col relative z-0">
-        <Suspense fallback={<QuoteSectionPlaceholder />}>
-          <QuoteSection />
-        </Suspense>
-        
-        <Suspense fallback={<FeaturesSectionPlaceholder />}>
-          <FeaturesSection />
-        </Suspense>
-        
-        <Suspense fallback={<PricingSectionPlaceholder />}>
-          <PricingSection isYearly={isYearly} setIsYearly={setIsYearly} />
-        </Suspense>
-        
-        <Suspense fallback={<FAQSectionPlaceholder />}>
-          <FAQSection expandedFaq={expandedFaq} setExpandedFaq={setExpandedFaq} />
-        </Suspense>
+        <QuoteSection />
+        <FeaturesSection />
+        <PricingSection isYearly={isYearly} setIsYearly={setIsYearly} />
+        <FAQSection expandedFaq={expandedFaq} setExpandedFaq={setExpandedFaq} />
 
         <div className="mt-auto">
-          <CTASection onDashboardClick={handleDashboardClick} />
+          <div className="mb-8 md:-mb-16"> 
+            <CTASection onDashboardClick={handleDashboardClick} />
+          </div>
           <Footer />
         </div>
       </div>
-      
-      {/* EXACT same styles as original */}
-      <style jsx>{`
-        .font-manrope {
-          font-family: var(--font-manrope), system-ui, sans-serif;
-        }
-        @media (max-width: 768px) {
-          .animate-pulse {
-            animation-duration: 1.5s;
-          }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .animate-pulse {
-            animation: none;
-          }
-          .transition-all,
-          .transition-colors,
-          .transition-transform {
-            transition: none;
-          }
-        }
-      `}</style>
 
-      {isClient && showDemoDialog && (
+      {showDemoDialog && (
         <DemoDialog 
           isOpen={showDemoDialog}
           onClose={handleCloseDialog}
           formData={demoForm}
-          setFormData={handleSetDemoForm}
+          setFormData={setDemoForm}
         />
       )}
     </div>
