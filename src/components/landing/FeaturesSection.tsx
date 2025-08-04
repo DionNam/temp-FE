@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, useMemo } from 'react';
+import React, { memo, useMemo, useState, useEffect } from 'react';
 import Image from 'next/image';
 
 const typography = {
@@ -12,14 +12,18 @@ const typography = {
 } as const;
 
 export const FeaturesSection = memo(function FeaturesSection() {
-    const features = useMemo(() => [
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+
+  const features = useMemo(() => [
     {
       icon: (
         <Image src="/assets/Icon-1.svg" alt="Diagnosis" width={64} height={64} className="w-16 h-16" loading="lazy" />
       ),
       title: "진단 Diagnosis",
-      description: "생성형 AI에서 브랜드 노출 현황을 정확히 진단하고 개선점을 찾아드립니다.",
-      subtitle: "ChatGPT, Gemini에서 우리 브랜드가 언급되는지 확인하고, AI가 우리를 어떻게 인식하는지 분석하여 개선점을 찾습니다.",
+      description: "내 브랜드의 GEO 건강 상태, 경쟁사와 비교해보셨나요?",
+      subtitle: "ChatGPT, Gemini, wrtn에서 내 브랜드가 어떤 질문에 노출되고, 어디서 경쟁사에 비해 부족한지 정확하게 분석해드립니다.",
       imagePosition: "right",
       gradient: "from-blue-400 to-purple-500",
       image: "/diagnosis.webp"
@@ -29,8 +33,8 @@ export const FeaturesSection = memo(function FeaturesSection() {
         <Image src="/assets/Icon-2.svg" alt="Prescription" width={64} height={64} className="w-16 h-16" loading="lazy" />
       ),
       title: "차단 Prescription",
-      description: "검색 엔진 변화에 선제적으로 대응하여 브랜드 가시성을 보호합니다.",
-      subtitle: "부정적 콘텐츠나 잘못된 정보가 생성형 AI에 학습되지 않도록 차단하고, 브랜드 이미지를 보호하는 전략을 수립합니다.",
+      description: "문제의 원인을 분석하고, 바로 실행 가능한 솔루션을 제시합니다.",
+      subtitle: "기술적 SEO/GEO 최적화부터 국내 검색 키워드 기반의 콘텐츠 주제 추천, 자동화 제작까지",
       imagePosition: "left",
       gradient: "from-green-400 to-blue-500",
       image: "/prescription.webp" 
@@ -40,16 +44,51 @@ export const FeaturesSection = memo(function FeaturesSection() {
         <Image src="/assets/Icon-3.svg" alt="Tracking" width={64} height={64} className="w-16 h-16" loading="lazy" />
       ),
       title: "추적 Tracking",
-      description: "실시간 모니터링으로 SEO 성과를 추적하고 지속적으로 최적화합니다.",
-      subtitle: "다양한 검색 시나리오에서 우리 브랜드의 언급 빈도와 순위 변화를 추적하여 지속적인 개선점을 파악합니다.",
+      description: "잘 만든 콘텐츠, AI가 인식하고 있을까요? 답변에 쓰이고 있을까요?",
+      subtitle: "AI이 콘텐츠를 잘 가져가고 있는지, 방문자가 유입되고 있는지까지 실시간으로 추적합니다.",
       imagePosition: "right",
       gradient: "from-purple-400 to-pink-500",
       image: "/tracking.webp" 
     }
   ], []);
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      setCurrentSlide((prev) => (prev + 1) % features.length);
+    }
+    if (isRightSwipe) {
+      setCurrentSlide((prev) => (prev - 1 + features.length) % features.length);
+    }
+  };
+
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
+  };
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % features.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + features.length) % features.length);
+  };
+
   return (
-    <section id="features" className="relative py-12 md:py-24 px-4 sm:px-6 lg:px-8">      
+    <section id="features" className="relative py-12 md:py-24 px-0 sm:px-1 lg:px-8">      
       <div className="relative z-10 max-w-5/6 mx-auto">
         <div className="text-center mb-16 md:mb-24">
           <p className={`${typography.caption} text-blue-600 mb-4`}>
@@ -63,7 +102,95 @@ export const FeaturesSection = memo(function FeaturesSection() {
           </p>
         </div>
         
-        <div className="space-y-16 md:space-y-24">
+        <div className="lg:hidden -mx-4 sm:-mx-2">
+          <div className="relative overflow-hidden">
+            <div 
+              className="flex transition-transform duration-300 ease-in-out"
+              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
+              {features.map((feature, index) => (
+                <div key={index} className="w-full flex-shrink-0">
+                  <div className="space-y-6 px-4">
+                    <div className="flex items-center justify-between gap-4">
+                      <button
+                        onClick={prevSlide}
+                        disabled={currentSlide === 0}
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center shadow-md transition-colors ${
+                          currentSlide === 0 
+                            ? 'bg-gray-200/80 backdrop-blur-sm cursor-not-allowed opacity-50' 
+                            : 'bg-blue-500 hover:bg-blue-600'
+                        }`}
+                        aria-label="Previous slide"
+                      >
+                        <svg className={`w-5 h-5 ${currentSlide === 0 ? 'text-[#3D6FEA]' : 'text-white'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 18l-6-6 6-6" />
+                        </svg>
+                      </button>
+                      
+                      <div className="flex items-center gap-4 flex-1 justify-center">
+                        <div className="w-10 h-10 flex items-center justify-center">
+                          {feature.icon}
+                        </div>
+                        <h3 className="text-xl md:text-2xl font-semibold text-blue-600 whitespace-nowrap">
+                          {feature.title}
+                        </h3>
+                      </div>
+                      
+                      <button
+                        onClick={nextSlide}
+                        disabled={currentSlide === features.length - 1}
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center shadow-md transition-colors ${
+                          currentSlide === features.length - 1 
+                            ? 'bg-gray-200/80 backdrop-blur-sm cursor-not-allowed opacity-50' 
+                            : 'bg-blue-500 hover:bg-blue-600'
+                        }`}
+                        aria-label="Next slide"
+                      >
+                        <svg className={`w-5 h-5 ${currentSlide === features.length - 1 ? 'text-[#3D6FEA]' : 'text-white'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 12h16" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 6l6 6-6 6" />
+                        </svg>
+                      </button>
+                    </div>
+
+                    <div className="w-full">
+                      <div className="bg-white rounded-2xl p-4 shadow-lg">
+                        <div className="w-full h-[300px] flex items-center justify-center">
+                          <Image 
+                            src={feature.image}
+                            alt={feature.title}
+                            width={400}
+                            height={300}
+                            className="w-full h-full object-contain"
+                            loading="lazy"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="text-center px-10">
+                      <h4 className="text-lg md:text-xl font-bold text-blue-600 mb-4 leading-relaxed">
+                        {feature.description}
+                      </h4>
+                    </div>
+
+                    <div className="text-center">
+                      <p className="text-sm md:text-base text-white/90 leading-relaxed text-center">
+                        {feature.subtitle}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="hidden lg:block space-y-16 md:space-y-24">
           {features.map((feature, index) => (
             <div 
               key={index} 
@@ -78,11 +205,11 @@ export const FeaturesSection = memo(function FeaturesSection() {
                   {feature.icon}
                 </div>
                 
-                <h3 className={`${typography.title} text-primary-blue-500 mb-4`}>
+                <h3 className={`${typography.title} text-blue-600 mb-4`}>
                   {feature.title}
                 </h3>
                 
-                <p className={`${typography.title2} text-primary-blue-400 mb-4 font-medium`}>
+                <p className={`${typography.title2} text-blue-500 mb-4 font-medium`}>
                   {feature.description}
                 </p>
                 
