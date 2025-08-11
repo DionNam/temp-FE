@@ -7,47 +7,83 @@ import SearchQueryCard from "./SearchQueryCard";
 import MostFrequentlyCard from "./MostFrequentlyCard";
 import BrandMentionsCard from "./BrandMentionsCard";
 
+export type SeriesConfig = Record<string, { label: string; color: string }>;
+export type MentionsRow = {
+  month: string;
+  [seriesKey: string]: number | string;
+};
+
+
 const response = {
   companyName: "Company Name",
   generatedDate: "07/04/2025",
   requestedBy: "test@email.com",
   sov: [
-    { name: "Company Name", mentions: 40, fill: "var(--color-company)" },
-    { name: "Competitor", mentions: 30, fill: "var(--color-competitor)" },
+    { name: "Company Name", mentions: 40 },
+    { name: "Competitor A", mentions: 30 },
+    { name: "Competitor B", mentions: 22 },
+    { name: "Competitor C", mentions: 15 },
+    { name: "Competitor D", mentions: 10 },
+    { name: "Competitor E", mentions: 5 },
+    { name: "Competitor F", mentions: 3 },
   ],
   mentions: [
-    { month: "January", myCompany: 186, competitor: 80 },
-    { month: "February", myCompany: 305, competitor: 200 },
-    { month: "March", myCompany: 237, competitor: 120 },
-    { month: "April", myCompany: 73, competitor: 190 },
-    { month: "May", myCompany: 209, competitor: 130 },
-    { month: "June", myCompany: 214, competitor: 140 },
+    { month: "January", "Company Name": 186, "Competitor A": 80, "Competitor B": 44, "Competitor C": 20, "Competitor D": 15, "Competitor E": 10, "Competitor F": 5 },
+    { month: "February", "Company Name": 305, "Competitor A": 200, "Competitor B": 91, "Competitor C": 50, "Competitor D": 30, "Competitor E": 20, "Competitor F": 10 },
+    { month: "March", "Company Name": 237, "Competitor A": 120, "Competitor B": 70, "Competitor C": 40, "Competitor D": 25, "Competitor E": 15, "Competitor F": 8 },
+    { month: "April", "Company Name": 73, "Competitor A": 190, "Competitor B": 88, "Competitor C": 30, "Competitor D": 20, "Competitor E": 10, "Competitor F": 5 },
+    { month: "May", "Company Name": 209, "Competitor A": 130, "Competitor B": 95, "Competitor C": 50, "Competitor D": 30, "Competitor E": 20, "Competitor F": 10 },
+    { month: "June", "Company Name": 214, "Competitor A": 140, "Competitor B": 99, "Competitor C": 60, "Competitor D": 40, "Competitor E": 30, "Competitor F": 20 },
   ],
   seoScore: 8.5,
-  difference: 29.3, // Percentage increase in SEO score
+  difference: 29.3,
 };
 
-const pieChartConfig = {
-  company: {
-    label: response.sov[0].name,
-    color: "#2563EB",
-  },
-  competitor: {
-    label: response.sov[1].name,
-    color: "#36AAF3",
-  },
-};
+const PALETTE = [
+  "#2563EB", // my company
+  "#36AAF3",
+  "#7C3AED",
+  "#F43F5E",
+  "#22C55E",
+  "#F59E0B",
+  "#14B8A6",
+  "#A855F7",
+] as const;
 
-const areaChartConfig = {
-  company: {
-    label: response.sov[0].name,
-    color: "#7C3AED",
-  },
-  competitor: {
-    label: response.sov[1].name,
-    color: "#F43F5E",
-  },
-};
+const slug = (s: string) =>
+  s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
+const orderedNames = (() => {
+  const names = response.sov.map((s) => s.name);
+  const companyFirst = [
+    response.companyName,
+    ...names.filter((n) => n !== response.companyName),
+  ];
+  return companyFirst.slice(0, 8);
+})();
+
+const series: Record<string, { label: string; color: string }> =
+  orderedNames.reduce((acc, label, i) => {
+    acc[slug(label)] = { label, color: PALETTE[i % PALETTE.length] };
+    return acc;
+  }, {} as Record<string, { label: string; color: string }>);
+
+const pieData = response.sov
+  .filter((s) => orderedNames.includes(s.name))
+  .map((s) => ({ name: s.name, mentions: s.mentions }));
+
+
+
+const mentions: MentionsRow[] = response.mentions.map((row) => {
+  const out: MentionsRow = { month: row.month };
+  orderedNames.forEach((name) => {
+    const key = slug(name);
+    const v = (row as Record<string, unknown>)[name];
+    if (typeof v === "number") out[key] = v;
+  });
+  return out;
+});
+
 
 const ReportContent = () => {
   return (
@@ -57,15 +93,11 @@ const ReportContent = () => {
         generatedDate={response.generatedDate}
         requestedBy={response.requestedBy}
       />
-      <div className="flex flex-row items-center justify-between w-full mt-[18px] gap-3 border-[#E2E8F0] h-fit">
-        <SovCard pieData={response.sov} chartConfig={pieChartConfig} />
-        <BrandMentionsCard
-          companyName={response.companyName}
-          mentions={response.mentions}
-          chartConfig={areaChartConfig}
-        />
+      <div className="md:flex flex-row items-center justify-between w-full mt-[18px] gap-3 border-[#E2E8F0] h-fit hidden">
+        <SovCard pieData={pieData} series={series} />
+        <BrandMentionsCard mentions={mentions} series={series} />
       </div>
-      <div className="flex flex-row items-center justify-between w-full mt-3 gap-3 border-[#E2E8F0] h-fit">
+      <div className="md:flex flex-row items-center justify-between w-full mt-3 gap-3 border-[#E2E8F0] h-fit hidden">
         <OverallSEOCard
           seoScore={response.seoScore}
           difference={response.difference}
