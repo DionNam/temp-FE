@@ -3,7 +3,7 @@
 import React, { memo, useCallback } from 'react';
 import Image from 'next/image';
 
-const Footer = memo(function Footer() {
+const Footer = memo(function Footer({ className }: { className?: string }) {
   const handlePricingScroll = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     const element = document.getElementById('pricing');
@@ -16,7 +16,7 @@ const Footer = memo(function Footer() {
   }, []);
 
   return (
-    <footer className="relative px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:py-12 lg:py-16 bg-white">
+    <footer className={`relative px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:py-12 lg:py-16 bg-white ${className}`}>
       <div className="max-w-7xl mx-auto">
         {/* Mobile Layout */}
         <div className="block md:hidden">
