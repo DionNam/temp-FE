@@ -6,7 +6,7 @@ const OnboardingPage = () => {
         <OnboardLayout>
             <OnboardingForm />
         </OnboardLayout>
-    )
-}
+    );
+};
 
 export default OnboardingPage;

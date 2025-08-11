@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
@@ -20,11 +22,19 @@ const buttonVariants = cva(
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
+        // Custom variants untuk ShowWith.AI
+        primary: "bg-primary-blue-600 text-white shadow-xs hover:bg-primary-blue-700 focus-visible:ring-primary-blue-500/20",
+        "primary-gradient": "bg-gradient-primary-blue text-white shadow-xs hover:opacity-90 focus-visible:ring-primary-blue-500/20",
+        success: "bg-success-600 text-white shadow-xs hover:bg-success-700 focus-visible:ring-success-500/20",
+        warning: "bg-warning-600 text-white shadow-xs hover:bg-warning-700 focus-visible:ring-warning-500/20",
+        danger: "bg-danger-600 text-white shadow-xs hover:bg-danger-700 focus-visible:ring-danger-500/20",
+        info: "bg-info-600 text-white shadow-xs hover:bg-info-700 focus-visible:ring-info-500/20",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
         sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
         lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
+        xl: "h-11 rounded-md px-8 has-[>svg]:px-6 text-base",
         icon: "size-9",
       },
     },
