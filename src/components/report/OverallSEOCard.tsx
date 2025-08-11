@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 interface OverallSEOCardProps {
   seoScore: number;
   difference: number;
+  brandMentionsRate: number;
+  overallPresence: number;
+  avgCompetitorMentionRate: number;
 }
 
 const OverallSEOCard = (props: OverallSEOCardProps) => {
@@ -64,21 +67,21 @@ const OverallSEOCard = (props: OverallSEOCardProps) => {
                   <div className="w-2 h-2 bg-[#FBBF24] rounded-full" />
                   <p>Brand Mention rate</p>
                 </div>
-                <p className="font-bold">$29,560.00</p>
+                <p className="font-bold">{props.brandMentionsRate}%</p>
               </li>
               <li className="flex flex-row items-center justify-between">
                 <div className="flex flex-row items-center gap-2">
                   <div className="w-2 h-2 bg-[#FBBF24] rounded-full" />
                   <p>Overall Presence</p>
                 </div>
-                <p className="font-bold">$29,560.00</p>
+                <p className="font-bold">{props.overallPresence}%</p>
               </li>
               <li className="flex flex-row items-center justify-between">
                 <div className="flex flex-row items-center gap-2">
                   <div className="w-2 h-2 bg-[#FBBF24] rounded-full" />
                   <p>Avg. Competitor Mention Rate</p>
                 </div>
-                <p className="font-bold">$29,560.00</p>
+                <p className="font-bold">{props.avgCompetitorMentionRate}%</p>
               </li>
             </ul>
           </div>
