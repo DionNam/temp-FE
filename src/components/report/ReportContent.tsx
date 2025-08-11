@@ -37,6 +37,9 @@ const response = {
   ],
   seoScore: 8.5,
   difference: 29.3,
+  brandMentionsRate: 10,
+  overallPresence: 10,
+  avgCompetitorMentionRate: 10,
 };
 
 const PALETTE = [
@@ -101,7 +104,10 @@ const ReportContent = () => {
         <OverallSEOCard
           seoScore={response.seoScore}
           difference={response.difference}
-        />
+          brandMentionsRate={response.brandMentionsRate}
+          overallPresence={response.overallPresence}
+          avgCompetitorMentionRate={response.avgCompetitorMentionRate}
+          />
         <SearchQueryCard />
         <MostFrequentlyCard />
       </div>
@@ -109,6 +115,9 @@ const ReportContent = () => {
         <OverallSEOCard
           seoScore={response.seoScore}
           difference={response.difference}
+          brandMentionsRate={response.brandMentionsRate}
+          overallPresence={response.overallPresence}
+          avgCompetitorMentionRate={response.avgCompetitorMentionRate}
         />
         <SovCard pieData={pieData} series={series} />
         <BrandMentionsCard mentions={mentions} series={series} />
