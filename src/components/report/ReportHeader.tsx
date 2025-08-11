@@ -7,12 +7,12 @@ interface ReportHeaderProps {
 const ReportHeader = (props: ReportHeaderProps) => {
   return (
     <div className="w-full">
-      <h1 className="font-semibold text-3xl">{props.companyName}</h1>
-      <div className="flex flex-row items-center justify-between text-lg text-[#4F4F5B]">
+      <h1 className="font-semibold text-2xl md:text-3xl">{props.companyName}</h1>
+      <div className="flex items-center justify-between text-xs md:text-lg text-[#4F4F5B] flex-row-reverse md:flex-row">
         <p>
           AI-based SEO Visualization Report (Generated: {props.generatedDate})
         </p>
-        <p>Analysis requested by {props.requestedBy}</p>
+        <p>Analysis requested by <strong>{props.requestedBy}</strong></p>
       </div>
     </div>
   );

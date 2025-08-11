@@ -11,7 +11,7 @@ interface SovCardProps {
 
 const SovCard = (props: SovCardProps) => {
   return (
-    <Card className="bg-white w-1/4 p-5 gap-0 h-80 flex flex-col overflow-hidden">
+    <Card className="bg-white w-full md:w-1/4 p-5 gap-0 h-80 flex flex-col overflow-hidden">
       <CardHeader className="gap-2 flex flex-row items-center justify-between m-0 p-0">
         <div className="p-1 border border-[#E2E8F0] rounded-md">
           <Image src="/chart-donut.svg" alt="alt" width={16} height={16} />
