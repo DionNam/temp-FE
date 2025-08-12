@@ -1,7 +1,13 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
 
-const MostFrequentlyCard = () => {
+interface MostFrequentlyCardProps {
+  latestPromotionBlogPost: number;
+  coreServiceIntroductionPage: number;
+  customerSuccessStoryInterview: number;
+}
+
+const MostFrequentlyCard = (props: MostFrequentlyCardProps) => {
   return (
     <>
       <Card className="bg-white w-full p-5 gap-0 h-full">
@@ -17,59 +23,26 @@ const MostFrequentlyCard = () => {
           <ul className="gap-2 flex flex-col mt-5">
             <li className="flex flex-row items-center justify-between">
               <div className="flex flex-row items-center gap-2">
-                <div className="w-2 h-2 bg-[#FBBF24] rounded-full" />
-                <p>Brand Mention rate</p>
+                <div className="w-2 h-2 bg-primary-blue-500 rounded-full" />
+                <p>Latest Promotion Blog Post</p>
               </div>
-              <p className="font-bold">$29,560.00</p>
+              <p className="font-bold">{props.latestPromotionBlogPost} pts</p>
             </li>
+
             <li className="flex flex-row items-center justify-between">
               <div className="flex flex-row items-center gap-2">
-                <div className="w-2 h-2 bg-[#FBBF24] rounded-full" />
-                <p>Brand Mention rate</p>
+                <div className="w-2 h-2 bg-primary-blue-500 rounded-full" />
+                <p>Core Service Introduction Page</p>
               </div>
-              <p className="font-bold">$29,560.00</p>
+              <p className="font-bold">{props.customerSuccessStoryInterview} pts</p>
             </li>
+
             <li className="flex flex-row items-center justify-between">
               <div className="flex flex-row items-center gap-2">
-                <div className="w-2 h-2 bg-[#FBBF24] rounded-full" />
-                <p>Brand Mention rate</p>
+                <div className="w-2 h-2 bg-primary-blue-500 rounded-full" />
+                <p>Customer Success Story Interview</p>
               </div>
-              <p className="font-bold">$29,560.00</p>
-            </li>
-            <li className="flex flex-row items-center justify-between">
-              <div className="flex flex-row items-center gap-2">
-                <div className="w-2 h-2 bg-[#FBBF24] rounded-full" />
-                <p>Overall Presence</p>
-              </div>
-              <p className="font-bold">$29,560.00</p>
-            </li>
-            <li className="flex flex-row items-center justify-between">
-              <div className="flex flex-row items-center gap-2">
-                <div className="w-2 h-2 bg-[#FBBF24] rounded-full" />
-                <p>Overall Presence</p>
-              </div>
-              <p className="font-bold">$29,560.00</p>
-            </li>
-            <li className="flex flex-row items-center justify-between">
-              <div className="flex flex-row items-center gap-2">
-                <div className="w-2 h-2 bg-[#FBBF24] rounded-full" />
-                <p>Overall Presence</p>
-              </div>
-              <p className="font-bold">$29,560.00</p>
-            </li>
-            <li className="flex flex-row items-center justify-between">
-              <div className="flex flex-row items-center gap-2">
-                <div className="w-2 h-2 bg-[#FBBF24] rounded-full" />
-                <p>Avg. Competitor Mention Rate</p>
-              </div>
-              <p className="font-bold">$29,560.00</p>
-            </li>
-            <li className="flex flex-row items-center justify-between">
-              <div className="flex flex-row items-center gap-2">
-                <div className="w-2 h-2 bg-[#FBBF24] rounded-full" />
-                <p>Avg. Competitor Mention Rate</p>
-              </div>
-              <p className="font-bold">$29,560.00</p>
+              <p className="font-bold">{props.customerSuccessStoryInterview} pts</p>
             </li>
           </ul>
         </CardContent>

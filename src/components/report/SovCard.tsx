@@ -11,7 +11,7 @@ interface SovCardProps {
 
 const SovCard = (props: SovCardProps) => {
   return (
-    <Card className="bg-white w-full md:w-1/4 p-5 gap-0 h-80 flex flex-col overflow-hidden">
+    <Card className="bg-white w-full md:w-2/5 p-5 gap-0 h-80 flex flex-col overflow-hidden">
       <CardHeader className="gap-2 flex flex-row items-center justify-between m-0 p-0">
         <div className="p-1 border border-[#E2E8F0] rounded-md">
           <Image src="/chart-donut.svg" alt="alt" width={16} height={16} />
@@ -26,8 +26,8 @@ const SovCard = (props: SovCardProps) => {
         </div>
       </CardHeader>
 
-      <CardContent className="m-0 p-0 flex-1">
-        <div className="mx-auto size-52 min-w-0 min-h-0">
+      <CardContent className="m-0 p-0 flex-1 flex items-center justify-center gap-4">
+        <div className="size-52 min-w-0 min-h-0">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <ChartTooltip cursor={false} />
@@ -35,7 +35,7 @@ const SovCard = (props: SovCardProps) => {
                 data={props.pieData}
                 dataKey="mentions"
                 nameKey="name"
-                innerRadius={60}
+                innerRadius={50}
               >
                 {props.pieData.map((d, i) => {
                   const key = d.name
@@ -50,23 +50,29 @@ const SovCard = (props: SovCardProps) => {
             </PieChart>
           </ResponsiveContainer>
         </div>
-      </CardContent>
 
-      <CardFooter className="p-0 m-0 mt-3 grid grid-cols-2 gap-2 auto-rows-min overflow-y-auto max-h-28 pr-1">
-        {props.pieData
-          .filter((d) => d.mentions > 0)
-          .map((d) => {
-            const key = d.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-            const color = props.series[key]?.color ?? "#999";
-            const label = props.series[key]?.label ?? d.name;
-            return (
-              <div key={key} className="flex items-center gap-2">
-                <div className="w-5 h-5 rounded-sm" style={{ background: color }} />
-                <p className="text-xs">{label}</p>
-              </div>
-            );
-          })}
-      </CardFooter>
+        <div className="flex flex-col gap-2 overflow-y-auto max-h-52 pr-1">
+          {props.pieData
+            .filter((d) => d.mentions > 0)
+            .map((d) => {
+              const key = d.name
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/(^-|-$)/g, "");
+              const color = props.series[key]?.color ?? "#999";
+              const label = props.series[key]?.label ?? d.name;
+              return (
+                <div key={key} className="flex items-center gap-2">
+                  <div
+                    className="w-3 h-3 rounded-full"
+                    style={{ background: color }}
+                  />
+                  <p className="text-xs">{label}</p>
+                </div>
+              );
+            })}
+        </div>
+      </CardContent>
     </Card>
   );
 };
