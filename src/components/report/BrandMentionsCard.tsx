@@ -13,7 +13,7 @@ const BrandMentionsCard = (props: BrandMentionsCardProps) => {
   const seriesEntries = Object.entries(props.series);
 
   return (
-    <Card className="bg-white md:w-3/4 w-full h-80 gap-0 p-5">
+    <Card className="bg-white md:w-3/5 w-full h-80 gap-0 p-5">
       <CardHeader className="gap-2 flex flex-row items-center justify-between m-0 p-0">
         <div className="p-1 border border-[#E2E8F0] rounded-md">
           <Image src="/chart-donut.svg" alt="alt" width={16} height={16} />

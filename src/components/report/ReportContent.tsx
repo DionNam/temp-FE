@@ -40,17 +40,19 @@ const response = {
   brandMentionsRate: 10,
   overallPresence: 10,
   avgCompetitorMentionRate: 10,
+  latestPromotionBlogPost: 95,
+  coreServiceIntroductionPage: 90,
+  customerSuccessStoryInterview: 85,
 };
 
 const PALETTE = [
-  "#2563EB", // my company
-  "#36AAF3",
-  "#7C3AED",
-  "#F43F5E",
-  "#22C55E",
-  "#F59E0B",
-  "#14B8A6",
-  "#A855F7",
+  "#233993", // my company
+  "#2345B9",
+  "#2353DF",
+  "#3D6FEA",
+  "#608BEF",
+  "#83A7F4",
+  "#A7C1F8",
 ] as const;
 
 const slug = (s: string) =>
@@ -107,9 +109,13 @@ const ReportContent = () => {
           brandMentionsRate={response.brandMentionsRate}
           overallPresence={response.overallPresence}
           avgCompetitorMentionRate={response.avgCompetitorMentionRate}
-          />
+        />
         <SearchQueryCard />
-        <MostFrequentlyCard />
+        <MostFrequentlyCard
+          latestPromotionBlogPost={response.latestPromotionBlogPost}
+          coreServiceIntroductionPage={response.coreServiceIntroductionPage}
+          customerSuccessStoryInterview={response.customerSuccessStoryInterview}
+        />
       </div>
       <div className="md:hidden flex flex-col items-center justify-center w-full gap-4 border-[#E2E8F0] mt-5">
         <OverallSEOCard
@@ -121,7 +127,11 @@ const ReportContent = () => {
         />
         <SovCard pieData={pieData} series={series} />
         <BrandMentionsCard mentions={mentions} series={series} />
-        <MostFrequentlyCard />
+        <MostFrequentlyCard
+          latestPromotionBlogPost={response.latestPromotionBlogPost}
+          coreServiceIntroductionPage={response.coreServiceIntroductionPage}
+          customerSuccessStoryInterview={response.customerSuccessStoryInterview}
+        />
         <SearchQueryCard />
       </div>
     </div>

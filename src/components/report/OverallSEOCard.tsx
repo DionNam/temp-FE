@@ -64,21 +64,21 @@ const OverallSEOCard = (props: OverallSEOCardProps) => {
             <ul className="gap-2 flex flex-col">
               <li className="flex flex-row items-center justify-between">
                 <div className="flex flex-row items-center gap-2">
-                  <div className="w-2 h-2 bg-[#FBBF24] rounded-full" />
+                  <div className="w-2 h-2 bg-primary-blue-500 rounded-full" />
                   <p>Brand Mention rate</p>
                 </div>
                 <p className="font-bold">{props.brandMentionsRate}%</p>
               </li>
               <li className="flex flex-row items-center justify-between">
                 <div className="flex flex-row items-center gap-2">
-                  <div className="w-2 h-2 bg-[#FBBF24] rounded-full" />
+                  <div className="w-2 h-2 bg-primary-blue-400 rounded-full" />
                   <p>Overall Presence</p>
                 </div>
                 <p className="font-bold">{props.overallPresence}%</p>
               </li>
               <li className="flex flex-row items-center justify-between">
                 <div className="flex flex-row items-center gap-2">
-                  <div className="w-2 h-2 bg-[#FBBF24] rounded-full" />
+                  <div className="w-2 h-2 bg-primary-blue-300 rounded-full" />
                   <p>Avg. Competitor Mention Rate</p>
                 </div>
                 <p className="font-bold">{props.avgCompetitorMentionRate}%</p>
