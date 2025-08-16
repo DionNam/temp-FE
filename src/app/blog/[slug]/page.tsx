@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useParams } from 'next/navigation';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
@@ -13,7 +13,7 @@ import { RelatedArticles } from '@/components/blog/RelatedArticles';
 import { BlogSEO } from '@/components/blog/BlogSEO';
 import Link from 'next/link';
 
-export default function BlogPostPage() {
+function BlogPostContent() {
   const params = useParams();
   const slug = params.slug as string;
   const { handleLoginClick, handleDashboardClick } = useNavbar();
@@ -122,5 +122,20 @@ export default function BlogPostPage() {
       <Footer />
       </div>
     </>
+  );
+}
+
+export default function BlogPostPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    }>
+      <BlogPostContent />
+    </Suspense>
   );
 }
