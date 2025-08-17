@@ -50,7 +50,7 @@ function BlogCard({
     { year: "numeric", month: "long", day: "numeric" }
   );
 
-  const image = post.featured_image || post.image || "/blog-placeholder.png";
+  const image = post.featured_image || "/blog-placeholder.png";
 
   if (isFeatured) {
     return (

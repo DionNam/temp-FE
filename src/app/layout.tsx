@@ -16,8 +16,8 @@ export const metadata: Metadata = {
     default: "ShowOnAI - 국내 AI 검색 최적화 솔루션 | GEO & SEO 전문",
     template: "%s | ShowOnAI",
   },
-  description: "국내 시장의 AI 검색 최적화를 위한 단 하나의 솔루션. ChatGPT, Gemini에서 브랜드 노출을 극대화하는 GEO 전략과 SEO 컨설팅을 제공합니다.",
-  keywords: ["GEO", "SEO", "AI 검색 최적화", "브랜드 최적화", "ChatGPT 최적화", "생성형 AI", "검색엔진최적화"],
+  description: "국내 시장의 AI 검색 최적화를 위한 단 하나의 솔루션. ChatGPT, Gemini에서 브랜드 노출을 극대화하는 GEO 전략과 SEO 컨설팅을 제공합니다. 무료 SEO 진단으로 시작하세요.",
+  keywords: ["GEO", "SEO", "AI 검색 최적화", "브랜드 최적화", "ChatGPT 최적화", "생성형 AI", "검색엔진최적화", "국내 SEO"],
   authors: [{ name: "ShowOnAI" }],
   creator: "ShowOnAI",
   publisher: "ShowOnAI",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     url: "https://showonai.com",
     siteName: "ShowOnAI",
     title: "ShowOnAI - 국내 AI 검색 최적화 솔루션",
-    description: "2028년까지 검색 트래픽의 50%가 제로 클릭으로 전환됩니다. ShowOnAI와 함께 생성형 AI 시대를 준비하세요.",
+    description: "국내 시장의 AI 검색 최적화를 위한 단 하나의 솔루션. ChatGPT, Gemini에서 브랜드 노출을 극대화하는 GEO 전략과 SEO 컨설팅을 제공합니다. 무료 SEO 진단으로 시작하세요.",
     images: [
       {
         url: "https://showonai.com/og-image.webp",
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     site: "@showonai",
     creator: "@showonai",
     title: "ShowOnAI - 국내 AI 검색 최적화 솔루션",
-    description: "생성형 AI 검색에서 브랜드 노출을 극대화하는 GEO 전략",
+    description: "국내 시장의 AI 검색 최적화를 위한 단 하나의 솔루션. ChatGPT, Gemini에서 브랜드 노출을 극대화하는 GEO 전략과 SEO 컨설팅을 제공합니다.",
     images: ["https://showonai.com/og-image.webp"],
   },
 
@@ -218,6 +218,9 @@ export default function RootLayout({
             __html: JSON.stringify(structuredData),
           }}
         />
+        
+        <meta name="description" content="국내 시장의 AI 검색 최적화를 위한 단 하나의 솔루션. ChatGPT, Gemini에서 브랜드 노출을 극대화하는 GEO 전략과 SEO 컨설팅을 제공합니다. 무료 SEO 진단으로 시작하세요." />
+        <meta name="keywords" content="GEO, SEO, AI 검색 최적화, 브랜드 최적화, ChatGPT 최적화, 생성형 AI, 검색엔진최적화, 국내 SEO" />
         
         <meta httpEquiv="Content-Language" content="ko" />
         <meta name="format-detection" content="telephone=no" />
