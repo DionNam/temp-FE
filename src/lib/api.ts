@@ -15,18 +15,19 @@ import {
   AuthorBlogsResponse
 } from '@/types/blog';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
+const API_BASE_URL = '/api/v1';
 
 async function apiRequest<T>(
   endpoint: string, 
   options?: RequestInit
 ): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
-  console.log(url);
   
   const response = await fetch(url, {
+    method: options?.method || 'GET',
     headers: {
       'Content-Type': 'application/json',
+      'Accept': 'application/json',
       ...options?.headers,
     },
     ...options,
@@ -37,7 +38,8 @@ async function apiRequest<T>(
     throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
   }
 
-  return response.json();
+  const data = await response.json();
+  return data;
 }
 
 export const blogApi = {
