@@ -2,6 +2,7 @@
 
 import React, { memo, useCallback } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const Footer = memo(function Footer({ className }: { className?: string }) {
   const handlePricingScroll = useCallback((e: React.MouseEvent) => {
@@ -99,13 +100,13 @@ const Footer = memo(function Footer({ className }: { className?: string }) {
                 className="text-gray-400 hover:text-gray-900 transition-colors font-medium text-sm md:text-base py-2 sm:py-1 hover:underline focus:outline-none focus:underline focus:ring-2 focus:ring-gray-300 rounded px-1"
               >
                 Docs
-              </a>
-              <a 
-                href="#blog" 
+              </button>
+              <Link
+                href="/blog" 
                 className="text-gray-400 hover:text-gray-900 transition-colors font-medium text-sm md:text-base py-2 sm:py-1 hover:underline focus:outline-none focus:underline"
               >
                 Blog
-              </button>
+              </Link>
             </nav>
           </div>
         </div>
