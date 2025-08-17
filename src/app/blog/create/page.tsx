@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Footer } from '@/components/layout/Footer';
 import { RichTextEditor } from '@/components/blog/RichTextEditor';
 import { Button } from '@/components/ui/button';
-import { Eye, Save, Send } from 'lucide-react';
+import { Eye, Save, Send, Upload, X } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
 import { useCreateBlog, useUpdateBlog, useBlog } from '@/hooks/useBlog';
 import { useAuthors } from '@/hooks/useAuthor';
@@ -20,6 +20,7 @@ function CreateBlogContent() {
   
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [showImageUpload, setShowImageUpload] = useState(false);
   const { toasts, removeToast, success, error: showError } = useToast();
   const [formData, setFormData] = useState<CreateBlogRequest>({
     title: '',
@@ -74,6 +75,34 @@ function CreateBlogContent() {
 
   const handleContentChange = (newContent: string) => {
     handleInputChange('content', newContent);
+  };
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        alert('Please select an image file');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        handleInputChange('featured_image', result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImageUrlInput = () => {
+    const url = window.prompt('Enter image URL for featured image:');
+    if (url) {
+      handleInputChange('featured_image', url);
+    }
+  };
+
+  const removeFeaturedImage = () => {
+    handleInputChange('featured_image', '');
   };
 
   const handlePreview = () => {
@@ -216,17 +245,70 @@ function CreateBlogContent() {
                 rows={3}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-blue-500 focus:border-transparent resize-none"
               />
-          </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Featured Image
+              </label>
+              <div className="space-y-3">
+                {formData.featured_image ? (
+                  <div className="relative">
+                    <img
+                      src={formData.featured_image}
+                      alt="Featured image preview"
+                      className="w-full h-48 object-cover rounded-lg border border-gray-300"
+                    />
+                    <button
+                      type="button"
+                      onClick={removeFeaturedImage}
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                    <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                    <p className="text-gray-500 mb-2">No featured image selected</p>
+                    <p className="text-sm text-gray-400">This image will be used as the blog thumbnail</p>
+                  </div>
+                )}
+                
+                <div className="flex gap-2">
+                  <label className="flex-1">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
+                    <div className="w-full px-3 py-2 border border-gray-300 rounded-lg text-center cursor-pointer hover:bg-gray-50 transition-colors">
+                      <Upload className="w-4 h-4 inline mr-2" />
+                      Upload Image
+                    </div>
+                  </label>
+                  
+                  <button
+                    type="button"
+                    onClick={handleImageUrlInput}
+                    className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    URL
+                  </button>
+                </div>
+              </div>
+            </div>
           
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Content *
               </label>
               <div className="border border-gray-300 rounded-lg overflow-hidden">
-            <RichTextEditor
+                <RichTextEditor
                   content={formData.content}
-              onChange={handleContentChange}
-              placeholder="Start writing your blog content..."
+                  onChange={handleContentChange}
+                  placeholder="Start writing your blog content..."
                   className="min-h-[400px]"
                 />
               </div>
@@ -374,6 +456,16 @@ function CreateBlogContent() {
                   <p className="text-xl text-gray-600 leading-relaxed mb-6">
                     {formData.excerpt || 'Blog excerpt...'}
                   </p>
+
+                  {formData.featured_image && (
+                    <div className="mb-6">
+                      <img
+                        src={formData.featured_image}
+                        alt="Featured image"
+                        className="w-full h-64 object-cover rounded-lg shadow-sm"
+                      />
+                    </div>
+                  )}
 
                   <div className="flex items-center">
                     <div className="w-12 h-12 bg-gray-200 rounded-full mr-4"></div>

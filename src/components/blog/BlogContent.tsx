@@ -48,18 +48,6 @@ export function BlogContent({ post }: BlogContentProps) {
 
   return (
     <article className="max-w-4xl mx-auto">
-      {imageUrl && (
-        <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] mb-8 rounded-lg overflow-hidden">
-          <Image
-            src={imageUrl}
-            alt={`Hero image for ${post.title}`}
-            fill
-            className="object-cover"
-            priority
-          />
-        </div>
-      )}
-
       <header className="text-center mb-8">
         <div className="flex items-center justify-center gap-4 text-sm text-gray-500 mb-6">
           <span className="bg-primary-blue-100 text-primary-blue-700 px-3 py-1 rounded-full text-xs font-medium">
@@ -94,6 +82,18 @@ export function BlogContent({ post }: BlogContentProps) {
         <p className="font-manrope font-normal text-lg sm:text-xl text-gray-600 leading-relaxed mb-8 max-w-3xl mx-auto">
           {post.excerpt}
         </p>
+
+        {imageUrl && (
+        <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] mb-8 rounded-lg overflow-hidden">
+          <Image
+            src={imageUrl}
+            alt={`Hero image for ${post.title}`}
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
+      )}
       </header>
 
       <div className="prose prose-lg max-w-none">
