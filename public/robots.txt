@@ -1,0 +1,43 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and API routes
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /auth/
+Disallow: /*.json$
+
+# Allow specific important pages
+Allow: /blog/
+Allow: /login
+Allow: /signup
+
+# Crawl specific pages
+Allow: /sitemap.xml
+Allow: /robots.txt
+
+# Sitemap location
+Sitemap: https://showonai.com/sitemap.xml
+
+# Crawl delay (optional - for politeness)
+Crawl-delay: 1
+
+# Google specific
+User-agent: Googlebot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+# Bing specific
+User-agent: Bingbot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+# Naver specific (for Korean market)
+User-agent: Yeti
+Allow: /
+Disallow: /admin/
+Disallow: /api/

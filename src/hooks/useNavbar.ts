@@ -22,13 +22,7 @@ export function useNavbar() {
     setShowDemoDialog(false);
   }, []);
 
-  const handleSetDemoForm = useCallback((value: DemoFormData | ((prev: DemoFormData) => DemoFormData)) => {
-    if (typeof value === 'function') {
-      setDemoForm(value);
-    } else {
-      setDemoForm(value);
-    }
-  }, []);
+  const handleSetDemoForm = setDemoForm;
 
   return {
     showDemoDialog,
