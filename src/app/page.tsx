@@ -38,11 +38,15 @@ const typography = {
   h2: "font-manrope font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl leading-tight",
   h3: "font-manrope font-semibold text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed",
   h4: "font-manrope font-semibold text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed",
-  title: "font-manrope font-semibold text-lg sm:text-xl md:text-2xl lg:text-3xl leading-relaxed",
-  title2: "font-manrope font-semibold text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed",
-  subtitle: "font-manrope font-normal text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl leading-relaxed",
+  title:
+    "font-manrope font-semibold text-lg sm:text-xl md:text-2xl lg:text-3xl leading-relaxed",
+  title2:
+    "font-manrope font-semibold text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed",
+  subtitle:
+    "font-manrope font-normal text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl leading-relaxed",
   body: "font-manrope font-normal text-sm sm:text-base leading-relaxed",
-  caption: "font-manrope font-medium text-xs sm:text-sm uppercase tracking-wider",
+  caption:
+    "font-manrope font-medium text-xs sm:text-sm uppercase tracking-wider",
   price: "font-manrope font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl",
 } as const;
 
@@ -80,7 +84,7 @@ function useSimpleNavbar() {
 function DemoDialog({ isOpen, onClose, formData, setFormData }: DemoDialogProps) {
   const employeeOptions = [
     "1-10 employees",
-    "11-50 employees", 
+    "11-50 employees",
     "51-200 employees",
     "201-1000 employees",
     "1000+ employees"
@@ -89,7 +93,7 @@ function DemoDialog({ isOpen, onClose, formData, setFormData }: DemoDialogProps)
   const timelineOptions = [
     "Within 1 month",
     "1-3 months",
-    "3-6 months", 
+    "3-6 months",
     "6-12 months",
     "More than 1 year"
   ];
@@ -132,13 +136,17 @@ function DemoDialog({ isOpen, onClose, formData, setFormData }: DemoDialogProps)
               ShowOnAI!
             </span>
           </h2>
-          
+
           <p className="text-gray-500 text-xs sm:text-sm md:text-base leading-relaxed">
-            For enterprises plans or consultation. Discovery call with a member of the team.
+            For enterprises plans or consultation. Discovery call with a member
+            of the team.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4 md:space-y-5">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-3 sm:space-y-4 md:space-y-5"
+        >
           <div>
             <label htmlFor="name" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
               Name
@@ -147,7 +155,7 @@ function DemoDialog({ isOpen, onClose, formData, setFormData }: DemoDialogProps)
               id="name"
               type="text"
               value={formData.name}
-              onChange={(e) => handleInputChange('name', e.target.value)}
+              onChange={(e) => handleInputChange("name", e.target.value)}
               placeholder="Enter Your Name"
               className="w-full px-3 py-2.5 sm:px-3 sm:py-3 md:px-4 md:py-4 bg-gray-50 border-0 rounded-lg text-gray-700 text-xs sm:text-sm outline-none focus:bg-white focus:shadow-lg focus:ring-2 focus:ring-blue-500/20 placeholder-gray-400"
               required
@@ -443,6 +451,22 @@ export default function LandingPage() {
     window.addEventListener('resize', checkScreenSize);
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
+
+  // useEffect(() => {
+  //   if (showDemoDialog && isMounted) {
+  //     scrollPositionRef.current = window.scrollY;
+
+  //     document.body.style.overflow = "hidden";
+
+  //     return () => {
+  //       document.body.style.overflow = "";
+
+  //       setTimeout(() => {
+  //         window.scrollTo(0, scrollPositionRef.current);
+  //       }, 0);
+  //     };
+  //   }
+  // }, [showDemoDialog, isMounted]);
 
   return (
     // REMOVED: All <Head> tags - handled by layout.tsx now
