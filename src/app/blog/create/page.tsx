@@ -88,22 +88,22 @@ function CreateBlogContent() {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
 
-  // const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = event.target.files?.[0];
-  //   if (file) {
-  //     if (!file.type.startsWith("image/")) {
-  //       alert("Please select an image file");
-  //       return;
-  //     }
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith("image/")) {
+        alert("Please select an image file");
+        return;
+      }
 
-  //     const reader = new FileReader();
-  //     reader.onload = (e) => {
-  //       const result = e.target?.result as string;
-  //       handleInputChange("featured_image", result);
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        handleInputChange("featured_image", result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -137,13 +137,6 @@ function CreateBlogContent() {
   const handleUploadClick = () => {
     fileInputRef.current?.click();
   };
-
-  // const handleImageUrlInput = () => {
-  //   const url = window.prompt("Enter image URL for featured image:");
-  //   if (url) {
-  //     handleInputChange("featured_image", url);
-  //   }
-  // };
 
   const removeFeaturedImage = () => {
     handleInputChange("featured_image", "");
@@ -338,31 +331,13 @@ function CreateBlogContent() {
                   </div>
                 )}
 
-                {/* <div className="flex gap-2">
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleUploadClick}
-                    className="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
-                  >
-                    <Upload className="w-4 h-4 mr-2" />
-                    Upload Image
-                  </button>
-                  
-                  <button
-                    type="button"
-                    onClick={handleImageUrlInput}
-                    className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                  >
-                    URL
-                  </button>
-                </div> */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
               </div>
             </div>
 
