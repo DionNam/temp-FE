@@ -10,6 +10,7 @@ import { useBlogs } from "@/hooks/useBlog";
 import { useBlogFilters, useBlogCategories } from "@/hooks/useBlogFilters";
 import { BlogPost, BlogCategory } from "@/types/blog";
 import { generateSlug } from "@/lib/utils";
+import { Pagination } from "@/components/ui/pagination";
 
 const typography = {
   h1: "font-manrope font-semibold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-tight",
@@ -176,7 +177,7 @@ function BlogCard({
 
 export default function BlogPage() {
   const { handleLoginClick, handleDashboardClick } = useNavbar();
-  const { filters, updateFilter } = useBlogFilters();
+  const { filters, updateFilter } = useBlogFilters({ limit: 7 });
   const { data: blogResponse, loading, error } = useBlogs(filters);
   const { data: apiCategories } = useBlogCategories();
   const allPosts = Array.isArray(blogResponse?.data?.blogs)
@@ -188,7 +189,7 @@ export default function BlogPage() {
     ? {
         current_page: blogResponse.data.page,
         total_pages: blogResponse.data.total_pages,
-        total_items: posts.length,
+        total_items: blogResponse.data.total,
         items_per_page: blogResponse.data.limit,
       }
     : undefined;
@@ -206,8 +207,8 @@ export default function BlogPage() {
     return staticCategories;
   }, [apiCategories]);
 
-  const featuredPost = posts[0];
-  const regularPosts = posts.slice(1);
+  const featuredPost = pagination?.current_page === 1 ? posts[0] : null;
+  const regularPosts = pagination?.current_page === 1 ? posts.slice(1) : posts;
 
   const handleCategorySelect = (categoryId: string) => {
     updateFilter("category", categoryId === "all" ? "" : categoryId);
@@ -317,61 +318,19 @@ export default function BlogPage() {
 
           {!loading && !error && regularPosts.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-              {regularPosts.map((post) => (
+              {regularPosts.slice(0, 6).map((post) => (
                 <BlogCard key={post.id} post={post} />
               ))}
             </div>
           )}
 
           {pagination && pagination.total_pages > 1 && (
-            <div className="flex justify-center mt-12">
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() =>
-                    updateFilter(
-                      "page",
-                      Math.max(1, pagination.current_page - 1)
-                    )
-                  }
-                  disabled={pagination.current_page <= 1}
-                  className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Previous
-                </button>
-
-                {[...Array(pagination.total_pages)].map((_, i) => {
-                  const page = i + 1;
-                  return (
-                    <button
-                      key={page}
-                      onClick={() => updateFilter("page", page)}
-                      className={`px-3 py-2 text-sm font-medium rounded-md ${
-                        page === pagination.current_page
-                          ? "bg-primary-blue-600 text-white"
-                          : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-50"
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  );
-                })}
-
-                <button
-                  onClick={() =>
-                    updateFilter(
-                      "page",
-                      Math.min(
-                        pagination.total_pages,
-                        pagination.current_page + 1
-                      )
-                    )
-                  }
-                  disabled={pagination.current_page >= pagination.total_pages}
-                  className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Next
-                </button>
-              </div>
+            <div className="mt-12">
+              <Pagination
+                currentPage={pagination.current_page}
+                totalPages={pagination.total_pages}
+                onPageChange={(page) => updateFilter("page", page)}
+              />
             </div>
           )}
         </div>
