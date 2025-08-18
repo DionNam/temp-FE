@@ -1,45 +1,53 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Image from 'next/image';
-import { Footer } from '@/components/layout/Footer';
-import { RichTextEditor } from '@/components/blog/RichTextEditor';
-import { Button } from '@/components/ui/button';
-import { Eye, Save, Send, Upload, X } from 'lucide-react';
-import { Header } from '@/components/layout/Header';
-import { useCreateBlog, useUpdateBlog, useBlog } from '@/hooks/useBlog';
-import { useAuthors } from '@/hooks/useAuthor';
-import { useBlogCategories } from '@/hooks/useBlogFilters';
-import { CreateBlogRequest } from '@/types/blog';
-import { useToast, ToastContainer } from '@/components/ui/toast';
+import React, { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
+import { Footer } from "@/components/layout/Footer";
+import { RichTextEditor } from "@/components/blog/RichTextEditor";
+import { Button } from "@/components/ui/button";
+import { Eye, Save, Send, Upload, X } from "lucide-react";
+import { Header } from "@/components/layout/Header";
+import { useCreateBlog, useUpdateBlog, useBlog } from "@/hooks/useBlog";
+import { useAuthors } from "@/hooks/useAuthor";
+import { useBlogCategories } from "@/hooks/useBlogFilters";
+import { CreateBlogRequest } from "@/types/blog";
+import { useToast, ToastContainer } from "@/components/ui/toast";
 
 function CreateBlogContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const editId = searchParams.get('edit');
-  
+  const editId = searchParams.get("edit");
+
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { toasts, removeToast, success, error: showError } = useToast();
   const [formData, setFormData] = useState<CreateBlogRequest>({
-    title: '',
-    excerpt: '',
-    content: '',
-    category: '',
-    author_name: '',
-    featured_image: '',
-    meta_description: '',
+    title: "",
+    excerpt: "",
+    content: "",
+    category: "",
+    author_name: "",
+    featured_image: "",
+    meta_description: "",
     published: false,
-    tags: []
+    tags: [],
   });
 
-  const { createBlog, loading: createLoading, error: createError } = useCreateBlog();
-  const { updateBlog, loading: updateLoading, error: updateError } = useUpdateBlog();
+  const {
+    createBlog,
+    loading: createLoading,
+    error: createError,
+  } = useCreateBlog();
+  const {
+    updateBlog,
+    loading: updateLoading,
+    error: updateError,
+  } = useUpdateBlog();
   const { data: existingBlog, loading: fetchLoading } = useBlog(editId);
   const { data: authors, loading: authorsLoading } = useAuthors();
   const { data: categories, loading: categoriesLoading } = useBlogCategories();
-  
+
   const isEditing = !!editId;
   const isLoading = createLoading || updateLoading;
   const error = createError || updateError;
@@ -50,86 +58,120 @@ function CreateBlogContent() {
 
   useEffect(() => {
     if (existingBlog && isEditing) {
-      console.log('Setting form data with existing blog:', existingBlog);
-      console.log('Existing blog content:', existingBlog.content);
+      console.log("Setting form data with existing blog:", existingBlog);
+      console.log("Existing blog content:", existingBlog.content);
       setFormData({
         title: existingBlog.title,
         excerpt: existingBlog.excerpt,
         content: existingBlog.content,
         category: existingBlog.category,
         author_name: existingBlog.author_name,
-        featured_image: existingBlog.featured_image || '',
+        featured_image: existingBlog.featured_image || "",
 
         published: existingBlog.published,
-        tags: []
+        tags: [],
       });
     }
   }, [existingBlog, isEditing]);
 
   const handleInputChange = (field: keyof CreateBlogRequest, value: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
   const handleContentChange = (newContent: string) => {
-    handleInputChange('content', newContent);
+    handleInputChange("content", newContent);
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      if (!file.type.startsWith('image/')) {
-        alert('Please select an image file');
-        return;
-      }
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [isDragOver, setIsDragOver] = useState(false);
 
+  // const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = event.target.files?.[0];
+  //   if (file) {
+  //     if (!file.type.startsWith("image/")) {
+  //       alert("Please select an image file");
+  //       return;
+  //     }
+
+  //     const reader = new FileReader();
+  //     reader.onload = (e) => {
+  //       const result = e.target?.result as string;
+  //       handleInputChange("featured_image", result);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+
+    const files = Array.from(e.dataTransfer.files);
+    const imageFile = files.find((file) => file.type.startsWith("image/"));
+
+    if (imageFile) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const result = e.target?.result as string;
-        handleInputChange('featured_image', result);
+        handleInputChange("featured_image", result);
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(imageFile);
+    } else {
+      alert("Please drop an image file");
     }
   };
 
-  const handleImageUrlInput = () => {
-    const url = window.prompt('Enter image URL for featured image:');
-    if (url) {
-      handleInputChange('featured_image', url);
-    }
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
   };
+
+  // const handleImageUrlInput = () => {
+  //   const url = window.prompt("Enter image URL for featured image:");
+  //   if (url) {
+  //     handleInputChange("featured_image", url);
+  //   }
+  // };
 
   const removeFeaturedImage = () => {
-    handleInputChange('featured_image', '');
+    handleInputChange("featured_image", "");
   };
 
   const handlePreview = () => {
     setIsPreviewMode(!isPreviewMode);
   };
 
-
-
   const validateForm = () => {
     if (!formData.title.trim()) {
-      alert('Please enter a title');
+      alert("Please enter a title");
       return false;
     }
     if (!formData.excerpt.trim()) {
-      alert('Please enter an excerpt');
+      alert("Please enter an excerpt");
       return false;
     }
     if (!formData.content.trim()) {
-      alert('Please add some content');
+      alert("Please add some content");
       return false;
     }
     if (!formData.category) {
-      alert('Please select a category');
+      alert("Please select a category");
       return false;
     }
     if (!formData.author_name.trim()) {
-      alert('Please enter an author name');
+      alert("Please enter an author name");
       return false;
     }
     return true;
@@ -140,18 +182,18 @@ function CreateBlogContent() {
 
     try {
       const blogData = { ...formData, published: false };
-      
+
       if (isEditing && editId) {
         await updateBlog(editId, blogData);
-        success('Draft updated successfully!');
+        success("Draft updated successfully!");
       } else {
         await createBlog(blogData);
-        success('Draft saved successfully!');
-        router.push('/blog/management');
+        success("Draft saved successfully!");
+        router.push("/blog/management");
       }
     } catch (error) {
-      console.error('Error saving draft:', error);
-      showError('Failed to save draft', 'Please try again.');
+      console.error("Error saving draft:", error);
+      showError("Failed to save draft", "Please try again.");
     }
   };
 
@@ -160,19 +202,19 @@ function CreateBlogContent() {
 
     try {
       const blogData = { ...formData, published: true };
-      
+
       if (isEditing && editId) {
         await updateBlog(editId, blogData);
-        success('Blog updated and published successfully!');
+        success("Blog updated and published successfully!");
       } else {
         await createBlog(blogData);
-        success('Blog published successfully!');
+        success("Blog published successfully!");
       }
-      
-      router.push('/blog');
+
+      router.push("/blog");
     } catch (error) {
-      console.error('Error publishing blog:', error);
-      showError('Failed to publish blog', 'Please try again.');
+      console.error("Error publishing blog:", error);
+      showError("Failed to publish blog", "Please try again.");
     }
   };
 
@@ -202,14 +244,16 @@ function CreateBlogContent() {
     <div className="min-h-screen bg-primary-blue-50">
       <ToastContainer toasts={toasts} removeToast={removeToast} />
       <Header />
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">
-            {isEditing ? 'Edit Blog Post' : 'Create New Blog Post'}
+            {isEditing ? "Edit Blog Post" : "Create New Blog Post"}
           </h1>
           <p className="mt-2 text-gray-600">
-            {isEditing ? 'Update your blog post' : 'Write and publish your blog post'}
+            {isEditing
+              ? "Update your blog post"
+              : "Write and publish your blog post"}
           </p>
         </div>
 
@@ -223,12 +267,12 @@ function CreateBlogContent() {
           <div className="lg:col-span-2 space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Title *
+                Title <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 value={formData.title}
-                onChange={(e) => handleInputChange('title', e.target.value)}
+                onChange={(e) => handleInputChange("title", e.target.value)}
                 placeholder="Enter blog title..."
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-blue-500 focus:border-transparent"
               />
@@ -236,11 +280,11 @@ function CreateBlogContent() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Excerpt *
+                Excerpt <span className="text-red-500">*</span>
               </label>
               <textarea
                 value={formData.excerpt}
-                onChange={(e) => handleInputChange('excerpt', e.target.value)}
+                onChange={(e) => handleInputChange("excerpt", e.target.value)}
                 placeholder="Write a brief excerpt..."
                 rows={3}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-blue-500 focus:border-transparent resize-none"
@@ -249,7 +293,7 @@ function CreateBlogContent() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Featured Image
+                Featured Image <span className="text-red-500">*</span>
               </label>
               <div className="space-y-3">
                 {formData.featured_image ? (
@@ -270,41 +314,61 @@ function CreateBlogContent() {
                     </button>
                   </div>
                 ) : (
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                  <div
+                    className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
+                      isDragOver
+                        ? "border-blue-400 bg-blue-50"
+                        : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
+                    }`}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onClick={handleUploadClick}
+                  >
                     <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                    <p className="text-gray-500 mb-2">No featured image selected</p>
-                    <p className="text-sm text-gray-400">This image will be used as the blog thumbnail</p>
+                    <p className="text-gray-500 mb-2">
+                      No featured image selected
+                    </p>
+                    <p className="text-sm text-gray-400">
+                      This image will be used as the blog thumbnail
+                    </p>
+                    <p className="text-xs text-gray-400 mt-2">
+                      Click to upload or drag and drop
+                    </p>
                   </div>
                 )}
-                
-                <div className="flex gap-2">
-                  <label className="flex-1">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="hidden"
-                    />
-                    <div className="w-full px-3 py-2 border border-gray-300 rounded-lg text-center cursor-pointer hover:bg-gray-50 transition-colors">
-                      <Upload className="w-4 h-4 inline mr-2" />
-                      Upload Image
-                    </div>
-                  </label>
+
+                {/* <div className="flex gap-2">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleUploadClick}
+                    className="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
+                  >
+                    <Upload className="w-4 h-4 mr-2" />
+                    Upload Image
+                  </button>
                   
                   <button
                     type="button"
                     onClick={handleImageUrlInput}
-                    className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                   >
                     URL
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
-          
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Content *
+                Content <span className="text-red-500">*</span>
               </label>
               <div className="border border-gray-300 rounded-lg overflow-hidden">
                 <RichTextEditor
@@ -315,9 +379,7 @@ function CreateBlogContent() {
                 />
               </div>
             </div>
-
-
-        </div>
+          </div>
 
           <div className="space-y-6">
             <div className="bg-white p-6 rounded-lg shadow-sm">
@@ -332,21 +394,26 @@ function CreateBlogContent() {
                   {authors && authors.length > 0 ? (
                     <select
                       value={formData.author_name}
-                      onChange={(e) => handleInputChange('author_name', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("author_name", e.target.value)
+                      }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-blue-500 focus:border-transparent"
                     >
                       <option value="">Select an author...</option>
-                      {Array.isArray(authors) && authors.map((author: { id: string; name: string }) => (
-                        <option key={author.id} value={author.name}>
-                          {author.name}
-                        </option>
-                      ))}
+                      {Array.isArray(authors) &&
+                        authors.map((author: { id: string; name: string }) => (
+                          <option key={author.id} value={author.name}>
+                            {author.name}
+                          </option>
+                        ))}
                     </select>
                   ) : (
                     <input
                       type="text"
                       value={formData.author_name}
-                      onChange={(e) => handleInputChange('author_name', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("author_name", e.target.value)
+                      }
                       placeholder="Enter author name..."
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-blue-500 focus:border-transparent"
                     />
@@ -356,9 +423,13 @@ function CreateBlogContent() {
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-sm">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Category</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">
+                Category
+              </h3>
               {categoriesLoading ? (
-                <div className="text-sm text-gray-500">Loading categories...</div>
+                <div className="text-sm text-gray-500">
+                  Loading categories...
+                </div>
               ) : (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -366,15 +437,18 @@ function CreateBlogContent() {
                   </label>
                   <select
                     value={formData.category}
-                    onChange={(e) => handleInputChange('category', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("category", e.target.value)
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-blue-500 focus:border-transparent"
                   >
                     <option value="">Select a category...</option>
-                    {Array.isArray(categories) && categories.map((category) => (
-                      <option key={category} value={category}>
-                        {category}
-                      </option>
-                    ))}
+                    {Array.isArray(categories) &&
+                      categories.map((category) => (
+                        <option key={category} value={category}>
+                          {category}
+                        </option>
+                      ))}
                     {(!categories || categories.length === 0) && (
                       <>
                         <option value="news">News</option>
@@ -388,11 +462,7 @@ function CreateBlogContent() {
               )}
             </div>
 
-
-
-
-
-            <div className="bg-transparent p-6 rounded-lg space-y-3">
+            <div className="bg-transparent py-6 rounded-lg space-y-3">
               <Button
                 type="button"
                 onClick={handlePublish}
@@ -400,29 +470,35 @@ function CreateBlogContent() {
                 className="w-full bg-primary-blue-600 text-white hover:bg-primary-blue-700"
               >
                 <Send className="w-4 h-4 mr-2" />
-                {isLoading ? (isEditing ? 'Updating...' : 'Publishing...') : (isEditing ? 'Update & Publish' : 'Publish')}
+                {isLoading
+                  ? isEditing
+                    ? "Updating..."
+                    : "Publishing..."
+                  : isEditing
+                  ? "Update & Publish"
+                  : "Publish"}
               </Button>
 
-          <Button
-            type="button"
-            variant="outline"
+              <Button
+                type="button"
+                variant="outline"
                 onClick={handleSaveDraft}
                 disabled={isLoading}
                 className="w-full"
               >
                 <Save className="w-4 h-4 mr-2" />
-                {isLoading ? 'Saving...' : 'Save as Draft'}
-          </Button>
+                {isLoading ? "Saving..." : "Save as Draft"}
+              </Button>
 
-          <Button
-            type="button"
+              <Button
+                type="button"
                 variant="outline"
                 onClick={handlePreview}
-            className="w-full"
-          >
-            <Eye className="w-4 h-4 mr-2" />
-            Preview
-          </Button>
+                className="w-full"
+              >
+                <Eye className="w-4 h-4 mr-2" />
+                Preview
+              </Button>
             </div>
           </div>
         </div>
@@ -450,13 +526,13 @@ function CreateBlogContent() {
                     </span>
                     <time>{new Date().toLocaleDateString()}</time>
                   </div>
-                  
+
                   <h1 className="font-bold text-3xl text-gray-900 mb-4">
-                    {formData.title || 'Blog Title'}
+                    {formData.title || "Blog Title"}
                   </h1>
-                  
+
                   <p className="text-xl text-gray-600 leading-relaxed mb-6">
-                    {formData.excerpt || 'Blog excerpt...'}
+                    {formData.excerpt || "Blog excerpt..."}
                   </p>
 
                   {formData.featured_image && (
@@ -474,19 +550,23 @@ function CreateBlogContent() {
                   <div className="flex items-center">
                     <div className="w-12 h-12 bg-gray-200 rounded-full mr-4"></div>
                     <div>
-                      <p className="font-medium text-gray-900">{formData.author_name || 'Author Name'}</p>
+                      <p className="font-medium text-gray-900">
+                        {formData.author_name || "Author Name"}
+                      </p>
                     </div>
                   </div>
                 </header>
 
                 <div className="prose prose-lg max-w-none mb-8">
-                  <div 
-                    dangerouslySetInnerHTML={{ __html: formData.content || '<p>Start writing your content...</p>' }}
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html:
+                        formData.content ||
+                        "<p>Start writing your content...</p>",
+                    }}
                     className="blog-content"
                   />
                 </div>
-
-
               </article>
             </div>
           </div>
@@ -500,14 +580,16 @@ function CreateBlogContent() {
 
 export default function CreateBlogPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading...</p>
+          </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <CreateBlogContent />
     </Suspense>
   );

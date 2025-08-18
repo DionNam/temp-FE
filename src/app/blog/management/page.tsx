@@ -9,6 +9,7 @@ import { useBlogFilters } from "@/hooks/useBlogFilters";
 import { generateSlug } from "@/lib/utils";
 import { ConfirmationModal } from "@/components/ui/modal";
 import { useToast, ToastContainer } from "@/components/ui/toast";
+import { Pagination } from "@/components/ui/pagination";
 import Link from "next/link";
 
 const typography = {
@@ -53,14 +54,14 @@ function BlogManagementCard({
       ? post.author
       : post.author?.name || post.author_name;
   const status = post.status || (post.published ? "published" : "draft");
-  const featuredImage = post.featured_image || post.image || "/blog-placeholder.png";
+  const featuredImage =
+    post.featured_image || post.image || "/blog-placeholder.png";
 
   const slug = `${generateSlug(post?.title)}-${post?.id || "unknown"}`;
 
   return (
     <article className="bg-transparent rounded-xl p-6">
       <div className="flex gap-4">
-        {/* Featured Image Thumbnail */}
         <div className="flex-shrink-0">
           <Image
             src={featuredImage}
@@ -71,7 +72,6 @@ function BlogManagementCard({
           />
         </div>
 
-        {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-start mb-4">
             <div className="flex items-center gap-3">
@@ -99,7 +99,7 @@ function BlogManagementCard({
             {post.title}
           </h3>
 
-                    <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-3">
+          <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-3">
             {post.excerpt}
           </p>
 
@@ -234,6 +234,7 @@ export default function BlogManagementPage() {
         : activeTab === "drafts"
         ? false
         : undefined,
+    limit: 7,
   });
 
   const { data: blogResponse, loading, error, refetch } = useBlogs(filters);
@@ -252,6 +253,15 @@ export default function BlogManagementPage() {
     if (activeTab === "drafts") return postStatus === "draft";
     return true;
   });
+
+  const pagination = blogResponse?.data
+    ? {
+        current_page: blogResponse.data.page,
+        total_pages: blogResponse.data.total_pages,
+        total_items: blogResponse.data.total,
+        items_per_page: blogResponse.data.limit,
+      }
+    : undefined;
 
   const handleTabChange = (tab: "all" | "published" | "drafts") => {
     setActiveTab(tab);
@@ -398,7 +408,7 @@ export default function BlogManagementPage() {
 
           {!loading && (
             <div>
-              {filteredPosts.map((post, idx) => (
+              {filteredPosts.slice(0, 7).map((post, idx) => (
                 <React.Fragment key={post.id}>
                   <BlogManagementCard
                     post={post as BlogPost & { status?: "published" | "draft" }}
@@ -406,11 +416,21 @@ export default function BlogManagementPage() {
                     onDelete={handleDeleteClick}
                     deleteLoading={deleteLoading}
                   />
-                  {idx < filteredPosts.length - 1 && (
+                  {idx < Math.min(filteredPosts.length, 7) - 1 && (
                     <div className="border-t border-gray-200 my-6" />
                   )}
                 </React.Fragment>
               ))}
+
+              {pagination && pagination.total_pages > 1 && (
+                <div className="mt-12">
+                  <Pagination
+                    currentPage={pagination.current_page}
+                    totalPages={pagination.total_pages}
+                    onPageChange={(page) => updateFilter("page", page)}
+                  />
+                </div>
+              )}
             </div>
           )}
 
@@ -451,7 +471,6 @@ export default function BlogManagementPage() {
           )}
         </div>
       </section>
-
 
       <Link
         href="/blog/create"
