@@ -20,21 +20,47 @@ const OnboardingForm = () => {
     const router = useRouter();
     const [step, setStep] = useState(1);
     const totalSteps = 3;
-    const response: OnboardingResponse = {
+    const [response, setResponse] = useState<OnboardingResponse>({
         website: "",
         companyName: "",
         companyDescription: "",
         competitors: [],
-    };
-    const [competitors, setCompetitors] = useState<string[]>([
-        ...response.competitors,
-    ]);
+    });
+    const [competitors, setCompetitors] = useState<string[]>(() => {
+        return response.competitors.length > 0 ? [...response.competitors] : [""];
+    });
     const [isComplete, setIsComplete] = useState(false);
 
+    const isStepValid = () => {
+        switch (step) {
+            case 1:
+                return response.website.trim() !== "";
+            case 2:
+                return response.companyName.trim() !== "" && response.companyDescription.trim() !== "";
+            case 3:
+                return competitors.some(competitor => competitor.trim() !== "");
+            default:
+                return false;
+        }
+    };
+
     const handleNext = () => {
+        if (!isStepValid()) return;
+
         if (step < totalSteps) {
+            // Update response with competitors before moving to next step
+            if (step === 3) {
+                setResponse(prev => ({
+                    ...prev,
+                    competitors: competitors.filter(c => c.trim() !== "")
+                }));
+            }
             setStep(step + 1);
         } else {
+            setResponse(prev => ({
+                ...prev,
+                competitors: competitors.filter(c => c.trim() !== "")
+            }));
             setIsComplete(true);
         }
     };
@@ -98,7 +124,8 @@ const OnboardingForm = () => {
                             <Input
                                 type="url"
                                 id="website"
-                                defaultValue={response.website || ""}
+                                value={response.website}
+                                onChange={(e) => setResponse(prev => ({ ...prev, website: e.target.value }))}
                                 placeholder="https://yourcompany.com"
                                 className="h-12 bg-neutral-50 border-neutral-200 focus:border-primary-blue-500 focus:ring-primary-blue-500 placeholder-[#8F90A1]"
                             />
@@ -118,7 +145,8 @@ const OnboardingForm = () => {
                             <Input
                                 type="text"
                                 id="company-name"
-                                defaultValue={response.companyName || ""}
+                                value={response.companyName}
+                                onChange={(e) => setResponse(prev => ({ ...prev, companyName: e.target.value }))}
                                 placeholder="Enter your company name"
                                 className="h-12 bg-neutral-50 border-neutral-200 focus:border-primary-blue-500 focus:ring-primary-blue-500"
                             />
@@ -133,9 +161,8 @@ const OnboardingForm = () => {
                             <div className="relative">
                                 <Input
                                     id="company-description"
-                                    defaultValue={
-                                        response.companyDescription || ""
-                                    }
+                                    value={response.companyDescription}
+                                    onChange={(e) => setResponse(prev => ({ ...prev, companyDescription: e.target.value }))}
                                     type="text"
                                     placeholder="Brief description of your company and what you do..."
                                     className="w-full min-h-[120px] px-3 py-3 bg-neutral-50 border border-neutral-200 rounded-lg placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-blue-500 focus:border-primary-blue-500 resize-none"
@@ -266,13 +293,17 @@ const OnboardingForm = () => {
                         </AnimatePresence>
                         <motion.div
                             className="flex-1 md:w-auto w-full"
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
+                            whileHover={isStepValid() ? { scale: 1.02 } : {}}
+                            whileTap={isStepValid() ? { scale: 0.98 } : {}}
                         >
                             <Button
                                 type="button"
                                 onClick={handleNext}
-                                className="h-12 w-full bg-neutral-900 hover:bg-neutral-800 text-white font-medium rounded-lg flex items-center justify-center gap-2 hover:cursor-pointer"
+                                disabled={!isStepValid()}
+                                className={`h-12 w-full font-medium rounded-lg flex items-center justify-center gap-2 ${isStepValid()
+                                    ? "bg-neutral-900 hover:bg-neutral-800 text-white hover:cursor-pointer"
+                                    : "bg-neutral-300 text-neutral-500 cursor-not-allowed"
+                                    }`}
                             >
                                 Next →
                             </Button>
@@ -287,11 +318,10 @@ const OnboardingForm = () => {
                             {Array.from({ length: totalSteps }, (_, i) => (
                                 <motion.div
                                     key={i}
-                                    className={`h-2 w-full rounded-full ${
-                                        i + 1 <= step
-                                            ? "bg-gradient-to-r from-[#2353DF]  via-[#36AAF3] to-[#3061E5]"
-                                            : "bg-gray-200"
-                                    }`}
+                                    className={`h-2 w-full rounded-full ${i + 1 <= step
+                                        ? "bg-gradient-to-r from-[#2353DF]  via-[#36AAF3] to-[#3061E5]"
+                                        : "bg-gray-200"
+                                        }`}
                                     initial={{ scale: 0.95, opacity: 0.7 }}
                                     animate={{
                                         scale: i + 1 <= step ? 1 : 0.95,
