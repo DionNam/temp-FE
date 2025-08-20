@@ -10,6 +10,7 @@ import PricingSection from '../components/landing/PricingSection';
 import FAQSection from '../components/landing/FAQSection';
 
 interface DemoFormData {
+  email: string;
   name: string;
   employees: string;
   timeline: string;
@@ -53,6 +54,7 @@ const typography = {
 function useSimpleNavbar() {
   const [showDemoDialog, setShowDemoDialog] = useState(false);
   const [demoForm, setDemoForm] = useState<DemoFormData>({
+    email: '',
     name: '',
     employees: '',
     timeline: '',
@@ -111,14 +113,14 @@ function DemoDialog({ isOpen, onClose, formData, setFormData }: DemoDialogProps)
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4" role="dialog" aria-modal="true" aria-labelledby="demo-dialog-title">
+    <div className="fixed inset-0 z-50 flex items-start justify-center p-2 sm:p-4 " role="dialog" aria-modal="true" aria-labelledby="demo-dialog-title">
       <div 
         className="absolute inset-0 bg-black/50"
         onClick={onClose}
         aria-label="Close dialog"
       />
       
-      <div className="relative bg-white rounded-xl md:rounded-2xl lg:rounded-3xl p-4 sm:p-6 md:p-8 w-full max-w-sm sm:max-w-md md:max-w-4xl shadow-2xl border border-gray-100 max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-white rounded-xl md:rounded-2xl lg:rounded-3xl p-4 sm:p-6 md:p-8 w-full max-w-sm sm:max-w-md md:max-w-4xl shadow-2xl border border-gray-100 max-h-[105vh] sm:max-h-[100vh] overflow-y-auto">
         <div className="mb-4 sm:mb-6">
           <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-blue-50 rounded-lg md:rounded-xl flex items-center justify-center mb-3 sm:mb-4">
             <Image 
@@ -147,6 +149,24 @@ function DemoDialog({ isOpen, onClose, formData, setFormData }: DemoDialogProps)
           onSubmit={handleSubmit}
           className="space-y-3 sm:space-y-4 md:space-y-5"
         >
+          <div>
+            <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={formData.email}
+              onChange={(e) => handleInputChange("email", e.target.value)}
+              placeholder="Enter Your Email"
+              className="w-full px-3 py-2.5 sm:px-3 sm:py-3 md:px-4 md:py-4 
+                        bg-gray-50 border-0 rounded-lg text-gray-700 text-xs sm:text-sm 
+                        outline-none focus:bg-white focus:shadow-lg 
+                        focus:ring-2 focus:ring-blue-500/20 placeholder-gray-400"
+              required
+            />
+          </div>
+
           <div>
             <label htmlFor="name" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
               Name
