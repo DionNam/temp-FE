@@ -111,7 +111,9 @@ function DemoDialog({ isOpen, onClose, formData, setFormData }: DemoDialogProps)
         console.log('Demo request submitted successfully');
         setIsSubmitted(true);
         
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if (typeof window !== 'undefined' && (window as any).gtag) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (window as any).gtag('event', 'demo_request_submitted', {
             email: formData.email,
             employees: formData.employees,
@@ -175,11 +177,11 @@ function DemoDialog({ isOpen, onClose, formData, setFormData }: DemoDialogProps)
             </div>
 
             <span className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 via-blue-400 to-blue-600 bg-clip-text text-transparent text-left">
-              We're on it!
+              We&apos;re on it!
             </span>
 
             <p className="mt-1 sm:mt-2 md:mt-3 text-gray-500 text-base sm:text-lg md:text-xl leading-relaxed mb-1 sm:mb-2 md:mb-3 text-left max-w-3xl">
-              Your message is on its way. We'll review your inquiry and get back to you with a solution as soon as possible.
+              Your message is on its way. We&apos;ll review your inquiry and get back to you with a solution as soon as possible.
             </p>
 
             <div className="absolute bottom-2 sm:bottom-4 md:bottom-6 right-0">
