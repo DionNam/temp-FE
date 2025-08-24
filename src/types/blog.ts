@@ -45,6 +45,7 @@ export interface BlogPost {
   slug: string;
   author_id?: string;
   author_name: string;
+  avatar?: string;
   category: string;
   featured_image?: string;
   meta_description?: string;
@@ -128,6 +129,7 @@ export interface CreateBlogRequest {
   category: string;
   author_id?: string;
   author_name: string;
+  avatar?: string;
   featured_image?: string;
   meta_description?: string;
   published?: boolean;
