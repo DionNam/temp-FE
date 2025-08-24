@@ -26,6 +26,7 @@ export function BlogContent({ post }: BlogContentProps) {
   }, [post.author, post.author_name, post.author_id]);
 
   const imageUrl = post.featured_image || post.image;
+  const authorAvatar = post.avatar || "";
   
   const publishDate = post.published_at || post.publishedAt || post.date;
   const formattedDate = new Date(publishDate || '').toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -55,10 +56,10 @@ export function BlogContent({ post }: BlogContentProps) {
           </span>
           
           <div className="flex items-center gap-2">
-            {author.avatar && (
+            {authorAvatar && (
               <div className="relative w-6 h-6">
                 <Image
-                  src={author.avatar}
+                  src={authorAvatar}
                   alt={`Avatar of ${author.name}`}
                   fill
                   className="object-cover rounded-full"

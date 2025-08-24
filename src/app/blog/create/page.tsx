@@ -28,6 +28,7 @@ function CreateBlogContent() {
     content: "",
     category: "",
     author_name: "",
+    avatar: "",
     featured_image: "",
     meta_description: "",
     published: false,
@@ -66,8 +67,8 @@ function CreateBlogContent() {
         content: existingBlog.content,
         category: existingBlog.category,
         author_name: existingBlog.author_name,
+        avatar: existingBlog.avatar || "",
         featured_image: existingBlog.featured_image || "",
-
         published: existingBlog.published,
         tags: [],
       });
@@ -86,7 +87,9 @@ function CreateBlogContent() {
   };
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const authorAvatarInputRef = React.useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [isAuthorAvatarDragOver, setIsAuthorAvatarDragOver] = useState(false);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -136,6 +139,62 @@ function CreateBlogContent() {
 
   const handleUploadClick = () => {
     fileInputRef.current?.click();
+  };
+
+  const handleAuthorAvatarUpload = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith("image/")) {
+        alert("Please select an image file");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        handleInputChange("avatar", result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAuthorAvatarDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsAuthorAvatarDragOver(true);
+  };
+
+  const handleAuthorAvatarDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsAuthorAvatarDragOver(false);
+  };
+
+  const handleAuthorAvatarDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsAuthorAvatarDragOver(false);
+
+    const files = Array.from(e.dataTransfer.files);
+    const imageFile = files.find((file) => file.type.startsWith("image/"));
+
+    if (imageFile) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        handleInputChange("avatar", result);
+      };
+      reader.readAsDataURL(imageFile);
+    } else {
+      alert("Please drop an image file");
+    }
+  };
+
+  const handleAuthorAvatarUploadClick = () => {
+    authorAvatarInputRef.current?.click();
+  };
+
+  const removeAuthorAvatar = () => {
+    handleInputChange("avatar", "");
   };
 
   const removeFeaturedImage = () => {
@@ -362,37 +421,95 @@ function CreateBlogContent() {
               {authorsLoading ? (
                 <div className="text-sm text-gray-500">Loading authors...</div>
               ) : (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Author Name *
-                  </label>
-                  {authors && authors.length > 0 ? (
-                    <select
-                      value={formData.author_name}
-                      onChange={(e) =>
-                        handleInputChange("author_name", e.target.value)
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-blue-500 focus:border-transparent"
-                    >
-                      <option value="">Select an author...</option>
-                      {Array.isArray(authors) &&
-                        authors.map((author: { id: string; name: string }) => (
-                          <option key={author.id} value={author.name}>
-                            {author.name}
-                          </option>
-                        ))}
-                    </select>
-                  ) : (
-                    <input
-                      type="text"
-                      value={formData.author_name}
-                      onChange={(e) =>
-                        handleInputChange("author_name", e.target.value)
-                      }
-                      placeholder="Enter author name..."
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-blue-500 focus:border-transparent"
-                    />
-                  )}
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Author Name *
+                    </label>
+                    {authors && authors.length > 0 ? (
+                      <select
+                        value={formData.author_name}
+                        onChange={(e) =>
+                          handleInputChange("author_name", e.target.value)
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-blue-500 focus:border-transparent"
+                      >
+                        <option value="">Select an author...</option>
+                        {Array.isArray(authors) &&
+                          authors.map(
+                            (author: { id: string; name: string }) => (
+                              <option key={author.id} value={author.name}>
+                                {author.name}
+                              </option>
+                            )
+                          )}
+                      </select>
+                    ) : (
+                      <input
+                        type="text"
+                        value={formData.author_name}
+                        onChange={(e) =>
+                          handleInputChange("author_name", e.target.value)
+                        }
+                        placeholder="Enter author name..."
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-blue-500 focus:border-transparent"
+                      />
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Author Profile Picture
+                    </label>
+                    <div className="space-y-3">
+                      {formData.avatar ? (
+                        <div className="relative">
+                          <Image
+                            src={formData.avatar}
+                            alt="Author avatar preview"
+                            width={80}
+                            height={80}
+                            className="w-20 h-20 object-cover rounded-full border border-gray-300"
+                          />
+                          <button
+                            type="button"
+                            onClick={removeAuthorAvatar}
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ) : (
+                        <div
+                          className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors ${
+                            isAuthorAvatarDragOver
+                              ? "border-blue-400 bg-blue-50"
+                              : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
+                          }`}
+                          onDragOver={handleAuthorAvatarDragOver}
+                          onDragLeave={handleAuthorAvatarDragLeave}
+                          onDrop={handleAuthorAvatarDrop}
+                          onClick={handleAuthorAvatarUploadClick}
+                        >
+                          <Upload className="w-6 h-6 text-gray-400 mx-auto mb-2" />
+                          <p className="text-sm text-gray-500 mb-1">
+                            No profile picture selected
+                          </p>
+                          <p className="text-xs text-gray-400">
+                            Click to upload or drag and drop
+                          </p>
+                        </div>
+                      )}
+
+                      <input
+                        ref={authorAvatarInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleAuthorAvatarUpload}
+                        className="hidden"
+                      />
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
@@ -523,7 +640,17 @@ function CreateBlogContent() {
                   )}
 
                   <div className="flex items-center">
-                    <div className="w-12 h-12 bg-gray-200 rounded-full mr-4"></div>
+                    {formData.avatar ? (
+                      <Image
+                        src={formData.avatar}
+                        alt="Author avatar"
+                        width={48}
+                        height={48}
+                        className="w-12 h-12 rounded-full mr-4 object-cover"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 bg-gray-200 rounded-full mr-4"></div>
+                    )}
                     <div>
                       <p className="font-medium text-gray-900">
                         {formData.author_name || "Author Name"}
