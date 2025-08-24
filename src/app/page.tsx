@@ -8,14 +8,7 @@ import QuoteSection from '../components/landing/QuoteSection';
 import FeaturesSection from '../components/landing/FeaturesSection';
 import PricingSection from '../components/landing/PricingSection';
 import FAQSection from '../components/landing/FAQSection';
-
-interface DemoFormData {
-  email: string;
-  name: string;
-  employees: string;
-  timeline: string;
-  agency: string;
-}
+import { sendDemoEmail, openGmail, DemoFormData } from '../services/emailService';
 
 interface DemoDialogProps {
   isOpen: boolean;
@@ -84,6 +77,10 @@ function useSimpleNavbar() {
 }
 
 function DemoDialog({ isOpen, onClose, formData, setFormData }: DemoDialogProps) {
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState<string>('');
+
   const employeeOptions = [
     "1-10 employees",
     "11-50 employees",
@@ -100,184 +97,309 @@ function DemoDialog({ isOpen, onClose, formData, setFormData }: DemoDialogProps)
     "More than 1 year"
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    onClose();
+    setIsLoading(true);
+    setSubmitError('');
+
+    try {
+      console.log('Submitting demo request:', formData);
+      
+      const success = await sendDemoEmail(formData);
+      
+      if (success) {
+        console.log('Demo request submitted successfully');
+        setIsSubmitted(true);
+        
+        if (typeof window !== 'undefined' && (window as any).gtag) {
+          (window as any).gtag('event', 'demo_request_submitted', {
+            email: formData.email,
+            employees: formData.employees,
+            agency: formData.agency,
+          });
+        }
+        
+      } else {
+        setSubmitError('Failed to send demo request. Please try again.');
+      }
+    } catch (error) {
+      console.error('Demo submission error:', error);
+      setSubmitError('An error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (field: keyof DemoFormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const handleGoToEmail = () => {
+    openGmail();
+    onClose();
+  };
+
+  const handleCloseSuccess = () => {
+    setIsSubmitted(false);
+    onClose();
+    setFormData({
+      email: '',
+      name: '',
+      employees: '',
+      timeline: '',
+      agency: ''
+    });
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center p-2 sm:p-4 " role="dialog" aria-modal="true" aria-labelledby="demo-dialog-title">
+    <div className="fixed inset-0 z-50 flex items-start justify-center p-2 sm:p-4" role="dialog" aria-modal="true" aria-labelledby="demo-dialog-title">
       <div 
         className="absolute inset-0 bg-black/50"
-        onClick={onClose}
+        onClick={handleCloseSuccess}
         aria-label="Close dialog"
       />
       
       <div className="relative bg-white rounded-xl md:rounded-2xl lg:rounded-3xl p-4 sm:p-6 md:p-8 w-full max-w-sm sm:max-w-md md:max-w-4xl shadow-2xl border border-gray-100 max-h-[105vh] sm:max-h-[100vh] overflow-y-auto">
-        <div className="mb-4 sm:mb-6">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-blue-50 rounded-lg md:rounded-xl flex items-center justify-center mb-3 sm:mb-4">
-            <Image 
-              src="/call-calling.svg" 
-              alt="전화 아이콘" 
-              width={24} 
-              height={24} 
-              className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6"
-            />
-          </div>
-          
-          <h2 id="demo-dialog-title" className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 leading-tight">
-            Intro Call with{' '}
-            <span className="bg-gradient-to-r from-blue-600 via-blue-400 to-blue-600 bg-clip-text text-transparent">
-              ShowOnAI!
+        {isSubmitted ? (
+          <div className="relative min-h-[280px] sm:min-h-[320px] md:min-h-[360px]">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-blue-50 rounded-xl md:rounded-2xl flex items-center justify-center mb-4 sm:mb-6">
+              <Image 
+                src="/sms-tracking.svg" 
+                alt="SMS Tracking Icon" 
+                width={32} 
+                height={32} 
+                className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10"
+              />
+            </div>
+
+            <span className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 via-blue-400 to-blue-600 bg-clip-text text-transparent text-left">
+              We're on it!
             </span>
-          </h2>
 
-          <p className="text-gray-500 text-xs sm:text-sm md:text-base leading-relaxed">
-            For enterprises plans or consultation. Discovery call with a member
-            of the team.
-          </p>
-        </div>
+            <p className="mt-1 sm:mt-2 md:mt-3 text-gray-500 text-base sm:text-lg md:text-xl leading-relaxed mb-1 sm:mb-2 md:mb-3 text-left max-w-3xl">
+              Your message is on its way. We'll review your inquiry and get back to you with a solution as soon as possible.
+            </p>
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-3 sm:space-y-4 md:space-y-5"
-        >
-          <div>
-            <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => handleInputChange("email", e.target.value)}
-              placeholder="Enter Your Email"
-              className="w-full px-3 py-2.5 sm:px-3 sm:py-3 md:px-4 md:py-4 
-                        bg-gray-50 border-0 rounded-lg text-gray-700 text-xs sm:text-sm 
-                        outline-none focus:bg-white focus:shadow-lg 
-                        focus:ring-2 focus:ring-blue-500/20 placeholder-gray-400"
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="name" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
-              Name
-            </label>
-            <input
-              id="name"
-              type="text"
-              value={formData.name}
-              onChange={(e) => handleInputChange("name", e.target.value)}
-              placeholder="Enter Your Name"
-              className="w-full px-3 py-2.5 sm:px-3 sm:py-3 md:px-4 md:py-4 bg-gray-50 border-0 rounded-lg text-gray-700 text-xs sm:text-sm outline-none focus:bg-white focus:shadow-lg focus:ring-2 focus:ring-blue-500/20 placeholder-gray-400"
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="employees" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
-              Number of Employees
-            </label>
-            <div className="relative">
-              <select
-                id="employees"
-                value={formData.employees}
-                onChange={(e) => handleInputChange('employees', e.target.value)}
-                className="w-full px-3 py-2.5 sm:px-3 sm:py-3 md:px-4 md:py-4 bg-gray-50 border-0 rounded-lg text-gray-700 text-xs sm:text-sm outline-none appearance-none focus:bg-white focus:shadow-lg focus:ring-2 focus:ring-blue-500/20 cursor-pointer hover:bg-gray-100"
-                required
+            <div className="absolute bottom-2 sm:bottom-4 md:bottom-6 right-0">
+              <button
+                onClick={handleGoToEmail}
+                className="w-full sm:w-full md:w-auto bg-gray-900 text-white py-2.5 sm:py-3 px-4 sm:px-6 md:px-8 rounded-lg font-medium hover:bg-gray-800 flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm shadow-lg"
               >
-                <option value="" disabled>Select Number of Employees Category</option>
-                {employeeOptions.map((option, index) => (
-                  <option key={index} value={option}>{option}</option>
-                ))}
-              </select>
-              <div className="absolute right-2 sm:right-3 md:right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                <svg className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                Go to Email
+                <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
-              </div>
+              </button>
             </div>
           </div>
-
-          <div>
-            <label htmlFor="timeline" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
-              Timeline for Investing in GEO Strategy
-            </label>
-            <div className="relative">
-              <select
-                id="timeline"
-                value={formData.timeline}
-                onChange={(e) => handleInputChange('timeline', e.target.value)}
-                className="w-full px-3 py-2.5 sm:px-3 sm:py-3 md:px-4 md:py-4 bg-gray-50 border-0 rounded-lg text-gray-700 text-xs sm:text-sm outline-none appearance-none focus:bg-white focus:shadow-lg focus:ring-2 focus:ring-blue-500/20 cursor-pointer hover:bg-gray-100"
-                required
-              >
-                <option value="" disabled>Select Timeline for Investing in GEO Strategy</option>
-                {timelineOptions.map((option, index) => (
-                  <option key={index} value={option}>{option}</option>
-                ))}
-              </select>
-              <div className="absolute right-2 sm:right-3 md:right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                <svg className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <fieldset>
-            <legend className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
-              Are You an Agency?
-            </legend>
-            
-            <div className="flex items-center gap-4">
-              <label className="flex items-center cursor-pointer">
-                <input
-                  type="radio"
-                  name="agency"
-                  value="yes"
-                  checked={formData.agency === 'yes'}
-                  onChange={(e) => handleInputChange('agency', e.target.value)}
-                  className="w-4 h-4 border-gray-300"
-                  style={{ accentColor: '#2353DF' }}
+        ) : (
+          <>
+            <div className="mb-4 sm:mb-6">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-blue-50 rounded-lg md:rounded-xl flex items-center justify-center mb-3 sm:mb-4">
+                <Image 
+                  src="/call-calling.svg" 
+                  alt="전화 아이콘" 
+                  width={24} 
+                  height={24} 
+                  className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6"
                 />
-                <span className="ml-2 text-xs sm:text-sm text-gray-700 font-medium">Yes</span>
-              </label>
+              </div>
               
-              <label className="flex items-center cursor-pointer">
-                <input
-                  type="radio"
-                  name="agency"
-                  value="no"
-                  checked={formData.agency === 'no'}
-                  onChange={(e) => handleInputChange('agency', e.target.value)}
-                  className="w-4 h-4 border-gray-300"
-                  style={{ accentColor: '#2353DF' }}
-                />
-                <span className="ml-2 text-xs sm:text-sm text-gray-700 font-medium">No</span>
-              </label>
+              <h2 id="demo-dialog-title" className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 leading-tight">
+                Intro Call with{' '}
+                <span className="bg-gradient-to-r from-blue-600 via-blue-400 to-blue-600 bg-clip-text text-transparent">
+                  ShowOnAI!
+                </span>
+              </h2>
+              
+              <p className="text-gray-500 text-xs sm:text-sm md:text-base leading-relaxed">
+                For enterprises plans or consultation. Discovery call with a member of the team.
+              </p>
             </div>
-          </fieldset>
 
-          <div className="flex justify-center md:justify-end pt-2 sm:pt-3 md:pt-4">
-            <button
-              type="submit"
-              className="w-full sm:w-full md:w-auto bg-gray-900 text-white py-2.5 sm:py-3 px-4 sm:px-6 md:px-8 rounded-lg font-medium hover:bg-gray-800 flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm shadow-lg"
-            >
-              Continue
-              <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
-        </form>
+            {submitError && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-600 text-sm">{submitError}</p>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4 md:space-y-5">
+              <div>
+                <label htmlFor="name" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                  Name
+                </label>
+                <input
+                  id="name"
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => handleInputChange('name', e.target.value)}
+                  placeholder="Enter Your Name"
+                  className="w-full px-3 py-2.5 sm:px-3 sm:py-3 md:px-4 md:py-4 bg-gray-50 border-0 rounded-lg text-gray-700 text-xs sm:text-sm outline-none focus:bg-white focus:shadow-lg focus:ring-2 focus:ring-blue-500/20 placeholder-gray-400"
+                  required
+                  disabled={isLoading}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                  Email
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => handleInputChange("email", e.target.value)}
+                  placeholder="Enter Your Email"
+                  className="w-full px-3 py-2.5 sm:px-3 sm:py-3 md:px-4 md:py-4 
+                            bg-gray-50 border-0 rounded-lg text-gray-700 text-xs sm:text-sm 
+                            outline-none focus:bg-white focus:shadow-lg 
+                            focus:ring-2 focus:ring-blue-500/20 placeholder-gray-400"
+                  required
+                  disabled={isLoading}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="employees" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                  Number of Employees
+                </label>
+                <div className="relative">
+                  <select
+                    id="employees"
+                    value={formData.employees}
+                    onChange={(e) => handleInputChange('employees', e.target.value)}
+                    className="w-full px-3 py-2.5 sm:px-3 sm:py-3 md:px-4 md:py-4 bg-gray-50 border-0 rounded-lg text-gray-700 text-xs sm:text-sm outline-none appearance-none focus:bg-white focus:shadow-lg focus:ring-2 focus:ring-blue-500/20 cursor-pointer hover:bg-gray-100"
+                    required
+                    disabled={isLoading}
+                  >
+                    <option value="" disabled>Select Number of Employees Category</option>
+                    {employeeOptions.map((option, index) => (
+                      <option key={index} value={option}>{option}</option>
+                    ))}
+                  </select>
+                  <div className="absolute right-2 sm:right-3 md:right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                    <svg className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="timeline" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                  Timeline for Investing in GEO Strategy
+                </label>
+                <div className="relative">
+                  <select
+                    id="timeline"
+                    value={formData.timeline}
+                    onChange={(e) => handleInputChange('timeline', e.target.value)}
+                    className="w-full px-3 py-2.5 sm:px-3 sm:py-3 md:px-4 md:py-4 bg-gray-50 border-0 rounded-lg text-gray-700 text-xs sm:text-sm outline-none appearance-none focus:bg-white focus:shadow-lg focus:ring-2 focus:ring-blue-500/20 cursor-pointer hover:bg-gray-100"
+                    required
+                    disabled={isLoading}
+                  >
+                    <option value="" disabled>Select Timeline for Investing in GEO Strategy</option>
+                    {timelineOptions.map((option, index) => (
+                      <option key={index} value={option}>{option}</option>
+                    ))}
+                  </select>
+                  <div className="absolute right-2 sm:right-3 md:right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                    <svg className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between w-full">
+                  <span className="text-xs sm:text-sm font-medium text-gray-700">
+                    Are You an Agency?
+                  </span>
+
+                  <div className="flex items-center gap-4">
+                    <label className="flex items-center cursor-pointer">
+                      <input
+                        type="radio"
+                        name="agency"
+                        value="yes"
+                        checked={formData.agency === 'yes'}
+                        onChange={(e) => handleInputChange('agency', e.target.value)}
+                        className="w-4 h-4 border-gray-300"
+                        style={{ accentColor: '#2353DF' }}
+                        disabled={isLoading}
+                      />
+                      <span className="ml-2 text-xs sm:text-sm text-gray-700 font-medium">Yes</span>
+                    </label>
+
+                    <label className="flex items-center cursor-pointer">
+                      <input
+                        type="radio"
+                        name="agency"
+                        value="no"
+                        checked={formData.agency === 'no'}
+                        onChange={(e) => handleInputChange('agency', e.target.value)}
+                        className="w-4 h-4 border-gray-300"
+                        style={{ accentColor: '#2353DF' }}
+                        disabled={isLoading}
+                      />
+                      <span className="ml-2 text-xs sm:text-sm text-gray-700 font-medium">No</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              
+              {formData.agency === 'yes' && (
+                <>
+                  <div>
+                    <label htmlFor="agencyName" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                      Agency Name
+                    </label>
+                    <input
+                      id="agencyName"
+                      type="text"
+                      value={formData.agencyName || ''}
+                      onChange={(e) => handleInputChange('agencyName', e.target.value)}
+                      placeholder="Enter Agency Name"
+                      className="w-full px-3 py-2.5 sm:px-3 sm:py-3 md:px-4 md:py-4 
+                                bg-gray-50 border-0 rounded-lg text-gray-700 text-xs sm:text-sm 
+                                outline-none focus:bg-white focus:shadow-lg 
+                                focus:ring-2 focus:ring-blue-500/20 placeholder-gray-400"
+                      disabled={isLoading}
+                    />
+                  </div>
+                </>
+              )}
+
+              <div className="flex justify-center md:justify-end pt-2 sm:pt-3 md:pt-4">
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full sm:w-full md:w-auto bg-gray-900 text-white py-2.5 sm:py-3 px-4 sm:px-6 md:px-8 rounded-lg font-medium hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm shadow-lg"
+                >
+                  {isLoading ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      Submit
+                      <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </>
+        )}
       </div>
     </div>
   );
