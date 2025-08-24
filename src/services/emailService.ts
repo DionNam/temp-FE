@@ -13,9 +13,9 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:9000/api/v1
 
 export const sendDemoEmail = async (formData: DemoFormData): Promise<boolean> => {
   try {
-    console.log('Sending demo request to:', `${API_URL}/demo-request`);
-    
-    const response = await fetch(`${API_URL}/demo-request`, {
+    console.log('Sending demo request to:', `${API_URL}/demo-requests`);
+
+    const response = await fetch(`${API_URL}/demo-requests`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -59,7 +59,7 @@ export const useDemoForm = () => {
 
     try {
       const success = await sendDemoEmail(formData);
-      
+
       if (success) {
         if (typeof window !== 'undefined' && (window as any).gtag) {
           (window as any).gtag('event', 'demo_request_submitted', {
