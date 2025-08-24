@@ -15,7 +15,7 @@ import {
   AuthorBlogsResponse
 } from '@/types/blog';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
+const API_BASE_URL = '/api/v1';
 
 async function apiRequest<T>(
   endpoint: string, 
