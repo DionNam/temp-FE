@@ -61,7 +61,9 @@ export const useDemoForm = () => {
       const success = await sendDemoEmail(formData);
 
       if (success) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if (typeof window !== 'undefined' && (window as any).gtag) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (window as any).gtag('event', 'demo_request_submitted', {
             email: formData.email,
             employees: formData.employees,

@@ -56,7 +56,7 @@ export function useBlog(id: string | null) {
       setLoading(true);
       setError(null);
       const response = await blogApi.getBlog(id);
-      setData(response.data);
+      setData(response.data || response);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch blog');
     } finally {
@@ -116,16 +116,18 @@ export function useCreateBlog() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const createBlog = useCallback(async (data: CreateBlogRequest): Promise<BlogPost | null> => {
+  const createBlog = useCallback(async (data: CreateBlogRequest) => {
     try {
       setLoading(true);
       setError(null);
       const response = await blogApi.createBlog(data);
+      // Invalidate cache via API route
+      await fetch('/api/cache/invalidate-all-blogs', { method: 'POST' });
       return response;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create blog';
       setError(errorMessage);
-      throw new Error(errorMessage);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -142,19 +144,22 @@ export function useUpdateBlog() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const updateBlog = useCallback(async (
-    id: string, 
-    data: Partial<UpdateBlogRequest>
-  ): Promise<BlogPost | null> => {
+  const updateBlog = useCallback(async (id: string, data: Partial<UpdateBlogRequest>) => {
     try {
       setLoading(true);
       setError(null);
       const response = await blogApi.updateBlog(id, data);
-      return response.data;
+      // Invalidate cache via API route
+      await fetch('/api/cache/invalidate-blog', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ blogId: id }),
+      });
+      return response;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to update blog';
       setError(errorMessage);
-      throw new Error(errorMessage);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -171,16 +176,18 @@ export function useDeleteBlog() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const deleteBlog = useCallback(async (id: string): Promise<void> => {
+  const deleteBlog = useCallback(async (id: string) => {
     try {
       setLoading(true);
       setError(null);
       const response = await blogApi.deleteBlog(id);
-      console.log('Delete response:', response.message);
+      // Invalidate cache via API route
+      await fetch('/api/cache/invalidate-all-blogs', { method: 'POST' });
+      return response;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to delete blog';
       setError(errorMessage);
-      throw new Error(errorMessage);
+      throw err;
     } finally {
       setLoading(false);
     }
