@@ -58,6 +58,7 @@ function BlogManagementCard({
   const status = post.status || (post.published ? "published" : "draft");
   const featuredImage =
     post.featured_image || post.image || "/blog-placeholder.png";
+  const avatar = post.avatar || "/avatar-placeholder.png";
 
   const slug = `${generateSlug(post?.title)}-${post?.id || "unknown"}`;
 
@@ -85,7 +86,7 @@ function BlogManagementCard({
             </div>
             <div className="flex items-center gap-2">
               <Image
-                src="/avatar-placeholder.png"
+                src={avatar}
                 alt={`${authorName} avatar`}
                 width={32}
                 height={32}

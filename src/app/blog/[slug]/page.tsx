@@ -22,6 +22,7 @@ function BlogPostContent() {
   const blogId = extractIdFromSlug(slug);
   const { data: post, isLoading, error } = useBlog(blogId);
   const { data: relatedPosts } = useRelatedBlogs(post?.data?.id || '');
+  const isRelatedExist = !!(relatedPosts && Array.isArray(relatedPosts.data) && relatedPosts.data.length > 0);
 
   if (!blogId && !isLoading) {
     return (
@@ -113,7 +114,7 @@ function BlogPostContent() {
 
           <BlogContent post={post.data} />
 
-          {relatedPosts && relatedPosts.data.length > 0 && (
+          {isRelatedExist && (
             <RelatedArticles posts={relatedPosts.data} currentPostId={post.data.id || ''} />
           )}
         </div>

@@ -223,25 +223,21 @@ export function BlogClientWrapper({
   
   const isLoading = blogsLoading || categoriesLoading;
   
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading blogs...</p>
-        </div>
-      </div>
-    );
-  }
-  
   if (blogsError) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Error loading blogs</h2>
-          <p className="text-gray-600">Please try again later.</p>
+      <>
+        <Navbar
+          onLoginClick={handleLoginClick}
+          onDashboardClick={handleDashboardClick}
+        />
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">Error loading blogs</h2>
+            <p className="text-gray-600">Please try again later.</p>
+          </div>
         </div>
-      </div>
+        <Footer />
+      </>
     );
   }
 
@@ -282,7 +278,16 @@ export function BlogClientWrapper({
 
       <section className="relative px-2 sm:px-4 md:px-6 lg:px-8 pb-10 sm:pb-16 md:pb-20 lg:pb-24">
         <div className="max-w-7xl mx-auto">
-          {regularPosts.length === 0 && (
+          {isLoading && (
+            <div className="flex items-center justify-center py-16">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-blue-500 mx-auto mb-4"></div>
+                <p className="text-gray-600">Loading blogs...</p>
+              </div>
+            </div>
+          )}
+          
+          {!isLoading && posts.length === 0 && (
             <div className="flex items-center justify-center py-16">
               <div className="text-center">
                 <div className="text-gray-400 mb-4">
@@ -312,13 +317,13 @@ export function BlogClientWrapper({
             </div>
           )}
 
-          {featuredPost && (
+          {!isLoading && featuredPost && (
             <div className="mb-8 sm:mb-12">
               <BlogCard post={featuredPost} isFeatured={true} />
             </div>
           )}
 
-          {regularPosts.length > 0 && (
+          {!isLoading && regularPosts.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
               {regularPosts.slice(0, 6).map((post) => (
                 <BlogCard key={post.id} post={post} />
