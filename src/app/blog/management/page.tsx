@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { Footer } from "@/components/layout/Footer";
 import { BlogPost } from "@/types/blog";
-import { useBlogs, useDeleteBlog } from "@/hooks/useBlog";
+import { useBlogs, useDeleteBlog } from "@/hooks/useBlogQueries";
 import { useBlogFilters } from "@/hooks/useBlogFilters";
 import { generateSlug } from "@/lib/utils";
 import { ConfirmationModal } from "@/components/ui/modal";
@@ -239,14 +239,14 @@ export default function BlogManagementPage() {
     limit: 7,
   });
 
-  const { data: blogResponse, loading, error, refetch } = useBlogs(filters);
-  const { deleteBlog, loading: deleteLoading } = useDeleteBlog();
+  const { data: blogResponse, isLoading, error, refetch } = useBlogs(filters);
+  const { mutate: deleteBlog, isPending: deleteLoading } = useDeleteBlog();
 
   const posts = Array.isArray(blogResponse?.data?.blogs)
     ? blogResponse.data.blogs
     : [];
 
-  const filteredPosts = posts.filter((post) => {
+  const filteredPosts = posts.filter((post: BlogPost & { status?: "published" | "draft" }) => {
     const postStatus =
       (post as BlogPost & { status?: "published" | "draft" }).status ||
       (post.published ? "published" : "draft");
@@ -375,7 +375,7 @@ export default function BlogManagementPage() {
             </Link>
           </div>
 
-          {loading && (
+          {isLoading && (
             <div className="flex items-center justify-center py-16">
               <div className="text-gray-500">Loading blog posts...</div>
             </div>
@@ -387,9 +387,9 @@ export default function BlogManagementPage() {
                 <div className="text-red-500 text-lg mb-2">
                   Error loading blog posts
                 </div>
-                <div className="text-gray-500 mb-4">{error}</div>
+                <div className="text-gray-500 mb-4">{error.message}</div>
                 <button
-                  onClick={refetch}
+                  onClick={() => refetch()}
                   className="px-4 py-2 bg-primary-blue-600 text-white rounded-lg hover:bg-primary-blue-700"
                 >
                   Retry
@@ -398,7 +398,7 @@ export default function BlogManagementPage() {
             </div>
           )}
 
-          {!loading && (
+          {!isLoading && (
             <div>
               {filteredPosts.slice(0, 7).map((post, idx) => (
                 <React.Fragment key={post.id}>
@@ -426,7 +426,7 @@ export default function BlogManagementPage() {
             </div>
           )}
 
-          {!loading && filteredPosts.length === 0 && (
+          {!isLoading && filteredPosts.length === 0 && (
             <div className="text-center py-12">
               <div className="text-gray-400 mb-4">
                 <svg

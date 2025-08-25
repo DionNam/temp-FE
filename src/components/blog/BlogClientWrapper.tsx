@@ -5,22 +5,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { useNavbar } from "@/hooks/useNavbar";
-import { BlogPost, BlogCategory } from "@/types/blog";
+import { BlogPost } from "@/types/blog";
 import { generateSlug } from "@/lib/utils";
 import { Pagination } from "@/components/ui/pagination";
 import Image from "next/image";
+import { useBlogs, useCategories } from "@/hooks/useBlogQueries";
 
 interface BlogClientWrapperProps {
-  featuredPost: BlogPost | null;
-  regularPosts: BlogPost[];
-  pagination: {
-    current_page: number;
-    total_pages: number;
-    total_items: number;
-    items_per_page: number;
-  } | undefined;
-  allCategories: BlogCategory[];
-  currentCategory: string;
+  searchParams: Promise<{ page?: string; category?: string; limit?: string }>;
   typography: {
     h1: string;
     subtitle: string;
@@ -157,16 +149,60 @@ function BlogCard({
 }
 
 export function BlogClientWrapper({
-  featuredPost,
-  regularPosts,
-  pagination,
-  allCategories,
-  currentCategory,
+  searchParams: searchParamsPromise,
   typography,
 }: BlogClientWrapperProps) {
   const { handleLoginClick, handleDashboardClick } = useNavbar();
   const router = useRouter();
   const searchParams = useSearchParams();
+  
+  const [searchParamsData, setSearchParamsData] = React.useState<{
+    page?: string;
+    category?: string;
+    limit?: string;
+  }>({});
+  
+  React.useEffect(() => {
+    searchParamsPromise.then(setSearchParamsData);
+  }, [searchParamsPromise]);
+  
+  const page = parseInt(searchParamsData.page || "1");
+  const limit = parseInt(searchParamsData.limit || "7");
+  const category = searchParamsData.category || "";
+  
+  const params = {
+    page,
+    limit,
+    ...(category && category !== "all" && { category }),
+    published: true,
+  };
+  
+  const { data: blogResponse, isLoading: blogsLoading, error: blogsError } = useBlogs(params);
+  const { data: categoriesResponse, isLoading: categoriesLoading } = useCategories();
+  
+  const allPosts = Array.isArray(blogResponse?.data?.blogs) ? blogResponse.data.blogs : [];
+  const posts = allPosts.filter((post: BlogPost) => post.published === true);
+  
+  const pagination = blogResponse?.data
+    ? {
+        current_page: blogResponse.data.page,
+        total_pages: blogResponse.data.total_pages,
+        total_items: blogResponse.data.total,
+        items_per_page: blogResponse.data.limit,
+      }
+    : undefined;
+  
+  const allCategories = [
+    { id: "all", name: "전체", label: "All" },
+    ...(categoriesResponse?.data || []).map((cat: string) => ({
+      id: cat,
+      name: cat,
+      label: cat,
+    })),
+  ];
+  
+  const featuredPost = pagination?.current_page === 1 ? posts[0] : null;
+  const regularPosts = pagination?.current_page === 1 ? posts.slice(1) : posts;
 
   const handleCategorySelect = (categoryId: string) => {
     const params = new URLSearchParams(searchParams);
@@ -184,6 +220,30 @@ export function BlogClientWrapper({
     params.set("page", page.toString());
     router.push(`/blog?${params.toString()}`);
   };
+  
+  const isLoading = blogsLoading || categoriesLoading;
+  
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading blogs...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  if (blogsError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Error loading blogs</h2>
+          <p className="text-gray-600">Please try again later.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -202,18 +262,18 @@ export function BlogClientWrapper({
           </p>
 
           <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-8 sm:mb-12">
-            {allCategories.map((category) => (
+            {allCategories.map((cat) => (
               <button
-                key={category.id}
-                onClick={() => handleCategorySelect(category.id)}
+                key={cat.id}
+                onClick={() => handleCategorySelect(cat.id)}
                 className={`px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors ${
-                  currentCategory === category.id ||
-                  (currentCategory === "" && category.id === "all")
+                  category === cat.id ||
+                  (category === "" && cat.id === "all")
                     ? "bg-primary-blue-500 text-primary-blue-50"
                     : "bg-primary-blue-200 text-primary-blue-500 hover:bg-gray-50 border border-gray-200"
                 }`}
               >
-                {category.name}
+                {cat.name}
               </button>
             ))}
           </div>
@@ -244,7 +304,7 @@ export function BlogClientWrapper({
                   No blog posts found
                 </h3>
                 <p className="text-gray-600">
-                  {currentCategory
+                  {category
                     ? "No posts found in this category."
                     : "No blog posts available at the moment."}
                 </p>

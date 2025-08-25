@@ -8,6 +8,7 @@ import {
   DeleteBlogResponse,
   CategoriesResponse,
   TagsResponse,
+  RelatedBlogsResponse,
   CreateBlogRequest, 
   UpdateBlogRequest,
   CreateAuthorRequest,
@@ -15,36 +16,22 @@ import {
   AuthorBlogsResponse
 } from '@/types/blog';
 
-const getApiBaseUrl = () => {
-  if (typeof window === 'undefined') {
-    return process.env.NEXT_PUBLIC_API_URL || '/api/v1';
-  }
-  return '/api/v1';
-};
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
 
 async function apiRequest<T>(
   endpoint: string, 
-  options?: RequestInit & { 
-    revalidate?: number;
-    tags?: string[];
-  }
+  options?: RequestInit
 ): Promise<T> {
-  const baseUrl = getApiBaseUrl();
-  const url = `${baseUrl}${endpoint}`;
-  const { revalidate, tags, ...fetchOptions } = options || {};
+  const url = `${API_BASE_URL}${endpoint}`;
   
   const response = await fetch(url, {
-    method: fetchOptions?.method || 'GET',
+    method: options?.method || 'GET',
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      ...fetchOptions?.headers,
+      ...options?.headers,
     },
-    next: revalidate || tags ? {
-      revalidate,
-      tags,
-    } : undefined,
-    ...fetchOptions,
+    ...options,
   });
 
   if (!response.ok) {
@@ -68,24 +55,15 @@ export const blogApi = {
     }
     const query = searchParams.toString();
     const endpoint = `/blogs${query ? `?${query}` : ''}`;
-    return apiRequest<BlogListResponse>(endpoint, {
-      revalidate: 300,
-      tags: ['blogs', 'blog-list']
-    });
+    return apiRequest<BlogListResponse>(endpoint);
   },
 
   getBlog: (id: string): Promise<BlogResponse> => {
-    return apiRequest<BlogResponse>(`/blogs/${id}`, {
-      revalidate: 600,
-      tags: ['blogs', 'blog-detail', `blog-${id}`]
-    });
+    return apiRequest<BlogResponse>(`/blogs/${id}`);
   },
 
   getBlogBySlug: (slug: string): Promise<BlogPost> => {
-    return apiRequest<BlogPost>(`/blogs/slug/${slug}`, {
-      revalidate: 600,
-      tags: ['blogs', 'blog-detail', `blog-slug-${slug}`]
-    });
+    return apiRequest<BlogPost>(`/blogs/slug/${slug}`);
   },
 
   createBlog: (data: CreateBlogRequest): Promise<BlogPost> => {
@@ -108,25 +86,16 @@ export const blogApi = {
     });
   },
 
-  getRelatedBlogs: (id: string): Promise<BlogPost[]> => {
-    return apiRequest<BlogPost[]>(`/blogs/${id}/related`, {
-      revalidate: 900,
-      tags: ['blogs', 'related-blogs', `blog-${id}`]
-    });
+  getRelatedBlogs: (id: string): Promise<RelatedBlogsResponse> => {
+    return apiRequest<RelatedBlogsResponse>(`/blogs/${id}/related`);
   },
 
   getCategories: (): Promise<CategoriesResponse> => {
-    return apiRequest<CategoriesResponse>('/blog-categories', {
-      revalidate: 3600,
-      tags: ['categories']
-    });
+    return apiRequest<CategoriesResponse>('/blog-categories');
   },
 
   getTags: (): Promise<TagsResponse> => {
-    return apiRequest<TagsResponse>('/blog-tags', {
-      revalidate: 3600,
-      tags: ['tags']
-    });
+    return apiRequest<TagsResponse>('/blog-tags');
   },
 };
 

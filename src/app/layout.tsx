@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import "./globals.css";
+import { QueryProvider } from "@/providers/QueryProvider";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -243,7 +244,9 @@ export default function RootLayout({
         <meta name="application-name" content="ShowOnAI" />
       </head>
       <body className={`${manrope.variable} antialiased`}>
-        {children}
+        <QueryProvider>
+          {children}
+        </QueryProvider>
       </body>
     </html>
   );
