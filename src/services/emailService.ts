@@ -29,13 +29,12 @@ export const sendDemoEmail = async (formData: DemoFormData): Promise<boolean> =>
     });
 
     if (response.ok) {
-      const result = await response.json();
       return true;
     } else {
-      const error = await response.json();
       return false;
     }
   } catch (error) {
+    console.log(error)
     return false;
   }
 };
@@ -129,6 +128,7 @@ export const updateDemoRequestStatus = async (id: number, status: string): Promi
 
     return response.ok;
   } catch (error) {
+    console.log(error)
     return false;
   }
 };
