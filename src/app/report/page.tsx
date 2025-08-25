@@ -4,9 +4,11 @@ import { Footer } from "@/components/layout/Footer";
 
 const ReportPage = () => {
   return (
-    <div className="bg-[#F0F5FE] flex flex-col items-center justify-center">
+    <div className="bg-[#F0F5FE] min-h-screen flex flex-col">
       <Header />
-      <ReportContent />
+      <div className="flex-1 w-full flex justify-center items-center">
+        <ReportContent />
+      </div>
       <Footer className="w-full" />
     </div>
   );

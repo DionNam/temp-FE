@@ -92,7 +92,7 @@ const mentions: MentionsRow[] = response.mentions.map((row) => {
 
 const ReportContent = () => {
   return (
-    <div className="flex flex-col items-center justify-center md:h-[calc(100vh-68px)] h-full md:w-4/5 w-5/6 md:mt-0 mt-8 md:mb-0 mb-16">
+    <div className="flex flex-col items-center justify-center md:min-h-[calc(100vh-132px)] md:w-4/5 w-5/6 mt-8 md:mb-8 mb-16">
       <ReportHeader
         companyName={response.companyName}
         generatedDate={response.generatedDate}
@@ -102,7 +102,7 @@ const ReportContent = () => {
         <SovCard pieData={pieData} series={series} />
         <BrandMentionsCard mentions={mentions} series={series} />
       </div>
-      <div className="md:flex flex-row items-center justify-between w-full mt-3 gap-3 border-[#E2E8F0] h-fit hidden">
+      <div className="md:flex flex-row items-stretch justify-between w-full mt-3 gap-3 border-[#E2E8F0] h-fit hidden">
         <OverallSEOCard
           seoScore={response.seoScore}
           difference={response.difference}

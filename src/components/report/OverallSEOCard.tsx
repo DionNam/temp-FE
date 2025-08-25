@@ -13,7 +13,7 @@ interface OverallSEOCardProps {
 const OverallSEOCard = (props: OverallSEOCardProps) => {
   return (
     <>
-      <Card className="bg-white w-full p-5 gap-0 md:h-full h-fit">
+      <Card className="bg-white w-full p-5 gap-0 flex flex-col flex-1 self-stretch">
         <CardHeader className="gap-2 flex flex-row items-center justify-start m-0 p-0">
           <div className="p-1 border border-[#E2E8F0] rounded-md">
             <Image src="/chart-donut.svg" alt="alt" width={16} height={16} />
