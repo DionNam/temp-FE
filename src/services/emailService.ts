@@ -9,7 +9,9 @@ export interface DemoFormData {
   agency: string;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
+const API_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://showonai-be-production.up.railway.app/api/v1'
+  : (process.env.NEXT_PUBLIC_API_URL || '/api/v1');
 
 export const sendDemoEmail = async (formData: DemoFormData): Promise<boolean> => {
   try {
