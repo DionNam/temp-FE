@@ -42,6 +42,7 @@ function BlogCard({
   );
 
   const image = post.featured_image || "/blog-placeholder.png";
+  const authorAvatar = post.avatar || "/avatar-placeholder.png";
 
   if (isFeatured) {
     return (
@@ -65,11 +66,7 @@ function BlogCard({
                 </span>
                 <div className="flex items-center">
                   <Image
-                    src={
-                      typeof post.author === "string"
-                        ? "/avatar-placeholder.png"
-                        : post.author?.avatar || "/avatar-placeholder.png"
-                    }
+                    src={authorAvatar}
                     alt={`${
                       typeof post.author === "string"
                         ? post.author
@@ -124,11 +121,7 @@ function BlogCard({
                 </span>
                 <div className="flex items-center">
                   <Image
-                    src={
-                      typeof post.author === "string"
-                        ? "/avatar2-placeholder.png"
-                        : post.author?.avatar || "/avatar2-placeholder.png"
-                    }
+                    src={authorAvatar}
                     alt={`${
                       typeof post.author === "string"
                         ? post.author
