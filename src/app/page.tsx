@@ -102,13 +102,10 @@ function DemoDialog({ isOpen, onClose, formData, setFormData }: DemoDialogProps)
     setIsLoading(true);
     setSubmitError('');
 
-    try {
-      console.log('Submitting demo request:', formData);
-      
+    try {      
       const success = await sendDemoEmail(formData);
       
       if (success) {
-        console.log('Demo request submitted successfully');
         setIsSubmitted(true);
         
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -331,6 +328,7 @@ function DemoDialog({ isOpen, onClose, formData, setFormData }: DemoDialogProps)
                         onChange={(e) => handleInputChange('agency', e.target.value)}
                         className="w-4 h-4 border-gray-300"
                         style={{ accentColor: '#2353DF' }}
+                        required
                         disabled={isLoading}
                       />
                       <span className="ml-2 text-xs sm:text-sm text-gray-700 font-medium">Yes</span>

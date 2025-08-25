@@ -9,12 +9,10 @@ export interface DemoFormData {
   agency: string;
 }
 
-const API_URL = '/api/v1';
+const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
 
 export const sendDemoEmail = async (formData: DemoFormData): Promise<boolean> => {
   try {
-    console.log('Sending demo request to:', `${API_URL}/demo-requests`);
-
     const response = await fetch(`${API_URL}/demo-requests`, {
       method: 'POST',
       headers: {
@@ -32,15 +30,12 @@ export const sendDemoEmail = async (formData: DemoFormData): Promise<boolean> =>
 
     if (response.ok) {
       const result = await response.json();
-      console.log('Demo request sent successfully:', result);
       return true;
     } else {
       const error = await response.json();
-      console.error('Failed to send demo request:', error);
       return false;
     }
   } catch (error) {
-    console.error('Error sending demo request:', error);
     return false;
   }
 };
@@ -118,7 +113,6 @@ export const getAllDemoRequests = async (): Promise<DemoRequestResponse[]> => {
     }
     throw new Error('Failed to fetch demo requests');
   } catch (error) {
-    console.error('Error fetching demo requests:', error);
     throw error;
   }
 };
@@ -135,7 +129,6 @@ export const updateDemoRequestStatus = async (id: number, status: string): Promi
 
     return response.ok;
   } catch (error) {
-    console.error('Error updating demo request status:', error);
     return false;
   }
 };
