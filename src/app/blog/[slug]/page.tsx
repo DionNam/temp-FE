@@ -6,7 +6,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { BlogContent } from '@/components/blog/BlogContent';
 import { useNavbar } from '@/hooks/useNavbar';
-import { useBlog, useRelatedBlogs } from '@/hooks/useBlog';
+import { useBlog, useRelatedBlogs } from '@/hooks/useBlogQueries';
 import { extractIdFromSlug } from '@/lib/utils';
 import { useToast, ToastContainer } from '@/components/ui/toast';
 import { RelatedArticles } from '@/components/blog/RelatedArticles';
@@ -20,10 +20,10 @@ function BlogPostContent() {
   const { toasts, removeToast } = useToast();
 
   const blogId = extractIdFromSlug(slug);
-  const { data: post, loading, error } = useBlog(blogId);
-  const { data: relatedPosts } = useRelatedBlogs(post?.id || null, post?.category);
+  const { data: post, isLoading, error } = useBlog(blogId);
+  const { data: relatedPosts } = useRelatedBlogs(post?.data?.id || '');
 
-  if (!blogId && !loading) {
+  if (!blogId && !isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
         <Navbar onLoginClick={handleLoginClick} onDashboardClick={handleDashboardClick} />
@@ -44,7 +44,7 @@ function BlogPostContent() {
     );
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
         <Navbar onLoginClick={handleLoginClick} onDashboardClick={handleDashboardClick} />
@@ -63,7 +63,7 @@ function BlogPostContent() {
         <div className="flex items-center justify-center h-96">
           <div className="text-center">
             <div className="text-red-500 text-lg mb-2">Error loading blog post</div>
-            <div className="text-gray-500">{error}</div>
+            <div className="text-gray-500">{error.message}</div>
             <Link 
               href="/blog" 
               className="mt-4 inline-block px-4 py-2 bg-primary-blue-600 text-white rounded-lg hover:bg-primary-blue-700"
@@ -99,7 +99,7 @@ function BlogPostContent() {
 
   return (
     <>
-      <BlogSEO post={post} />
+      <BlogSEO post={post.data} />
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white" style={{
         backgroundImage: "url(/blog-content.svg)",
         backgroundSize: "cover",
@@ -111,10 +111,10 @@ function BlogPostContent() {
       <main className="px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-16 lg:py-20">
         <div className="flex flex-col max-w-7xl mx-auto items-center justify-center">
 
-          <BlogContent post={post} />
+          <BlogContent post={post.data} />
 
-          {relatedPosts && relatedPosts.length > 0 && (
-            <RelatedArticles posts={relatedPosts} currentPostId={post?.id || ''} />
+          {relatedPosts && relatedPosts.data.length > 0 && (
+            <RelatedArticles posts={relatedPosts.data} currentPostId={post.data.id || ''} />
           )}
         </div>
       </main>

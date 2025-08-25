@@ -1,5 +1,4 @@
 import React from "react";
-import { blogApi } from "@/lib/api";
 import { BlogClientWrapper } from "@/components/blog/BlogClientWrapper";
 
 const typography = {
@@ -19,54 +18,11 @@ const typography = {
   price: "font-manrope font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl",
 } as const;
 
-export default async function BlogPage({
+export default function BlogPage({
   searchParams,
 }: {
   searchParams: Promise<{ page?: string; category?: string; limit?: string }>;
 }) {
-  const searchParamsData = await searchParams;
-  const page = parseInt(searchParamsData.page || "1");
-  const limit = parseInt(searchParamsData.limit || "7");
-  const category = searchParamsData.category || "";
-
-  const params = {
-    page,
-    limit,
-    ...(category && category !== "all" && { category }),
-    published: true,
-  };
-
-  const [blogResponse, categoriesResponse] = await Promise.all([
-    blogApi.getBlogs(params),
-    blogApi.getCategories(),
-  ]);
-
-  const allPosts = Array.isArray(blogResponse?.data?.blogs)
-    ? blogResponse.data.blogs
-    : [];
-  const posts = allPosts.filter((post) => post.published === true);
-
-  const pagination = blogResponse?.data
-    ? {
-        current_page: blogResponse.data.page,
-        total_pages: blogResponse.data.total_pages,
-        total_items: blogResponse.data.total,
-        items_per_page: blogResponse.data.limit,
-      }
-    : undefined;
-
-  const allCategories = [
-    { id: "all", name: "전체", label: "All" },
-    ...(categoriesResponse?.data || []).map((cat: string) => ({
-      id: cat,
-      name: cat,
-      label: cat,
-    })),
-  ];
-
-  const featuredPost = pagination?.current_page === 1 ? posts[0] : null;
-  const regularPosts = pagination?.current_page === 1 ? posts.slice(1) : posts;
-
   return (
     <div
       className="min-h-screen bg-gradient-to-b from-blue-50 to-white"
@@ -77,11 +33,7 @@ export default async function BlogPage({
       }}
     >
       <BlogClientWrapper
-        featuredPost={featuredPost}
-        regularPosts={regularPosts}
-        pagination={pagination}
-        allCategories={allCategories}
-        currentCategory={category}
+        searchParams={searchParams}
         typography={typography}
       />
     </div>

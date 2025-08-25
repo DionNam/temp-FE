@@ -8,7 +8,7 @@ import { RichTextEditor } from "@/components/blog/RichTextEditor";
 import { Button } from "@/components/ui/button";
 import { Eye, Save, Send, Upload, X } from "lucide-react";
 import { Header } from "@/components/layout/Header";
-import { useCreateBlog, useUpdateBlog, useBlog } from "@/hooks/useBlog";
+import { useCreateBlog, useUpdateBlog, useBlog } from "@/hooks/useBlogQueries";
 import { useAuthors } from "@/hooks/useAuthor";
 import { useBlogCategories } from "@/hooks/useBlogFilters";
 import { CreateBlogRequest } from "@/types/blog";
@@ -36,22 +36,22 @@ function CreateBlogContent() {
   });
 
   const {
-    createBlog,
-    loading: createLoading,
+    mutate: createBlog,
+    isPending: createLoading,
     error: createError,
   } = useCreateBlog();
   const {
-    updateBlog,
-    loading: updateLoading,
+    mutate: updateBlog,
+    isPending: updateLoading,
     error: updateError,
   } = useUpdateBlog();
-  const { data: existingBlog, loading: fetchLoading } = useBlog(editId);
+  const { data: existingBlog, isLoading: fetchLoading } = useBlog(editId);
   const { data: authors, loading: authorsLoading } = useAuthors();
   const { data: categories, loading: categoriesLoading } = useBlogCategories();
 
   const isEditing = !!editId;
   const isLoading = createLoading || updateLoading;
-  const error = createError || updateError;
+  const error = createError?.message || updateError?.message;
 
   useEffect(() => {
     setIsMounted(true);
@@ -60,16 +60,16 @@ function CreateBlogContent() {
   useEffect(() => {
     if (existingBlog && isEditing) {
       console.log("Setting form data with existing blog:", existingBlog);
-      console.log("Existing blog content:", existingBlog.content);
+      console.log("Existing blog content:", existingBlog.data.content);
       setFormData({
-        title: existingBlog.title,
-        excerpt: existingBlog.excerpt,
-        content: existingBlog.content,
-        category: existingBlog.category,
-        author_name: existingBlog.author_name,
-        avatar: existingBlog.avatar || "",
-        featured_image: existingBlog.featured_image || "",
-        published: existingBlog.published,
+        title: existingBlog.data.title,
+        excerpt: existingBlog.data.excerpt,
+        content: existingBlog.data.content,
+        category: existingBlog.data.category,
+        author_name: existingBlog.data.author_name,
+        avatar: existingBlog.data.avatar || "",
+        featured_image: existingBlog.data.featured_image || "",
+        published: existingBlog.data.published,
         tags: [],
       });
     }
@@ -236,7 +236,7 @@ function CreateBlogContent() {
       const blogData = { ...formData, published: false };
 
       if (isEditing && editId) {
-        await updateBlog(editId, blogData);
+        await updateBlog({ id: editId, data: blogData });
         success("Draft updated successfully!");
       } else {
         await createBlog(blogData);
@@ -256,7 +256,7 @@ function CreateBlogContent() {
       const blogData = { ...formData, published: true };
 
       if (isEditing && editId) {
-        await updateBlog(editId, blogData);
+        await updateBlog({ id: editId, data: blogData });
         success("Blog updated and published successfully!");
       } else {
         await createBlog(blogData);
