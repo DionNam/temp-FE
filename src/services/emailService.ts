@@ -9,7 +9,7 @@ export interface DemoFormData {
   agency: string;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:9000/api/v1';
+const API_URL = '/api/v1';
 
 export const sendDemoEmail = async (formData: DemoFormData): Promise<boolean> => {
   try {
