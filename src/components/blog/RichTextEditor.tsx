@@ -7,6 +7,7 @@ import Link from '@tiptap/extension-link';
 import Image from '@tiptap/extension-image';
 import TextAlign from '@tiptap/extension-text-align';
 import { Button } from '@/components/ui/button';
+import { compressImage } from '@/utils/imageCompression';
 import { 
   Bold, 
   Italic, 
@@ -95,23 +96,23 @@ export function RichTextEditor({
     }
   }, [editor, content]);
 
-  const handleFileUpload = useCallback((file: File) => {
+  const handleFileUpload = useCallback(async (file: File) => {
     if (!file.type.startsWith('image/')) {
       alert('Please select an image file');
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const result = e.target?.result as string;
-      if (result && editor) {
+    try {
+      const compressedImage = await compressImage(file);
+      if (compressedImage && editor) {
         editor.chain().focus().setImage({ 
-          src: result, 
+          src: compressedImage, 
           alt: file.name || 'Uploaded image'
         }).run();
       }
-    };
-    reader.readAsDataURL(file);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Failed to process image');
+    }
   }, [editor]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {

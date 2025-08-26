@@ -11,6 +11,7 @@ import { ConfirmationModal } from "@/components/ui/modal";
 import { useToast, ToastContainer } from "@/components/ui/toast";
 import { Pagination } from "@/components/ui/pagination";
 import { BlogManagementLayout } from "@/components/blog/BlogManagementLayout";
+import { PasswordProtection } from "@/components/blog/PasswordProtection";
 import Link from "next/link";
 import { Header } from "@/components/layout/Header";
 
@@ -71,7 +72,7 @@ function BlogManagementCard({
             alt={`Thumbnail for ${post.title}`}
             width={80}
             height={80}
-            className="rounded-lg object-cover"
+            className="object-cover"
           />
         </div>
 
@@ -85,13 +86,15 @@ function BlogManagementCard({
               <span className="text-sm text-gray-500">{formattedDate}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Image
-                src={avatar}
-                alt={`${authorName} avatar`}
-                width={32}
-                height={32}
-                className="rounded-full"
-              />
+              <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center">
+                <Image
+                  src={avatar}
+                  alt={`${authorName} avatar`}
+                  width={32}
+                  height={32}
+                  className="object-cover w-full h-full"
+                />
+              </div>
               <span className="text-sm font-medium text-gray-700">
                 {authorName}
               </span>
@@ -216,6 +219,7 @@ function BlogManagementCard({
 }
 
 export default function BlogManagementPage() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeTab, setActiveTab] = useState<"all" | "published" | "drafts">(
     "published"
   );
@@ -229,6 +233,10 @@ export default function BlogManagementPage() {
     blogId: "",
     blogTitle: "",
   });
+
+  const handleAuthSuccess = () => {
+    setIsAuthenticated(true);
+  };
 
   const { filters, updateFilter } = useBlogFilters({
     published:
@@ -247,15 +255,17 @@ export default function BlogManagementPage() {
     ? blogResponse.data.blogs
     : [];
 
-  const filteredPosts = posts.filter((post: BlogPost & { status?: "published" | "draft" }) => {
-    const postStatus =
-      (post as BlogPost & { status?: "published" | "draft" }).status ||
-      (post.published ? "published" : "draft");
-    if (activeTab === "all") return true;
-    if (activeTab === "published") return postStatus === "published";
-    if (activeTab === "drafts") return postStatus === "draft";
-    return true;
-  });
+  const filteredPosts = posts.filter(
+    (post: BlogPost & { status?: "published" | "draft" }) => {
+      const postStatus =
+        (post as BlogPost & { status?: "published" | "draft" }).status ||
+        (post.published ? "published" : "draft");
+      if (activeTab === "all") return true;
+      if (activeTab === "published") return postStatus === "published";
+      if (activeTab === "drafts") return postStatus === "draft";
+      return true;
+    }
+  );
 
   const pagination = blogResponse?.data
     ? {
@@ -295,6 +305,10 @@ export default function BlogManagementPage() {
       showError("Failed to delete blog post", "Please try again.");
     }
   };
+
+  if (!isAuthenticated) {
+    return <PasswordProtection onSuccess={handleAuthSuccess} />;
+  }
 
   return (
     <BlogManagementLayout>
