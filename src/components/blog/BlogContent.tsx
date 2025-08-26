@@ -48,7 +48,7 @@ export function BlogContent({ post }: BlogContentProps) {
   }, [post.content]);
 
   return (
-    <article className="max-w-4xl mx-auto">
+    <article className="max-w-7xl mx-auto">
       <header className="text-center mb-8">
         <div className="flex items-center justify-center gap-4 text-sm text-gray-500 mb-6">
           <span className="bg-primary-blue-100 text-primary-blue-700 px-3 py-1 rounded-full text-xs font-medium">
@@ -89,8 +89,9 @@ export function BlogContent({ post }: BlogContentProps) {
           <Image
             src={imageUrl}
             alt={`Hero image for ${post.title}`}
-            fill
-            className="object-cover"
+            width={1200}
+            height={400}
+            className="object-cover w-full h-full mx-auto rounded-lg"
             priority
           />
         </div>

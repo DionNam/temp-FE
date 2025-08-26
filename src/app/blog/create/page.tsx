@@ -13,12 +13,15 @@ import { useAuthors } from "@/hooks/useAuthor";
 import { useBlogCategories } from "@/hooks/useBlogFilters";
 import { CreateBlogRequest } from "@/types/blog";
 import { useToast, ToastContainer } from "@/components/ui/toast";
+import { compressImage } from "@/utils/imageCompression";
+import { PasswordProtection } from "@/components/blog/PasswordProtection";
 
 function CreateBlogContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const editId = searchParams.get("edit");
 
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { toasts, removeToast, success, error: showError } = useToast();
@@ -91,7 +94,7 @@ function CreateBlogContent() {
   const [isDragOver, setIsDragOver] = useState(false);
   const [isAuthorAvatarDragOver, setIsAuthorAvatarDragOver] = useState(false);
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       if (!file.type.startsWith("image/")) {
@@ -99,12 +102,12 @@ function CreateBlogContent() {
         return;
       }
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result as string;
-        handleInputChange("featured_image", result);
-      };
-      reader.readAsDataURL(file);
+      try {
+        const compressedImage = await compressImage(file);
+        handleInputChange("featured_image", compressedImage);
+      } catch (error) {
+        alert(error instanceof Error ? error.message : 'Failed to process image');
+      }
     }
   };
 
@@ -118,7 +121,7 @@ function CreateBlogContent() {
     setIsDragOver(false);
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
 
@@ -126,12 +129,12 @@ function CreateBlogContent() {
     const imageFile = files.find((file) => file.type.startsWith("image/"));
 
     if (imageFile) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result as string;
-        handleInputChange("featured_image", result);
-      };
-      reader.readAsDataURL(imageFile);
+      try {
+        const compressedImage = await compressImage(imageFile);
+        handleInputChange("featured_image", compressedImage);
+      } catch (error) {
+        alert(error instanceof Error ? error.message : 'Failed to process image');
+      }
     } else {
       alert("Please drop an image file");
     }
@@ -141,7 +144,7 @@ function CreateBlogContent() {
     fileInputRef.current?.click();
   };
 
-  const handleAuthorAvatarUpload = (
+  const handleAuthorAvatarUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
@@ -151,12 +154,12 @@ function CreateBlogContent() {
         return;
       }
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result as string;
-        handleInputChange("avatar", result);
-      };
-      reader.readAsDataURL(file);
+      try {
+        const compressedImage = await compressImage(file);
+        handleInputChange("avatar", compressedImage);
+      } catch (error) {
+        alert(error instanceof Error ? error.message : 'Failed to process image');
+      }
     }
   };
 
@@ -170,7 +173,7 @@ function CreateBlogContent() {
     setIsAuthorAvatarDragOver(false);
   };
 
-  const handleAuthorAvatarDrop = (e: React.DragEvent) => {
+  const handleAuthorAvatarDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     setIsAuthorAvatarDragOver(false);
 
@@ -178,12 +181,12 @@ function CreateBlogContent() {
     const imageFile = files.find((file) => file.type.startsWith("image/"));
 
     if (imageFile) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result as string;
-        handleInputChange("avatar", result);
-      };
-      reader.readAsDataURL(imageFile);
+      try {
+        const compressedImage = await compressImage(imageFile);
+        handleInputChange("avatar", compressedImage);
+      } catch (error) {
+        alert(error instanceof Error ? error.message : 'Failed to process image');
+      }
     } else {
       alert("Please drop an image file");
     }
@@ -270,6 +273,10 @@ function CreateBlogContent() {
     }
   };
 
+  const handleAuthSuccess = () => {
+    setIsAuthenticated(true);
+  };
+
   if (!isMounted) {
     return (
       <div className="min-h-screen bg-white">
@@ -290,6 +297,10 @@ function CreateBlogContent() {
         <Footer />
       </div>
     );
+  }
+
+  if (!isAuthenticated) {
+    return <PasswordProtection onSuccess={handleAuthSuccess} />;
   }
 
   return (
