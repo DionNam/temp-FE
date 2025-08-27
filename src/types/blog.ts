@@ -139,6 +139,7 @@ export interface CreateBlogRequest {
   meta_description?: string;
   published?: boolean;
   tags?: string[];
+  slug?: string;
 }
 
 export interface UpdateBlogRequest extends Partial<CreateBlogRequest> {

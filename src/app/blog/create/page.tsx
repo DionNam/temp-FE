@@ -13,8 +13,8 @@ import { useAuthors } from "@/hooks/useAuthor";
 import { useBlogCategories } from "@/hooks/useBlogFilters";
 import { CreateBlogRequest } from "@/types/blog";
 import { useToast, ToastContainer } from "@/components/ui/toast";
-import { compressImage } from "@/utils/imageCompression";
 import { PasswordProtection } from "@/components/blog/PasswordProtection";
+import { uploadFileToStorage } from "@/services/storageService";
 
 function CreateBlogContent() {
   const router = useRouter();
@@ -36,6 +36,7 @@ function CreateBlogContent() {
     meta_description: "",
     published: false,
     tags: [],
+    slug: "",
   });
 
   const {
@@ -74,6 +75,7 @@ function CreateBlogContent() {
         featured_image: existingBlog.data.featured_image || "",
         published: existingBlog.data.published,
         tags: [],
+        slug: existingBlog.data.slug || "",
       });
     }
   }, [existingBlog, isEditing]);
@@ -93,20 +95,26 @@ function CreateBlogContent() {
   const authorAvatarInputRef = React.useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [isAuthorAvatarDragOver, setIsAuthorAvatarDragOver] = useState(false);
+  const [isUploadingFeatured, setIsUploadingFeatured] = useState(false);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (!file.type.startsWith("image/")) {
-        alert("Please select an image file");
-        return;
-      }
-
+      setIsUploadingFeatured(true);
       try {
-        const compressedImage = await compressImage(file);
-        handleInputChange("featured_image", compressedImage);
+        const slug = formData.slug || (formData.title ? formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'untitled');
+        const publicUrl = await uploadFileToStorage({
+          file,
+          slug,
+          kind: 'featured'
+        });
+        handleInputChange("featured_image", publicUrl);
+        success("Featured image uploaded successfully");
       } catch (error) {
-        alert(error instanceof Error ? error.message : 'Failed to process image');
+        showError(error instanceof Error ? error.message : 'Failed to upload image');
+      } finally {
+        setIsUploadingFeatured(false);
       }
     }
   };
@@ -126,17 +134,28 @@ function CreateBlogContent() {
     setIsDragOver(false);
 
     const files = Array.from(e.dataTransfer.files);
-    const imageFile = files.find((file) => file.type.startsWith("image/"));
+    
+    if (files.length === 0) {
+      showError("Please drop a file");
+      return;
+    }
+    
+    const imageFile = files[0];
 
-    if (imageFile) {
-      try {
-        const compressedImage = await compressImage(imageFile);
-        handleInputChange("featured_image", compressedImage);
-      } catch (error) {
-        alert(error instanceof Error ? error.message : 'Failed to process image');
-      }
-    } else {
-      alert("Please drop an image file");
+    setIsUploadingFeatured(true);
+    try {
+      const slug = formData.slug || (formData.title ? formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'untitled');
+      const publicUrl = await uploadFileToStorage({
+        file: imageFile,
+        slug,
+        kind: 'featured'
+      });
+      handleInputChange("featured_image", publicUrl);
+      success("Featured image uploaded successfully");
+    } catch (error) {
+      showError(error instanceof Error ? error.message : 'Failed to upload image');
+    } finally {
+      setIsUploadingFeatured(false);
     }
   };
 
@@ -149,16 +168,20 @@ function CreateBlogContent() {
   ) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (!file.type.startsWith("image/")) {
-        alert("Please select an image file");
-        return;
-      }
-
+      setIsUploadingAvatar(true);
       try {
-        const compressedImage = await compressImage(file);
-        handleInputChange("avatar", compressedImage);
+        const slug = formData.slug || (formData.author_name ? formData.author_name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'author');
+        const publicUrl = await uploadFileToStorage({
+          file,
+          slug,
+          kind: 'avatar'
+        });
+        handleInputChange("avatar", publicUrl);
+        success("Avatar uploaded successfully");
       } catch (error) {
-        alert(error instanceof Error ? error.message : 'Failed to process image');
+        showError(error instanceof Error ? error.message : 'Failed to upload avatar');
+      } finally {
+        setIsUploadingAvatar(false);
       }
     }
   };
@@ -178,17 +201,28 @@ function CreateBlogContent() {
     setIsAuthorAvatarDragOver(false);
 
     const files = Array.from(e.dataTransfer.files);
-    const imageFile = files.find((file) => file.type.startsWith("image/"));
+    
+    if (files.length === 0) {
+      showError("Please drop a file");
+      return;
+    }
+    
+        const imageFile = files[0];
 
-    if (imageFile) {
-      try {
-        const compressedImage = await compressImage(imageFile);
-        handleInputChange("avatar", compressedImage);
-      } catch (error) {
-        alert(error instanceof Error ? error.message : 'Failed to process image');
-      }
-    } else {
-      alert("Please drop an image file");
+    setIsUploadingAvatar(true);
+    try {
+      const slug = formData.slug || (formData.author_name ? formData.author_name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'author');
+      const publicUrl = await uploadFileToStorage({
+        file: imageFile,
+        slug,
+        kind: 'avatar'
+      });
+      handleInputChange("avatar", publicUrl);
+      success("Avatar uploaded successfully");
+    } catch (error) {
+      showError(error instanceof Error ? error.message : 'Failed to upload avatar');
+    } finally {
+      setIsUploadingAvatar(false);
     }
   };
 
@@ -382,22 +416,33 @@ function CreateBlogContent() {
                       isDragOver
                         ? "border-blue-400 bg-blue-50"
                         : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
-                    }`}
+                    } ${isUploadingFeatured ? 'opacity-50 cursor-not-allowed' : ''}`}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
-                    onClick={handleUploadClick}
+                    onClick={isUploadingFeatured ? undefined : handleUploadClick}
                   >
-                    <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                    <p className="text-gray-500 mb-2">
-                      No featured image selected
-                    </p>
-                    <p className="text-sm text-gray-400">
-                      This image will be used as the blog thumbnail
-                    </p>
-                    <p className="text-xs text-gray-400 mt-2">
-                      Click to upload or drag and drop
-                    </p>
+                    {isUploadingFeatured ? (
+                      <>
+                        <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                        <p className="text-gray-500 mb-2">
+                          Uploading featured image...
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                        <p className="text-gray-500 mb-2">
+                          No featured image selected
+                        </p>
+                        <p className="text-sm text-gray-400">
+                          This image will be used as the blog thumbnail
+                        </p>
+                        <p className="text-xs text-gray-400 mt-2">
+                          Click to upload or drag and drop
+                        </p>
+                      </>
+                    )}
                   </div>
                 )}
 
@@ -496,19 +541,30 @@ function CreateBlogContent() {
                             isAuthorAvatarDragOver
                               ? "border-blue-400 bg-blue-50"
                               : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
-                          }`}
+                          } ${isUploadingAvatar ? 'opacity-50 cursor-not-allowed' : ''}`}
                           onDragOver={handleAuthorAvatarDragOver}
                           onDragLeave={handleAuthorAvatarDragLeave}
                           onDrop={handleAuthorAvatarDrop}
-                          onClick={handleAuthorAvatarUploadClick}
+                          onClick={isUploadingAvatar ? undefined : handleAuthorAvatarUploadClick}
                         >
-                          <Upload className="w-6 h-6 text-gray-400 mx-auto mb-2" />
-                          <p className="text-sm text-gray-500 mb-1">
-                            No profile picture selected
-                          </p>
-                          <p className="text-xs text-gray-400">
-                            Click to upload or drag and drop
-                          </p>
+                          {isUploadingAvatar ? (
+                            <>
+                              <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                              <p className="text-sm text-gray-500 mb-1">
+                                Uploading avatar...
+                              </p>
+                            </>
+                          ) : (
+                            <>
+                              <Upload className="w-6 h-6 text-gray-400 mx-auto mb-2" />
+                              <p className="text-sm text-gray-500 mb-1">
+                                No profile picture selected
+                              </p>
+                              <p className="text-xs text-gray-400">
+                                Click to upload or drag and drop
+                              </p>
+                            </>
+                          )}
                         </div>
                       )}
 

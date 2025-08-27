@@ -141,3 +141,27 @@ export const authorApi = {
     return apiRequest<AuthorBlogsResponse>(`/blog-authors/${id}/blogs${query ? `?${query}` : ''}`);
   },
 };
+
+export interface PresignedUploadRequest {
+  slug: string;
+  kind: 'featured' | 'avatar';
+  filename: string;
+  content_type: string;
+  file_size?: number;
+  expiry_seconds?: number;
+}
+
+export interface PresignedUploadResponse {
+  key: string;
+  upload_url: string;
+  public_url: string;
+}
+
+export const storageApi = {
+  getPresignedUploadUrl: (data: PresignedUploadRequest): Promise<PresignedUploadResponse> => {
+    return apiRequest<PresignedUploadResponse>('/storage/presign-upload', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+};
