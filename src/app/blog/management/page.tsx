@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
+// import Image from "next/image";
 import { Footer } from "@/components/layout/Footer";
 import { BlogPost } from "@/types/blog";
 import { useBlogs, useDeleteBlog } from "@/hooks/useBlogQueries";
@@ -67,7 +67,7 @@ function BlogManagementCard({
     <article className="bg-transparent rounded-xl p-6">
       <div className="flex gap-4">
         <div className="flex-shrink-0">
-          <Image
+          <img
             src={featuredImage}
             alt={`Thumbnail for ${post.title}`}
             width={80}
@@ -87,7 +87,7 @@ function BlogManagementCard({
             </div>
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center">
-                <Image
+                <img
                   src={avatar}
                   alt={`${authorName} avatar`}
                   width={32}

@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import Image from 'next/image';
+// import Image from 'next/image';
 import { BlogPost } from '@/types/blog';
 
 interface BlogContentProps {
@@ -57,12 +57,11 @@ export function BlogContent({ post }: BlogContentProps) {
           
           <div className="flex items-center gap-2">
             {authorAvatar && (
-              <div className="relative w-6 h-6">
-                <Image
+              <div className="relative w-6 h-6 rounded-full overflow-hidden">
+                <img
                   src={authorAvatar}
                   alt={`Avatar of ${author.name}`}
-                  fill
-                  className="object-cover rounded-full"
+                  className="object-cover w-full h-full"
                 />
               </div>
             )}
@@ -86,13 +85,13 @@ export function BlogContent({ post }: BlogContentProps) {
 
         {imageUrl && (
         <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] mb-8 rounded-lg overflow-hidden">
-          <Image
+          <img
             src={imageUrl}
             alt={`Hero image for ${post.title}`}
             width={1200}
             height={400}
             className="object-cover w-full h-full mx-auto rounded-lg"
-            priority
+            // priority
           />
         </div>
       )}

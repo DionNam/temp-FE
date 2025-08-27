@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Image from "next/image";
+// import Image from "next/image";
 import { Footer } from "@/components/layout/Footer";
 import { RichTextEditor } from "@/components/blog/RichTextEditor";
 import { Button } from "@/components/ui/button";
@@ -395,7 +395,7 @@ function CreateBlogContent() {
               <div className="space-y-3">
                 {formData.featured_image ? (
                   <div className="relative">
-                    <Image
+                    <img
                       src={formData.featured_image}
                       alt="Featured image preview"
                       width={400}
@@ -520,7 +520,7 @@ function CreateBlogContent() {
                     <div className="space-y-3">
                       {formData.avatar ? (
                         <div className="relative">
-                          <Image
+                          <img
                             src={formData.avatar}
                             alt="Author avatar preview"
                             width={80}
@@ -696,7 +696,7 @@ function CreateBlogContent() {
 
                   {formData.featured_image && (
                     <div className="mb-6">
-                      <Image
+                      <img
                         src={formData.featured_image}
                         alt="Featured image"
                         width={800}
@@ -708,7 +708,7 @@ function CreateBlogContent() {
 
                   <div className="flex items-center">
                     {formData.avatar ? (
-                      <Image
+                      <img
                         src={formData.avatar}
                         alt="Author avatar"
                         width={48}

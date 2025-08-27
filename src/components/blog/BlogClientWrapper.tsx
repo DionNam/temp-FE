@@ -8,7 +8,7 @@ import { useNavbar } from "@/hooks/useNavbar";
 import { BlogPost } from "@/types/blog";
 import { generateSlug } from "@/lib/utils";
 import { Pagination } from "@/components/ui/pagination";
-import Image from "next/image";
+// import Image from "next/image";
 import { useBlogs, useCategories } from "@/hooks/useBlogQueries";
 
 interface BlogClientWrapperProps {
@@ -42,7 +42,7 @@ function BlogCard({
         <article className="bg-transparent rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer px-2 sm:px-0">
           <div className="flex flex-col lg:flex-row lg:h-full">
             <div className="relative w-full lg:w-1/2 lg:min-h-[400px]">
-              <Image
+              <img
                 src={image}
                 alt={post.title}
                 width={600}
@@ -57,7 +57,7 @@ function BlogCard({
                   {post.category}
                 </span>
                 <div className="flex items-center">
-                  <Image
+                  <img
                     src={authorAvatar}
                     alt={`${
                       typeof post.author === "string"
@@ -97,7 +97,7 @@ function BlogCard({
       <article className="bg-transparent rounded-xl overflow-hidden transition-all duration-300 group cursor-pointer px-2 sm:px-0">
         <div className="flex flex-row sm:flex-col">
           <div className="relative flex-shrink-0 w-1/2 h-28 sm:w-full sm:h-64">
-            <Image
+            <img
               src={image}
               alt={post.title}
               width={300}
@@ -112,7 +112,7 @@ function BlogCard({
                   {post.category}
                 </span>
                 <div className="flex items-center">
-                  <Image
+                  <img
                     src={authorAvatar}
                     alt={`${
                       typeof post.author === "string"
