@@ -84,7 +84,7 @@ export function RichTextEditor({
 
   const editor = useEditor({
     extensions: [
-      StarterKit.configure({ 
+      StarterKit.configure({
         heading: { levels: [1, 2, 3] },
         codeBlock: false,
       }),
@@ -103,10 +103,6 @@ export function RichTextEditor({
       }),
       Placeholder.configure({
         placeholder,
-        includeChildren: true,
-        showOnlyCurrent: false,
-        emptyNodeClass:
-          "tiptap-is-empty before:content-[attr(data-placeholder)] before:text-gray-400 before:pointer-events-none before:absolute",
       }),
     ],
     content,
@@ -186,6 +182,10 @@ export function RichTextEditor({
           .unsetLink()
           .insertContent(key === " " ? " " : "\n")
           .run();
+      }
+      if (key === "Tab") {
+        event.preventDefault();
+        editor.chain().focus().insertContent("    ").run();
       }
     },
     [editor]
@@ -590,15 +590,15 @@ export function RichTextEditor({
           >
             <Quote className="w-4 h-4" />
           </Button>
-                     <Button
-             type="button"
-             variant="ghost"
-             size="sm"
-             onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-             className={editor.isActive("codeBlock") ? "bg-gray-200" : ""}
-           >
-             <Code className="w-4 h-4" />
-           </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+            className={editor.isActive("codeBlock") ? "bg-gray-200" : ""}
+          >
+            <Code className="w-4 h-4" />
+          </Button>
 
           <div className="w-px h-6 bg-gray-300 mx-1" />
 
