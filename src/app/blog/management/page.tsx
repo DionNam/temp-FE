@@ -67,6 +67,7 @@ function BlogManagementCard({
     <article className="bg-transparent rounded-xl p-6">
       <div className="flex gap-4">
         <div className="flex-shrink-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={featuredImage}
             alt={`Thumbnail for ${post.title}`}
@@ -87,6 +88,7 @@ function BlogManagementCard({
             </div>
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={avatar}
                   alt={`${authorName} avatar`}

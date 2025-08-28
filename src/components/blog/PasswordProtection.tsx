@@ -24,7 +24,7 @@ export function PasswordProtection({ onSuccess }: PasswordProtectionProps) {
     if (password === 'Admin@123') {
       onSuccess();
     } else {
-      setError('Password salah. Silakan coba lagi.');
+      setError('Incorrect password. Please try again.');
     }
 
     setIsLoading(false);
@@ -38,7 +38,7 @@ export function PasswordProtection({ onSuccess }: PasswordProtectionProps) {
             Blog Management Access
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Masukkan password untuk mengakses halaman blog management
+            Enter password to access blog management page
           </p>
         </div>
         
@@ -56,7 +56,7 @@ export function PasswordProtection({ onSuccess }: PasswordProtectionProps) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-blue-500 focus:border-primary-blue-500"
-                placeholder="Masukkan password"
+                placeholder="Enter password"
                 disabled={isLoading}
               />
             </div>
@@ -73,7 +73,7 @@ export function PasswordProtection({ onSuccess }: PasswordProtectionProps) {
             disabled={isLoading || !password}
             className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-blue-600 hover:bg-primary-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? 'Memverifikasi...' : 'Masuk'}
+            {isLoading ? 'Verifying...' : 'Sign In'}
           </Button>
         </form>
       </div>

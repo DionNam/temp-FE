@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-// import Image from "next/image";
+import Image from "next/image";
 import { Footer } from "@/components/layout/Footer";
 import { RichTextEditor } from "@/components/blog/RichTextEditor";
 import { Button } from "@/components/ui/button";
@@ -13,15 +13,19 @@ import { useAuthors } from "@/hooks/useAuthor";
 import { useBlogCategories } from "@/hooks/useBlogFilters";
 import { CreateBlogRequest } from "@/types/blog";
 import { useToast, ToastContainer } from "@/components/ui/toast";
-import { PasswordProtection } from "@/components/blog/PasswordProtection";
 import { uploadFileToStorage } from "@/services/storageService";
+
+interface TemporaryImage {
+  file: File;
+  previewUrl: string;
+  uploadedUrl?: string;
+}
 
 function CreateBlogContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const editId = searchParams.get("edit");
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { toasts, removeToast, success, error: showError } = useToast();
@@ -39,6 +43,11 @@ function CreateBlogContent() {
     slug: "",
   });
 
+  const [temporaryFeaturedImage, setTemporaryFeaturedImage] = useState<TemporaryImage | null>(null);
+  const [temporaryAvatarImage, setTemporaryAvatarImage] = useState<TemporaryImage | null>(null);
+  const [isUploadingImages, setIsUploadingImages] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
   const {
     mutate: createBlog,
     isPending: createLoading,
@@ -54,7 +63,7 @@ function CreateBlogContent() {
   const { data: categories, loading: categoriesLoading } = useBlogCategories();
 
   const isEditing = !!editId;
-  const isLoading = createLoading || updateLoading;
+  const isLoading = createLoading || updateLoading || isUploadingImages;
   const error = createError?.message || updateError?.message;
 
   useEffect(() => {
@@ -63,8 +72,6 @@ function CreateBlogContent() {
 
   useEffect(() => {
     if (existingBlog && isEditing) {
-      console.log("Setting form data with existing blog:", existingBlog);
-      console.log("Existing blog content:", existingBlog.data.content);
       setFormData({
         title: existingBlog.data.title,
         excerpt: existingBlog.data.excerpt,
@@ -77,44 +84,80 @@ function CreateBlogContent() {
         tags: [],
         slug: existingBlog.data.slug || "",
       });
+      
+      if (temporaryFeaturedImage) {
+        URL.revokeObjectURL(temporaryFeaturedImage.previewUrl);
+        setTemporaryFeaturedImage(null);
+      }
+      if (temporaryAvatarImage) {
+        URL.revokeObjectURL(temporaryAvatarImage.previewUrl);
+        setTemporaryAvatarImage(null);
+      }
     }
-  }, [existingBlog, isEditing]);
+  }, [existingBlog, isEditing, temporaryFeaturedImage, temporaryAvatarImage]);
 
   const handleInputChange = (field: keyof CreateBlogRequest, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
+
+    if (fieldErrors[field]) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        [field]: "",
+      }));
+    }
   };
 
   const handleContentChange = (newContent: string) => {
     handleInputChange("content", newContent);
+
+    if (fieldErrors.content) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        content: "",
+      }));
+    }
   };
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const authorAvatarInputRef = React.useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [isAuthorAvatarDragOver, setIsAuthorAvatarDragOver] = useState(false);
-  const [isUploadingFeatured, setIsUploadingFeatured] = useState(false);
-  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+
+  const createTemporaryImageUrl = (file: File): string => {
+    return URL.createObjectURL(file);
+  };
+
+  const cleanupTemporaryUrls = () => {
+    if (temporaryFeaturedImage?.previewUrl) {
+      URL.revokeObjectURL(temporaryFeaturedImage.previewUrl);
+    }
+    if (temporaryAvatarImage?.previewUrl) {
+      URL.revokeObjectURL(temporaryAvatarImage.previewUrl);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      cleanupTemporaryUrls();
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setIsUploadingFeatured(true);
-      try {
-        const slug = formData.slug || (formData.title ? formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'untitled');
-        const publicUrl = await uploadFileToStorage({
-          file,
-          slug,
-          kind: 'featured'
-        });
-        handleInputChange("featured_image", publicUrl);
-        success("Featured image uploaded successfully");
-      } catch (error) {
-        showError(error instanceof Error ? error.message : 'Failed to upload image');
-      } finally {
-        setIsUploadingFeatured(false);
+      const previewUrl = createTemporaryImageUrl(file);
+      setTemporaryFeaturedImage({ file, previewUrl });
+      handleInputChange("featured_image", previewUrl);
+
+      if (fieldErrors.featured_image) {
+        setFieldErrors((prev) => ({
+          ...prev,
+          featured_image: "",
+        }));
       }
     }
   };
@@ -141,21 +184,15 @@ function CreateBlogContent() {
     }
     
     const imageFile = files[0];
+    const previewUrl = createTemporaryImageUrl(imageFile);
+    setTemporaryFeaturedImage({ file: imageFile, previewUrl });
+    handleInputChange("featured_image", previewUrl);
 
-    setIsUploadingFeatured(true);
-    try {
-      const slug = formData.slug || (formData.title ? formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'untitled');
-      const publicUrl = await uploadFileToStorage({
-        file: imageFile,
-        slug,
-        kind: 'featured'
-      });
-      handleInputChange("featured_image", publicUrl);
-      success("Featured image uploaded successfully");
-    } catch (error) {
-      showError(error instanceof Error ? error.message : 'Failed to upload image');
-    } finally {
-      setIsUploadingFeatured(false);
+    if (fieldErrors.featured_image) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        featured_image: "",
+      }));
     }
   };
 
@@ -168,21 +205,9 @@ function CreateBlogContent() {
   ) => {
     const file = event.target.files?.[0];
     if (file) {
-      setIsUploadingAvatar(true);
-      try {
-        const slug = formData.slug || (formData.author_name ? formData.author_name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'author');
-        const publicUrl = await uploadFileToStorage({
-          file,
-          slug,
-          kind: 'avatar'
-        });
-        handleInputChange("avatar", publicUrl);
-        success("Avatar uploaded successfully");
-      } catch (error) {
-        showError(error instanceof Error ? error.message : 'Failed to upload avatar');
-      } finally {
-        setIsUploadingAvatar(false);
-      }
+      const previewUrl = createTemporaryImageUrl(file);
+      setTemporaryAvatarImage({ file, previewUrl });
+      handleInputChange("avatar", previewUrl);
     }
   };
 
@@ -207,23 +232,10 @@ function CreateBlogContent() {
       return;
     }
     
-        const imageFile = files[0];
-
-    setIsUploadingAvatar(true);
-    try {
-      const slug = formData.slug || (formData.author_name ? formData.author_name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'author');
-      const publicUrl = await uploadFileToStorage({
-        file: imageFile,
-        slug,
-        kind: 'avatar'
-      });
-      handleInputChange("avatar", publicUrl);
-      success("Avatar uploaded successfully");
-    } catch (error) {
-      showError(error instanceof Error ? error.message : 'Failed to upload avatar');
-    } finally {
-      setIsUploadingAvatar(false);
-    }
+    const imageFile = files[0];
+    const previewUrl = createTemporaryImageUrl(imageFile);
+    setTemporaryAvatarImage({ file: imageFile, previewUrl });
+    handleInputChange("avatar", previewUrl);
   };
 
   const handleAuthorAvatarUploadClick = () => {
@@ -231,11 +243,64 @@ function CreateBlogContent() {
   };
 
   const removeAuthorAvatar = () => {
+    if (temporaryAvatarImage?.previewUrl) {
+      URL.revokeObjectURL(temporaryAvatarImage.previewUrl);
+    }
+    setTemporaryAvatarImage(null);
     handleInputChange("avatar", "");
   };
 
   const removeFeaturedImage = () => {
+    if (temporaryFeaturedImage?.previewUrl) {
+      URL.revokeObjectURL(temporaryFeaturedImage.previewUrl);
+    }
+    setTemporaryFeaturedImage(null);
     handleInputChange("featured_image", "");
+  };
+
+  const uploadTemporaryImages = async (): Promise<{ featuredImageUrl?: string; avatarUrl?: string }> => {
+    const uploadPromises: Promise<{ type: 'featured' | 'avatar'; url: string }>[] = [];
+
+    if (temporaryFeaturedImage && !temporaryFeaturedImage.uploadedUrl) {
+      const slug = formData.slug || (formData.title ? formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'untitled');
+      uploadPromises.push(
+        uploadFileToStorage({
+          file: temporaryFeaturedImage.file,
+          slug,
+          kind: 'featured'
+        }).then(url => ({ type: 'featured', url }))
+      );
+    }
+
+    if (temporaryAvatarImage && !temporaryAvatarImage.uploadedUrl) {
+      const slug = formData.slug || (formData.author_name ? formData.author_name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'author');
+      uploadPromises.push(
+        uploadFileToStorage({
+          file: temporaryAvatarImage.file,
+          slug,
+          kind: 'avatar'
+        }).then(url => ({ type: 'avatar', url }))
+      );
+    }
+
+    if (uploadPromises.length === 0) {
+      return {};
+    }
+
+    const results = await Promise.all(uploadPromises);
+    const uploadedUrls: { featuredImageUrl?: string; avatarUrl?: string } = {};
+
+    results.forEach(result => {
+      if (result.type === 'featured') {
+        uploadedUrls.featuredImageUrl = result.url;
+        setTemporaryFeaturedImage(prev => prev ? { ...prev, uploadedUrl: result.url } : null);
+      } else if (result.type === 'avatar') {
+        uploadedUrls.avatarUrl = result.url;
+        setTemporaryAvatarImage(prev => prev ? { ...prev, uploadedUrl: result.url } : null);
+      }
+    });
+
+    return uploadedUrls;
   };
 
   const handlePreview = () => {
@@ -243,46 +308,64 @@ function CreateBlogContent() {
   };
 
   const validateForm = () => {
+    const errors: Record<string, string> = {};
+    
     if (!formData.title.trim()) {
-      alert("Please enter a title");
-      return false;
+      errors.title = "Please enter a title";
     }
     if (!formData.excerpt.trim()) {
-      alert("Please enter an excerpt");
-      return false;
+      errors.excerpt = "Please enter an excerpt";
     }
     if (!formData.content.trim()) {
-      alert("Please add some content");
-      return false;
+      errors.content = "Please add some content";
     }
     if (!formData.category) {
-      alert("Please select a category");
-      return false;
+      errors.category = "Please select a category";
     }
     if (!formData.author_name.trim()) {
-      alert("Please enter an author name");
-      return false;
+      errors.author_name = "Please enter an author name";
     }
-    return true;
+    if (!formData.featured_image) {
+      errors.featured_image = "Please upload a featured image";
+    }
+    
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleSaveDraft = async () => {
     if (!validateForm()) return;
 
     try {
-      const blogData = { ...formData, published: false };
+      setIsUploadingImages(true);
+      
+      const uploadedUrls = await uploadTemporaryImages();
+      
+      const blogData: CreateBlogRequest = { 
+        ...formData, 
+        published: false,
+        featured_image: uploadedUrls.featuredImageUrl || formData.featured_image,
+        avatar: uploadedUrls.avatarUrl || formData.avatar
+      };
 
       if (isEditing && editId) {
         await updateBlog({ id: editId, data: blogData });
         success("Draft updated successfully!");
+        router.push("/blog/management");
       } else {
         await createBlog(blogData);
         success("Draft saved successfully!");
         router.push("/blog/management");
       }
+
+      cleanupTemporaryUrls();
+      setTemporaryFeaturedImage(null);
+      setTemporaryAvatarImage(null);
     } catch (error) {
       console.error("Error saving draft:", error);
       showError("Failed to save draft", "Please try again.");
+    } finally {
+      setIsUploadingImages(false);
     }
   };
 
@@ -290,7 +373,16 @@ function CreateBlogContent() {
     if (!validateForm()) return;
 
     try {
-      const blogData = { ...formData, published: true };
+      setIsUploadingImages(true);
+      
+      const uploadedUrls = await uploadTemporaryImages();
+      
+      const blogData: CreateBlogRequest = { 
+        ...formData, 
+        published: true,
+        featured_image: uploadedUrls.featuredImageUrl || formData.featured_image,
+        avatar: uploadedUrls.avatarUrl || formData.avatar
+      };
 
       if (isEditing && editId) {
         await updateBlog({ id: editId, data: blogData });
@@ -300,15 +392,17 @@ function CreateBlogContent() {
         success("Blog published successfully!");
       }
 
+      cleanupTemporaryUrls();
+      setTemporaryFeaturedImage(null);
+      setTemporaryAvatarImage(null);
+
       router.push("/blog");
     } catch (error) {
       console.error("Error publishing blog:", error);
       showError("Failed to publish blog", "Please try again.");
+    } finally {
+      setIsUploadingImages(false);
     }
-  };
-
-  const handleAuthSuccess = () => {
-    setIsAuthenticated(true);
   };
 
   if (!isMounted) {
@@ -331,10 +425,6 @@ function CreateBlogContent() {
         <Footer />
       </div>
     );
-  }
-
-  if (!isAuthenticated) {
-    return <PasswordProtection onSuccess={handleAuthSuccess} />;
   }
 
   return (
@@ -371,8 +461,13 @@ function CreateBlogContent() {
                 value={formData.title}
                 onChange={(e) => handleInputChange("title", e.target.value)}
                 placeholder="Enter blog title..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-blue-500 focus:border-transparent"
+                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-blue-500 focus:border-transparent ${
+                  fieldErrors.title ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {fieldErrors.title && (
+                <p className="text-red-500 text-sm mt-1">{fieldErrors.title}</p>
+              )}
             </div>
 
             <div>
@@ -384,8 +479,13 @@ function CreateBlogContent() {
                 onChange={(e) => handleInputChange("excerpt", e.target.value)}
                 placeholder="Write a brief excerpt..."
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-blue-500 focus:border-transparent resize-none"
+                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-blue-500 focus:border-transparent resize-none ${
+                  fieldErrors.excerpt ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {fieldErrors.excerpt && (
+                <p className="text-red-500 text-sm mt-1">{fieldErrors.excerpt}</p>
+              )}
             </div>
 
             <div>
@@ -395,7 +495,7 @@ function CreateBlogContent() {
               <div className="space-y-3">
                 {formData.featured_image ? (
                   <div className="relative">
-                    <img
+                    <Image
                       src={formData.featured_image}
                       alt="Featured image preview"
                       width={400}
@@ -416,13 +516,13 @@ function CreateBlogContent() {
                       isDragOver
                         ? "border-blue-400 bg-blue-50"
                         : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
-                    } ${isUploadingFeatured ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    } ${isUploadingImages ? 'opacity-50 cursor-not-allowed' : ''}`}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
-                    onClick={isUploadingFeatured ? undefined : handleUploadClick}
+                    onClick={isUploadingImages ? undefined : handleUploadClick}
                   >
-                    {isUploadingFeatured ? (
+                    {isUploadingImages ? (
                       <>
                         <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
                         <p className="text-gray-500 mb-2">
@@ -454,13 +554,18 @@ function CreateBlogContent() {
                   className="hidden"
                 />
               </div>
+              {fieldErrors.featured_image && (
+                <p className="text-red-500 text-sm mt-1">{fieldErrors.featured_image}</p>
+              )}
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Content <span className="text-red-500">*</span>
               </label>
-              <div className="border border-gray-300 rounded-lg overflow-hidden">
+              <div className={`border rounded-lg overflow-hidden ${
+                fieldErrors.content ? "border-red-500" : "border-gray-300"
+              }`}>
                 <RichTextEditor
                   content={formData.content}
                   onChange={handleContentChange}
@@ -468,6 +573,9 @@ function CreateBlogContent() {
                   className="min-h-[400px]"
                 />
               </div>
+              {fieldErrors.content && (
+                <p className="text-red-500 text-sm mt-1">{fieldErrors.content}</p>
+              )}
             </div>
           </div>
 
@@ -480,7 +588,7 @@ function CreateBlogContent() {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Author Name *
+                      Author Name <span className="text-red-500">*</span>
                     </label>
                     {authors && authors.length > 0 ? (
                       <select
@@ -488,7 +596,9 @@ function CreateBlogContent() {
                         onChange={(e) =>
                           handleInputChange("author_name", e.target.value)
                         }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-blue-500 focus:border-transparent"
+                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-blue-500 focus:border-transparent ${
+                          fieldErrors.author_name ? "border-red-500" : "border-gray-300"
+                        }`}
                       >
                         <option value="">Select an author...</option>
                         {Array.isArray(authors) &&
@@ -508,8 +618,13 @@ function CreateBlogContent() {
                           handleInputChange("author_name", e.target.value)
                         }
                         placeholder="Enter author name..."
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-blue-500 focus:border-transparent"
+                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-blue-500 focus:border-transparent ${
+                          fieldErrors.author_name ? "border-red-500" : "border-gray-300"
+                        }`}
                       />
+                    )}
+                    {fieldErrors.author_name && (
+                      <p className="text-red-500 text-sm mt-1">{fieldErrors.author_name}</p>
                     )}
                   </div>
 
@@ -520,7 +635,7 @@ function CreateBlogContent() {
                     <div className="space-y-3">
                       {formData.avatar ? (
                         <div className="relative">
-                          <img
+                          <Image
                             src={formData.avatar}
                             alt="Author avatar preview"
                             width={80}
@@ -541,13 +656,13 @@ function CreateBlogContent() {
                             isAuthorAvatarDragOver
                               ? "border-blue-400 bg-blue-50"
                               : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
-                          } ${isUploadingAvatar ? 'opacity-50 cursor-not-allowed' : ''}`}
+                          } ${isUploadingImages ? 'opacity-50 cursor-not-allowed' : ''}`}
                           onDragOver={handleAuthorAvatarDragOver}
                           onDragLeave={handleAuthorAvatarDragLeave}
                           onDrop={handleAuthorAvatarDrop}
-                          onClick={isUploadingAvatar ? undefined : handleAuthorAvatarUploadClick}
+                          onClick={isUploadingImages ? undefined : handleAuthorAvatarUploadClick}
                         >
-                          {isUploadingAvatar ? (
+                          {isUploadingImages ? (
                             <>
                               <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
                               <p className="text-sm text-gray-500 mb-1">
@@ -592,14 +707,16 @@ function CreateBlogContent() {
               ) : (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Category *
+                    Category <span className="text-red-500">*</span>
                   </label>
                   <select
                     value={formData.category}
                     onChange={(e) =>
                       handleInputChange("category", e.target.value)
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-blue-500 focus:border-transparent"
+                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-blue-500 focus:border-transparent ${
+                      fieldErrors.category ? "border-red-500" : "border-gray-300"
+                    }`}
                   >
                     <option value="">Select a category...</option>
                     {Array.isArray(categories) &&
@@ -617,6 +734,9 @@ function CreateBlogContent() {
                       </>
                     )}
                   </select>
+                  {fieldErrors.category && (
+                    <p className="text-red-500 text-sm mt-1">{fieldErrors.category}</p>
+                  )}
                 </div>
               )}
             </div>
@@ -673,7 +793,7 @@ function CreateBlogContent() {
                 variant="ghost"
                 onClick={() => setIsPreviewMode(false)}
               >
-                ×
+                <X className="w-4 h-4" />
               </Button>
             </div>
             <div className="flex-1 overflow-auto p-6">
@@ -696,7 +816,7 @@ function CreateBlogContent() {
 
                   {formData.featured_image && (
                     <div className="mb-6">
-                      <img
+                      <Image
                         src={formData.featured_image}
                         alt="Featured image"
                         width={800}
@@ -708,7 +828,7 @@ function CreateBlogContent() {
 
                   <div className="flex items-center">
                     {formData.avatar ? (
-                      <img
+                      <Image
                         src={formData.avatar}
                         alt="Author avatar"
                         width={48}
