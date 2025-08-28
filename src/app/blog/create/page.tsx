@@ -149,6 +149,18 @@ function CreateBlogContent() {
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      const maxSize = 10 * 1024 * 1024;
+      if (file.size > maxSize) {
+        showError("File size error", "Image file size must be less than 10MB. Please select a smaller image.");
+        return;
+      }
+
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+      if (!allowedTypes.includes(file.type)) {
+        showError("File type error", "Only image files are allowed (jpeg, png, webp, gif).");
+        return;
+      }
+
       const previewUrl = createTemporaryImageUrl(file);
       setTemporaryFeaturedImage({ file, previewUrl });
       handleInputChange("featured_image", previewUrl);
@@ -184,6 +196,19 @@ function CreateBlogContent() {
     }
     
     const imageFile = files[0];
+    
+    const maxSize = 10 * 1024 * 1024;
+    if (imageFile.size > maxSize) {
+      showError("File size error", "Image file size must be less than 10MB. Please select a smaller image.");
+      return;
+    }
+
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+    if (!allowedTypes.includes(imageFile.type)) {
+      showError("File type error", "Only image files are allowed (jpeg, png, webp, gif).");
+      return;
+    }
+
     const previewUrl = createTemporaryImageUrl(imageFile);
     setTemporaryFeaturedImage({ file: imageFile, previewUrl });
     handleInputChange("featured_image", previewUrl);
@@ -205,6 +230,18 @@ function CreateBlogContent() {
   ) => {
     const file = event.target.files?.[0];
     if (file) {
+      const maxSize = 10 * 1024 * 1024;
+      if (file.size > maxSize) {
+        showError("File size error", "Image file size must be less than 10MB. Please select a smaller image.");
+        return;
+      }
+
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+      if (!allowedTypes.includes(file.type)) {
+        showError("File type error", "Only image files are allowed (jpeg, png, webp, gif).");
+        return;
+      }
+
       const previewUrl = createTemporaryImageUrl(file);
       setTemporaryAvatarImage({ file, previewUrl });
       handleInputChange("avatar", previewUrl);
@@ -233,6 +270,19 @@ function CreateBlogContent() {
     }
     
     const imageFile = files[0];
+    
+    const maxSize = 10 * 1024 * 1024;
+    if (imageFile.size > maxSize) {
+      showError("File size error", "Image file size must be less than 10MB. Please select a smaller image.");
+      return;
+    }
+
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+    if (!allowedTypes.includes(imageFile.type)) {
+      showError("File type error", "Only image files are allowed (jpeg, png, webp, gif).");
+      return;
+    }
+
     const previewUrl = createTemporaryImageUrl(imageFile);
     setTemporaryAvatarImage({ file: imageFile, previewUrl });
     handleInputChange("avatar", previewUrl);
@@ -316,9 +366,12 @@ function CreateBlogContent() {
     if (!formData.excerpt.trim()) {
       errors.excerpt = "Please enter an excerpt";
     }
-    if (!formData.content.trim()) {
-      errors.content = "Please add some content";
+
+    const contentWithoutHtml = formData.content.replace(/<[^>]*>/g, '').trim();
+    if (!contentWithoutHtml) {
+      errors.content = "Content cannot be empty or only contain whitespace/tabs";
     }
+    
     if (!formData.category) {
       errors.category = "Please select a category";
     }
@@ -363,7 +416,17 @@ function CreateBlogContent() {
       setTemporaryAvatarImage(null);
     } catch (error) {
       console.error("Error saving draft:", error);
-      showError("Failed to save draft", "Please try again.");
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      
+      if (errorMessage.includes("File size must be less than 10MB")) {
+        showError("File size error", "Image file size must be less than 10MB. Please select a smaller image.");
+      } else if (errorMessage.includes("Only image files are allowed")) {
+        showError("File type error", "Only image files are allowed (jpeg, png, webp, gif).");
+      } else if (errorMessage.includes("File upload failed")) {
+        showError("Upload error", "File upload failed. Please try again.");
+      } else {
+        showError("Failed to save draft", "Please try again.");
+      }
     } finally {
       setIsUploadingImages(false);
     }
@@ -399,7 +462,17 @@ function CreateBlogContent() {
       router.push("/blog");
     } catch (error) {
       console.error("Error publishing blog:", error);
-      showError("Failed to publish blog", "Please try again.");
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      
+      if (errorMessage.includes("File size must be less than 10MB")) {
+        showError("File size error", "Image file size must be less than 10MB. Please select a smaller image.");
+      } else if (errorMessage.includes("Only image files are allowed")) {
+        showError("File type error", "Only image files are allowed (jpeg, png, webp, gif).");
+      } else if (errorMessage.includes("File upload failed")) {
+        showError("Upload error", "File upload failed. Please try again.");
+      } else {
+        showError("Failed to publish blog", "Please try again.");
+      }
     } finally {
       setIsUploadingImages(false);
     }

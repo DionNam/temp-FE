@@ -110,7 +110,8 @@ export function RichTextEditor({
     editorProps: {
       attributes: {
         class:
-          "tiptap-content focus:outline-none min-h-[400px] p-4 relative prose prose-sm sm:prose",
+          "tiptap-content focus:outline-none min-h-[400px] p-4 relative prose prose-sm sm:prose [&_p]:whitespace-pre-wrap",
+        style: "tab-size: 4;",
       },
     },
     immediatelyRender: false,
@@ -174,6 +175,7 @@ export function RichTextEditor({
     (event: KeyboardEvent) => {
       if (!editor) return;
       const key = event.key;
+
       if ((key === " " || key === "Enter") && editor.isActive("link")) {
         event.preventDefault();
         editor
@@ -183,9 +185,23 @@ export function RichTextEditor({
           .insertContent(key === " " ? " " : "\n")
           .run();
       }
+
       if (key === "Tab") {
         event.preventDefault();
-        editor.chain().focus().insertContent("    ").run();
+        const spaces = "    ";
+        editor.chain().focus().insertContent(spaces).run();
+      }
+
+      if (key === "Backspace") {
+        const { from, to } = editor.state.selection;
+        if (from === to) { 
+          const textBefore = editor.state.doc.textBetween(Math.max(0, from - 4), from);
+          if (textBefore === "    ") {
+            event.preventDefault();
+            editor.chain().focus().deleteRange({ from: from - 4, to }).run();
+            return;
+          }
+        }
       }
     },
     [editor]
