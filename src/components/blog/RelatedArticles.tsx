@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { BlogPost } from '@/types/blog';
-import { generateSlug } from '@/lib/utils';
+import { generateSlug, sortBlogPostsByDate } from '@/lib/utils';
 
 interface RelatedArticlesProps {
   posts: BlogPost[];
@@ -20,9 +20,9 @@ const categories = {
 };
 
 export const RelatedArticles: React.FC<RelatedArticlesProps> = ({ posts, currentPostId }) => {
-  const filteredPosts = posts
-    .filter(post => post.id !== currentPostId)
-    .slice(0, 3);
+  const filteredPosts = sortBlogPostsByDate(
+    posts.filter(post => post.id !== currentPostId)
+  ).slice(0, 3);
 
   if (filteredPosts.length === 0) {
     return null;

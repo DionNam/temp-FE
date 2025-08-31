@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
+// import Image from "next/image";
 import { Footer } from "@/components/layout/Footer";
 import { BlogPost } from "@/types/blog";
 import { useBlogs, useDeleteBlog } from "@/hooks/useBlogQueries";
 import { useBlogFilters } from "@/hooks/useBlogFilters";
-import { generateSlug } from "@/lib/utils";
+import { generateSlug, sortBlogPostsByDate } from "@/lib/utils";
 import { ConfirmationModal } from "@/components/ui/modal";
 import { useToast, ToastContainer } from "@/components/ui/toast";
 import { Pagination } from "@/components/ui/pagination";
@@ -67,7 +67,8 @@ function BlogManagementCard({
     <article className="bg-transparent rounded-xl p-6">
       <div className="flex gap-4">
         <div className="flex-shrink-0">
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src={featuredImage}
             alt={`Thumbnail for ${post.title}`}
             width={80}
@@ -87,7 +88,8 @@ function BlogManagementCard({
             </div>
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center">
-                <Image
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                   src={avatar}
                   alt={`${authorName} avatar`}
                   width={32}
@@ -246,6 +248,8 @@ export default function BlogManagementPage() {
         ? false
         : undefined,
     limit: 7,
+    sort_by: 'published_at',
+    sort_order: 'desc' as const,
   });
 
   const { data: blogResponse, isLoading, error, refetch } = useBlogs(filters);
@@ -255,16 +259,18 @@ export default function BlogManagementPage() {
     ? blogResponse.data.blogs
     : [];
 
-  const filteredPosts = posts.filter(
-    (post: BlogPost & { status?: "published" | "draft" }) => {
-      const postStatus =
-        (post as BlogPost & { status?: "published" | "draft" }).status ||
-        (post.published ? "published" : "draft");
-      if (activeTab === "all") return true;
-      if (activeTab === "published") return postStatus === "published";
-      if (activeTab === "drafts") return postStatus === "draft";
-      return true;
-    }
+  const filteredPosts = sortBlogPostsByDate(
+    posts.filter(
+      (post: BlogPost & { status?: "published" | "draft" }) => {
+        const postStatus =
+          (post as BlogPost & { status?: "published" | "draft" }).status ||
+          (post.published ? "published" : "draft");
+        if (activeTab === "all") return true;
+        if (activeTab === "published") return postStatus === "published";
+        if (activeTab === "drafts") return postStatus === "draft";
+        return true;
+      }
+    )
   );
 
   const pagination = blogResponse?.data

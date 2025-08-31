@@ -50,39 +50,29 @@ export function Pagination({
         <button
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1}
-          className="px-2 sm:px-3 py-2 text-sm font-medium bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="w-10 h-10 flex items-center justify-center text-sm font-medium bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          <span className="hidden sm:inline">
-            <ChevronsLeft className="w-4 h-4" />
-          </span>
-          <span className="sm:hidden">
-            <ChevronsLeft className="w-4 h-4" />
-          </span>
+          <ChevronsLeft className="w-4 h-4" />
         </button>
 
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-2 sm:px-3 py-2 text-sm font-medium bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="w-10 h-10 flex items-center justify-center text-sm font-medium bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          <span className="hidden sm:inline">
-            <ChevronLeft className="w-4 h-4" />
-          </span>
-          <span className="sm:hidden">
-            <ChevronLeft className="w-4 h-4" />
-          </span>
+          <ChevronLeft className="w-4 h-4" />
         </button>
 
         {visiblePages.map((page, index) => (
           <React.Fragment key={index}>
             {page === "..." ? (
-              <span className="px-2 sm:px-3 py-2 text-sm font-medium bg-blue-600 text-white rounded-md">
+              <span className="w-10 h-10 flex items-center justify-center text-sm font-medium bg-blue-600 text-white rounded-md">
                 ...
               </span>
             ) : (
               <button
                 onClick={() => onPageChange(page as number)}
-                className={`px-2 sm:px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                className={`w-10 h-10 flex items-center justify-center text-sm font-medium rounded-md transition-colors ${
                   page === currentPage
                     ? "bg-blue-200 text-blue-800"
                     : "bg-blue-600 text-white hover:bg-blue-700"
@@ -97,27 +87,17 @@ export function Pagination({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="px-2 sm:px-3 py-2 text-sm font-medium bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="w-10 h-10 flex items-center justify-center text-sm font-medium bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          <span className="hidden sm:inline">
-            <ChevronRight className="w-4 h-4" />
-          </span>
-          <span className="sm:hidden">
-            <ChevronRight className="w-4 h-4" />
-          </span>
+          <ChevronRight className="w-4 h-4" />
         </button>
 
         <button
           onClick={() => onPageChange(totalPages)}
           disabled={currentPage === totalPages}
-          className="px-2 sm:px-3 py-2 text-sm font-medium bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="w-10 h-10 flex items-center justify-center text-sm font-medium bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          <span className="hidden sm:inline">
-            <ChevronsRight className="w-4 h-4" />
-          </span>
-          <span className="sm:hidden">
-            <ChevronsRight className="w-4 h-4" />
-          </span>
+          <ChevronsRight className="w-4 h-4" />
         </button>
       </div>
     </div>

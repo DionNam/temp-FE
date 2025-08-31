@@ -67,3 +67,13 @@ export function validateBlogPost(post: Partial<BlogPost>): BlogPost {
   };
 }
 
+export function sortBlogPostsByDate(posts: BlogPost[], order: 'asc' | 'desc' = 'desc'): BlogPost[] {
+  return posts.sort((a, b) => {
+    const dateA = new Date(a.published_at || a.publishedAt || a.date || a.created_at || 0);
+    const dateB = new Date(b.published_at || b.publishedAt || b.date || b.created_at || 0);
+    return order === 'desc' 
+      ? dateB.getTime() - dateA.getTime() 
+      : dateA.getTime() - dateB.getTime();
+  });
+}
+

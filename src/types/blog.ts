@@ -83,6 +83,8 @@ export interface BlogListParams {
   search?: string;
   published?: boolean;
   author_id?: string;
+  sort_by?: string;
+  sort_order?: 'asc' | 'desc';
 }
 
 export interface BlogListResponse {
@@ -139,6 +141,7 @@ export interface CreateBlogRequest {
   meta_description?: string;
   published?: boolean;
   tags?: string[];
+  slug?: string;
 }
 
 export interface UpdateBlogRequest extends Partial<CreateBlogRequest> {

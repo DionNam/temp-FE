@@ -6,9 +6,8 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { useNavbar } from "@/hooks/useNavbar";
 import { BlogPost } from "@/types/blog";
-import { generateSlug } from "@/lib/utils";
+import { generateSlug, sortBlogPostsByDate } from "@/lib/utils";
 import { Pagination } from "@/components/ui/pagination";
-import Image from "next/image";
 import { useBlogs, useCategories } from "@/hooks/useBlogQueries";
 
 interface BlogClientWrapperProps {
@@ -42,12 +41,13 @@ function BlogCard({
         <article className="bg-transparent rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer px-2 sm:px-0">
           <div className="flex flex-col lg:flex-row lg:h-full">
             <div className="relative w-full lg:w-1/2 lg:min-h-[400px]">
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src={image}
                 alt={post.title}
                 width={600}
                 height={400}
-                className="w-full h-48 sm:h-64 lg:h-full object-cover rounded-2xl"
+                className="w-full h-48 sm:h-64 lg:h-full object-cover rounded-2xl object-center"
               />
             </div>
 
@@ -57,7 +57,8 @@ function BlogCard({
                   {post.category}
                 </span>
                 <div className="flex items-center">
-                  <Image
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
                     src={authorAvatar}
                     alt={`${
                       typeof post.author === "string"
@@ -97,12 +98,13 @@ function BlogCard({
       <article className="bg-transparent rounded-xl overflow-hidden transition-all duration-300 group cursor-pointer px-2 sm:px-0">
         <div className="flex flex-row sm:flex-col">
           <div className="relative flex-shrink-0 w-1/2 h-28 sm:w-full sm:h-64">
-            <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src={image}
               alt={post.title}
               width={300}
               height={240}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 rounded-xl"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 rounded-xl object-center"
             />
           </div>
           <div className="flex flex-col justify-between py-3 px-3 sm:px-0 sm:py-4 w-1/2 sm:w-full flex-1">
@@ -112,7 +114,8 @@ function BlogCard({
                   {post.category}
                 </span>
                 <div className="flex items-center">
-                  <Image
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
                     src={authorAvatar}
                     alt={`${
                       typeof post.author === "string"
@@ -175,13 +178,17 @@ export function BlogClientWrapper({
     limit,
     ...(category && category !== "all" && { category }),
     published: true,
+    sort_by: 'published_at',
+    sort_order: 'desc' as const,
   };
   
   const { data: blogResponse, isLoading: blogsLoading, error: blogsError } = useBlogs(params);
   const { data: categoriesResponse, isLoading: categoriesLoading } = useCategories();
   
   const allPosts = Array.isArray(blogResponse?.data?.blogs) ? blogResponse.data.blogs : [];
-  const posts = allPosts.filter((post: BlogPost) => post.published === true);
+  const posts = sortBlogPostsByDate(
+    allPosts.filter((post: BlogPost) => post.published === true)
+  );
   
   const pagination = blogResponse?.data
     ? {
