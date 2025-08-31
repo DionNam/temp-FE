@@ -2,24 +2,18 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Image from "next/image";
 import { Footer } from "@/components/layout/Footer";
 import { RichTextEditor } from "@/components/blog/RichTextEditor";
 import { Button } from "@/components/ui/button";
-import { Eye, Save, Send, Upload, X } from "lucide-react";
+import { Eye, Save, Send, X } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { useCreateBlog, useUpdateBlog, useBlog } from "@/hooks/useBlogQueries";
 import { useAuthors } from "@/hooks/useAuthor";
 import { useBlogCategories } from "@/hooks/useBlogFilters";
+import { useImageUpload } from "@/hooks/useImageUpload";
 import { CreateBlogRequest } from "@/types/blog";
 import { useToast, ToastContainer } from "@/components/ui/toast";
-import { uploadFileToStorage } from "@/services/storageService";
-
-interface TemporaryImage {
-  file: File;
-  previewUrl: string;
-  uploadedUrl?: string;
-}
+import { ImageUploadArea } from "@/components/blog/ImageUploadArea";
 
 function CreateBlogContent() {
   const router = useRouter();
@@ -43,9 +37,6 @@ function CreateBlogContent() {
     slug: "",
   });
 
-  const [temporaryFeaturedImage, setTemporaryFeaturedImage] = useState<TemporaryImage | null>(null);
-  const [temporaryAvatarImage, setTemporaryAvatarImage] = useState<TemporaryImage | null>(null);
-  const [isUploadingImages, setIsUploadingImages] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const {
@@ -63,7 +54,7 @@ function CreateBlogContent() {
   const { data: categories, loading: categoriesLoading } = useBlogCategories();
 
   const isEditing = !!editId;
-  const isLoading = createLoading || updateLoading || isUploadingImages;
+  const isLoading = createLoading || updateLoading;
   const error = createError?.message || updateError?.message;
 
   useEffect(() => {
@@ -84,17 +75,8 @@ function CreateBlogContent() {
         tags: [],
         slug: existingBlog.data.slug || "",
       });
-      
-      if (temporaryFeaturedImage) {
-        URL.revokeObjectURL(temporaryFeaturedImage.previewUrl);
-        setTemporaryFeaturedImage(null);
-      }
-      if (temporaryAvatarImage) {
-        URL.revokeObjectURL(temporaryAvatarImage.previewUrl);
-        setTemporaryAvatarImage(null);
-      }
     }
-  }, [existingBlog, isEditing, temporaryFeaturedImage, temporaryAvatarImage]);
+  }, [existingBlog, isEditing]);
 
   const handleInputChange = (field: keyof CreateBlogRequest, value: string) => {
     setFormData((prev) => ({
@@ -121,234 +103,56 @@ function CreateBlogContent() {
     }
   };
 
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
-  const authorAvatarInputRef = React.useRef<HTMLInputElement>(null);
-  const [isDragOver, setIsDragOver] = useState(false);
-  const [isAuthorAvatarDragOver, setIsAuthorAvatarDragOver] = useState(false);
-
-  const createTemporaryImageUrl = (file: File): string => {
-    return URL.createObjectURL(file);
-  };
-
-  const cleanupTemporaryUrls = () => {
-    if (temporaryFeaturedImage?.previewUrl) {
-      URL.revokeObjectURL(temporaryFeaturedImage.previewUrl);
-    }
-    if (temporaryAvatarImage?.previewUrl) {
-      URL.revokeObjectURL(temporaryAvatarImage.previewUrl);
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      cleanupTemporaryUrls();
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const maxSize = 10 * 1024 * 1024;
-      if (file.size > maxSize) {
-        showError("File size error", "Image file size must be less than 10MB. Please select a smaller image.");
-        return;
-      }
-
-      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
-      if (!allowedTypes.includes(file.type)) {
-        showError("File type error", "Only image files are allowed (jpeg, png, webp, gif).");
-        return;
-      }
-
-      const previewUrl = createTemporaryImageUrl(file);
-      setTemporaryFeaturedImage({ file, previewUrl });
-      handleInputChange("featured_image", previewUrl);
-
+  const featuredImageUpload = useImageUpload({
+    type: "featured",
+    formData: {
+      slug: formData.slug,
+      title: formData.title,
+    },
+    onImageUploaded: (url: string) => {
+      handleInputChange("featured_image", url);
       if (fieldErrors.featured_image) {
         setFieldErrors((prev) => ({
           ...prev,
           featured_image: "",
         }));
       }
-    }
-  };
+    },
+    onError: (message: string) => {
+      showError("File upload error", message);
+    },
+  });
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(true);
-  };
+  const avatarImageUpload = useImageUpload({
+    type: "avatar",
+    formData: {
+      slug: formData.slug,
+      author_name: formData.author_name,
+    },
+    onImageUploaded: (url: string) => {
+      handleInputChange("avatar", url);
+    },
+    onError: (message: string) => {
+      showError("File upload error", message);
+    },
+  });
 
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-  };
-
-  const handleDrop = async (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-
-    const files = Array.from(e.dataTransfer.files);
-    
-    if (files.length === 0) {
-      showError("Please drop a file");
-      return;
-    }
-    
-    const imageFile = files[0];
-    
-    const maxSize = 10 * 1024 * 1024;
-    if (imageFile.size > maxSize) {
-      showError("File size error", "Image file size must be less than 10MB. Please select a smaller image.");
-      return;
-    }
-
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
-    if (!allowedTypes.includes(imageFile.type)) {
-      showError("File type error", "Only image files are allowed (jpeg, png, webp, gif).");
-      return;
-    }
-
-    const previewUrl = createTemporaryImageUrl(imageFile);
-    setTemporaryFeaturedImage({ file: imageFile, previewUrl });
-    handleInputChange("featured_image", previewUrl);
-
-    if (fieldErrors.featured_image) {
-      setFieldErrors((prev) => ({
-        ...prev,
-        featured_image: "",
-      }));
-    }
-  };
-
-  const handleUploadClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleAuthorAvatarUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const maxSize = 10 * 1024 * 1024;
-      if (file.size > maxSize) {
-        showError("File size error", "Image file size must be less than 10MB. Please select a smaller image.");
-        return;
-      }
-
-      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
-      if (!allowedTypes.includes(file.type)) {
-        showError("File type error", "Only image files are allowed (jpeg, png, webp, gif).");
-        return;
-      }
-
-      const previewUrl = createTemporaryImageUrl(file);
-      setTemporaryAvatarImage({ file, previewUrl });
-      handleInputChange("avatar", previewUrl);
-    }
-  };
-
-  const handleAuthorAvatarDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsAuthorAvatarDragOver(true);
-  };
-
-  const handleAuthorAvatarDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsAuthorAvatarDragOver(false);
-  };
-
-  const handleAuthorAvatarDrop = async (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsAuthorAvatarDragOver(false);
-
-    const files = Array.from(e.dataTransfer.files);
-    
-    if (files.length === 0) {
-      showError("Please drop a file");
-      return;
-    }
-    
-    const imageFile = files[0];
-    
-    const maxSize = 10 * 1024 * 1024;
-    if (imageFile.size > maxSize) {
-      showError("File size error", "Image file size must be less than 10MB. Please select a smaller image.");
-      return;
-    }
-
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
-    if (!allowedTypes.includes(imageFile.type)) {
-      showError("File type error", "Only image files are allowed (jpeg, png, webp, gif).");
-      return;
-    }
-
-    const previewUrl = createTemporaryImageUrl(imageFile);
-    setTemporaryAvatarImage({ file: imageFile, previewUrl });
-    handleInputChange("avatar", previewUrl);
-  };
-
-  const handleAuthorAvatarUploadClick = () => {
-    authorAvatarInputRef.current?.click();
-  };
-
-  const removeAuthorAvatar = () => {
-    if (temporaryAvatarImage?.previewUrl) {
-      URL.revokeObjectURL(temporaryAvatarImage.previewUrl);
-    }
-    setTemporaryAvatarImage(null);
-    handleInputChange("avatar", "");
-  };
-
-  const removeFeaturedImage = () => {
-    if (temporaryFeaturedImage?.previewUrl) {
-      URL.revokeObjectURL(temporaryFeaturedImage.previewUrl);
-    }
-    setTemporaryFeaturedImage(null);
-    handleInputChange("featured_image", "");
-  };
-
-  const uploadTemporaryImages = async (): Promise<{ featuredImageUrl?: string; avatarUrl?: string }> => {
-    const uploadPromises: Promise<{ type: 'featured' | 'avatar'; url: string }>[] = [];
-
-    if (temporaryFeaturedImage && !temporaryFeaturedImage.uploadedUrl) {
-      const slug = formData.slug || (formData.title ? formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'untitled');
-      uploadPromises.push(
-        uploadFileToStorage({
-          file: temporaryFeaturedImage.file,
-          slug,
-          kind: 'featured'
-        }).then(url => ({ type: 'featured', url }))
-      );
-    }
-
-    if (temporaryAvatarImage && !temporaryAvatarImage.uploadedUrl) {
-      const slug = formData.slug || (formData.author_name ? formData.author_name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'author');
-      uploadPromises.push(
-        uploadFileToStorage({
-          file: temporaryAvatarImage.file,
-          slug,
-          kind: 'avatar'
-        }).then(url => ({ type: 'avatar', url }))
-      );
-    }
-
-    if (uploadPromises.length === 0) {
-      return {};
-    }
-
-    const results = await Promise.all(uploadPromises);
+  const uploadTemporaryImages = async (): Promise<{
+    featuredImageUrl?: string;
+    avatarUrl?: string;
+  }> => {
     const uploadedUrls: { featuredImageUrl?: string; avatarUrl?: string } = {};
 
-    results.forEach(result => {
-      if (result.type === 'featured') {
-        uploadedUrls.featuredImageUrl = result.url;
-        setTemporaryFeaturedImage(prev => prev ? { ...prev, uploadedUrl: result.url } : null);
-      } else if (result.type === 'avatar') {
-        uploadedUrls.avatarUrl = result.url;
-        setTemporaryAvatarImage(prev => prev ? { ...prev, uploadedUrl: result.url } : null);
-      }
-    });
+    const featuredUrl = featuredImageUpload.getUploadedUrl();
+    const avatarUrl = avatarImageUpload.getUploadedUrl();
+
+    if (featuredUrl) {
+      uploadedUrls.featuredImageUrl = featuredUrl;
+    }
+
+    if (avatarUrl) {
+      uploadedUrls.avatarUrl = avatarUrl;
+    }
 
     return uploadedUrls;
   };
@@ -359,7 +163,7 @@ function CreateBlogContent() {
 
   const validateForm = () => {
     const errors: Record<string, string> = {};
-    
+
     if (!formData.title.trim()) {
       errors.title = "Please enter a title";
     }
@@ -367,11 +171,12 @@ function CreateBlogContent() {
       errors.excerpt = "Please enter an excerpt";
     }
 
-    const contentWithoutHtml = formData.content.replace(/<[^>]*>/g, '').trim();
+    const contentWithoutHtml = formData.content.replace(/<[^>]*>/g, "").trim();
     if (!contentWithoutHtml) {
-      errors.content = "Content cannot be empty or only contain whitespace/tabs";
+      errors.content =
+        "Content cannot be empty or only contain whitespace/tabs";
     }
-    
+
     if (!formData.category) {
       errors.category = "Please select a category";
     }
@@ -381,7 +186,7 @@ function CreateBlogContent() {
     if (!formData.featured_image) {
       errors.featured_image = "Please upload a featured image";
     }
-    
+
     setFieldErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -390,15 +195,14 @@ function CreateBlogContent() {
     if (!validateForm()) return;
 
     try {
-      setIsUploadingImages(true);
-      
       const uploadedUrls = await uploadTemporaryImages();
-      
-      const blogData: CreateBlogRequest = { 
-        ...formData, 
+
+      const blogData: CreateBlogRequest = {
+        ...formData,
         published: false,
-        featured_image: uploadedUrls.featuredImageUrl || formData.featured_image,
-        avatar: uploadedUrls.avatarUrl || formData.avatar
+        featured_image:
+          uploadedUrls.featuredImageUrl || formData.featured_image,
+        avatar: uploadedUrls.avatarUrl || formData.avatar,
       };
 
       if (isEditing && editId) {
@@ -410,25 +214,26 @@ function CreateBlogContent() {
         success("Draft saved successfully!");
         router.push("/blog/management");
       }
-
-      cleanupTemporaryUrls();
-      setTemporaryFeaturedImage(null);
-      setTemporaryAvatarImage(null);
     } catch (error) {
       console.error("Error saving draft:", error);
-      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
-      
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error occurred";
+
       if (errorMessage.includes("File size must be less than 10MB")) {
-        showError("File size error", "Image file size must be less than 10MB. Please select a smaller image.");
+        showError(
+          "File size error",
+          "Image file size must be less than 10MB. Please select a smaller image."
+        );
       } else if (errorMessage.includes("Only image files are allowed")) {
-        showError("File type error", "Only image files are allowed (jpeg, png, webp, gif).");
+        showError(
+          "File type error",
+          "Only image files are allowed (jpeg, png, webp, gif)."
+        );
       } else if (errorMessage.includes("File upload failed")) {
         showError("Upload error", "File upload failed. Please try again.");
       } else {
         showError("Failed to save draft", "Please try again.");
       }
-    } finally {
-      setIsUploadingImages(false);
     }
   };
 
@@ -436,15 +241,14 @@ function CreateBlogContent() {
     if (!validateForm()) return;
 
     try {
-      setIsUploadingImages(true);
-      
       const uploadedUrls = await uploadTemporaryImages();
-      
-      const blogData: CreateBlogRequest = { 
-        ...formData, 
+
+      const blogData: CreateBlogRequest = {
+        ...formData,
         published: true,
-        featured_image: uploadedUrls.featuredImageUrl || formData.featured_image,
-        avatar: uploadedUrls.avatarUrl || formData.avatar
+        featured_image:
+          uploadedUrls.featuredImageUrl || formData.featured_image,
+        avatar: uploadedUrls.avatarUrl || formData.avatar,
       };
 
       if (isEditing && editId) {
@@ -455,26 +259,27 @@ function CreateBlogContent() {
         success("Blog published successfully!");
       }
 
-      cleanupTemporaryUrls();
-      setTemporaryFeaturedImage(null);
-      setTemporaryAvatarImage(null);
-
       router.push("/blog");
     } catch (error) {
       console.error("Error publishing blog:", error);
-      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
-      
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error occurred";
+
       if (errorMessage.includes("File size must be less than 10MB")) {
-        showError("File size error", "Image file size must be less than 10MB. Please select a smaller image.");
+        showError(
+          "File size error",
+          "Image file size must be less than 10MB. Please select a smaller image."
+        );
       } else if (errorMessage.includes("Only image files are allowed")) {
-        showError("File type error", "Only image files are allowed (jpeg, png, webp, gif).");
+        showError(
+          "File type error",
+          "Only image files are allowed (jpeg, png, webp, gif)."
+        );
       } else if (errorMessage.includes("File upload failed")) {
         showError("Upload error", "File upload failed. Please try again.");
       } else {
         showError("Failed to publish blog", "Please try again.");
       }
-    } finally {
-      setIsUploadingImages(false);
     }
   };
 
@@ -557,7 +362,9 @@ function CreateBlogContent() {
                 }`}
               />
               {fieldErrors.excerpt && (
-                <p className="text-red-500 text-sm mt-1">{fieldErrors.excerpt}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {fieldErrors.excerpt}
+                </p>
               )}
             </div>
 
@@ -565,80 +372,31 @@ function CreateBlogContent() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Featured Image <span className="text-red-500">*</span>
               </label>
-              <div className="space-y-3">
-                {formData.featured_image ? (
-                  <div className="relative">
-                    <Image
-                      src={formData.featured_image}
-                      alt="Featured image preview"
-                      width={400}
-                      height={192}
-                      className="w-full h-48 object-cover rounded-lg border border-gray-300"
-                    />
-                    <button
-                      type="button"
-                      onClick={removeFeaturedImage}
-                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                ) : (
-                  <div
-                    className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
-                      isDragOver
-                        ? "border-blue-400 bg-blue-50"
-                        : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
-                    } ${isUploadingImages ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    onDragOver={handleDragOver}
-                    onDragLeave={handleDragLeave}
-                    onDrop={handleDrop}
-                    onClick={isUploadingImages ? undefined : handleUploadClick}
-                  >
-                    {isUploadingImages ? (
-                      <>
-                        <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-                        <p className="text-gray-500 mb-2">
-                          Uploading featured image...
-                        </p>
-                      </>
-                    ) : (
-                      <>
-                        <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                        <p className="text-gray-500 mb-2">
-                          No featured image selected
-                        </p>
-                        <p className="text-sm text-gray-400">
-                          This image will be used as the blog thumbnail
-                        </p>
-                        <p className="text-xs text-gray-400 mt-2">
-                          Click to upload or drag and drop
-                        </p>
-                      </>
-                    )}
-                  </div>
-                )}
-
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="hidden"
-                />
-              </div>
-              {fieldErrors.featured_image && (
-                <p className="text-red-500 text-sm mt-1">{fieldErrors.featured_image}</p>
-              )}
+              <ImageUploadArea
+                type="featured"
+                currentImage={formData.featured_image}
+                temporaryImage={featuredImageUpload.temporaryImage}
+                onImageSelect={featuredImageUpload.handleImageSelect}
+                onImageRemove={featuredImageUpload.handleImageRemove}
+                onRetryUpload={featuredImageUpload.handleRetryUpload}
+                isDragOver={featuredImageUpload.isDragOver}
+                onDragOver={featuredImageUpload.handleDragOver}
+                onDragLeave={featuredImageUpload.handleDragLeave}
+                onDrop={featuredImageUpload.handleDrop}
+                onClick={() => {}}
+                error={fieldErrors.featured_image}
+              />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Content <span className="text-red-500">*</span>
               </label>
-              <div className={`border rounded-lg overflow-hidden ${
-                fieldErrors.content ? "border-red-500" : "border-gray-300"
-              }`}>
+              <div
+                className={`border rounded-lg overflow-hidden ${
+                  fieldErrors.content ? "border-red-500" : "border-gray-300"
+                }`}
+              >
                 <RichTextEditor
                   content={formData.content}
                   onChange={handleContentChange}
@@ -647,7 +405,9 @@ function CreateBlogContent() {
                 />
               </div>
               {fieldErrors.content && (
-                <p className="text-red-500 text-sm mt-1">{fieldErrors.content}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {fieldErrors.content}
+                </p>
               )}
             </div>
           </div>
@@ -670,7 +430,9 @@ function CreateBlogContent() {
                           handleInputChange("author_name", e.target.value)
                         }
                         className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-blue-500 focus:border-transparent ${
-                          fieldErrors.author_name ? "border-red-500" : "border-gray-300"
+                          fieldErrors.author_name
+                            ? "border-red-500"
+                            : "border-gray-300"
                         }`}
                       >
                         <option value="">Select an author...</option>
@@ -692,12 +454,16 @@ function CreateBlogContent() {
                         }
                         placeholder="Enter author name..."
                         className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-blue-500 focus:border-transparent ${
-                          fieldErrors.author_name ? "border-red-500" : "border-gray-300"
+                          fieldErrors.author_name
+                            ? "border-red-500"
+                            : "border-gray-300"
                         }`}
                       />
                     )}
                     {fieldErrors.author_name && (
-                      <p className="text-red-500 text-sm mt-1">{fieldErrors.author_name}</p>
+                      <p className="text-red-500 text-sm mt-1">
+                        {fieldErrors.author_name}
+                      </p>
                     )}
                   </div>
 
@@ -705,65 +471,19 @@ function CreateBlogContent() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Author Profile Picture
                     </label>
-                    <div className="space-y-3">
-                      {formData.avatar ? (
-                        <div className="relative">
-                          <Image
-                            src={formData.avatar}
-                            alt="Author avatar preview"
-                            width={80}
-                            height={80}
-                            className="w-20 h-20 object-cover rounded-full border border-gray-300"
-                          />
-                          <button
-                            type="button"
-                            onClick={removeAuthorAvatar}
-                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
-                          >
-                            <X className="w-3 h-3" />
-                          </button>
-                        </div>
-                      ) : (
-                        <div
-                          className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors ${
-                            isAuthorAvatarDragOver
-                              ? "border-blue-400 bg-blue-50"
-                              : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
-                          } ${isUploadingImages ? 'opacity-50 cursor-not-allowed' : ''}`}
-                          onDragOver={handleAuthorAvatarDragOver}
-                          onDragLeave={handleAuthorAvatarDragLeave}
-                          onDrop={handleAuthorAvatarDrop}
-                          onClick={isUploadingImages ? undefined : handleAuthorAvatarUploadClick}
-                        >
-                          {isUploadingImages ? (
-                            <>
-                              <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-                              <p className="text-sm text-gray-500 mb-1">
-                                Uploading avatar...
-                              </p>
-                            </>
-                          ) : (
-                            <>
-                              <Upload className="w-6 h-6 text-gray-400 mx-auto mb-2" />
-                              <p className="text-sm text-gray-500 mb-1">
-                                No profile picture selected
-                              </p>
-                              <p className="text-xs text-gray-400">
-                                Click to upload or drag and drop
-                              </p>
-                            </>
-                          )}
-                        </div>
-                      )}
-
-                      <input
-                        ref={authorAvatarInputRef}
-                        type="file"
-                        accept="image/*"
-                        onChange={handleAuthorAvatarUpload}
-                        className="hidden"
-                      />
-                    </div>
+                    <ImageUploadArea
+                      type="avatar"
+                      currentImage={formData.avatar}
+                      temporaryImage={avatarImageUpload.temporaryImage}
+                      onImageSelect={avatarImageUpload.handleImageSelect}
+                      onImageRemove={avatarImageUpload.handleImageRemove}
+                      onRetryUpload={avatarImageUpload.handleRetryUpload}
+                      isDragOver={avatarImageUpload.isDragOver}
+                      onDragOver={avatarImageUpload.handleDragOver}
+                      onDragLeave={avatarImageUpload.handleDragLeave}
+                      onDrop={avatarImageUpload.handleDrop}
+                      onClick={() => {}}
+                    />
                   </div>
                 </div>
               )}
@@ -788,7 +508,9 @@ function CreateBlogContent() {
                       handleInputChange("category", e.target.value)
                     }
                     className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-blue-500 focus:border-transparent ${
-                      fieldErrors.category ? "border-red-500" : "border-gray-300"
+                      fieldErrors.category
+                        ? "border-red-500"
+                        : "border-gray-300"
                     }`}
                   >
                     <option value="">Select a category...</option>
@@ -808,7 +530,9 @@ function CreateBlogContent() {
                     )}
                   </select>
                   {fieldErrors.category && (
-                    <p className="text-red-500 text-sm mt-1">{fieldErrors.category}</p>
+                    <p className="text-red-500 text-sm mt-1">
+                      {fieldErrors.category}
+                    </p>
                   )}
                 </div>
               )}
@@ -889,7 +613,8 @@ function CreateBlogContent() {
 
                   {formData.featured_image && (
                     <div className="mb-6">
-                      <Image
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
                         src={formData.featured_image}
                         alt="Featured image"
                         width={800}
@@ -901,7 +626,8 @@ function CreateBlogContent() {
 
                   <div className="flex items-center">
                     {formData.avatar ? (
-                      <Image
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
                         src={formData.avatar}
                         alt="Author avatar"
                         width={48}

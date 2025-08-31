@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useState, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import BaseLink from "@tiptap/extension-link";
@@ -63,6 +63,22 @@ const Link = BaseLink.extend({
   },
 });
 
+type Align = "left" | "center" | "right" | "justify";
+type ToolbarState = {
+  bold: boolean;
+  italic: boolean;
+  underline: boolean;
+  strike: boolean;
+  bulletList: boolean;
+  orderedList: boolean;
+  blockquote: boolean;
+  codeBlock: boolean;
+  heading: 0 | 1 | 2 | 3;
+  align: Align;
+  linkActive: boolean;
+  linkUrl: string;
+};
+
 export function RichTextEditor({
   content = "",
   onChange,
@@ -79,6 +95,21 @@ export function RichTextEditor({
   const [isTypingInLink, setIsTypingInLink] = useState(false);
   const [isUrlInText, setIsUrlInText] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [toolbar, setToolbar] = useState<ToolbarState>({
+    bold: false,
+    italic: false,
+    underline: false,
+    strike: false,
+    bulletList: false,
+    orderedList: false,
+    blockquote: false,
+    codeBlock: false,
+    heading: 0,
+    align: "left",
+    linkActive: false,
+    linkUrl: "",
+  });
 
   useEffect(() => setIsMounted(true), []);
 
@@ -149,27 +180,71 @@ export function RichTextEditor({
     return u;
   };
 
-  const getCurrentTextStyle = () => {
-    if (editor?.isActive("heading", { level: 1 })) return "Heading 1";
-    if (editor?.isActive("heading", { level: 2 })) return "Heading 2";
-    if (editor?.isActive("heading", { level: 3 })) return "Heading 3";
-    return "Normal text";
+  const currentTextStyleLabel = () => {
+    switch (toolbar.heading) {
+      case 1:
+        return "Heading 1";
+      case 2:
+        return "Heading 2";
+      case 3:
+        return "Heading 3";
+      default:
+        return "Normal text";
+    }
   };
 
-  const getCurrentLinkUrl = () => editor?.getAttributes("link").href || "";
-
-  const handleSelectionUpdate = useCallback(() => {
+  const refreshToolbar = useCallback(() => {
     if (!editor) return;
-    setIsTypingInLink(editor.isActive("link"));
+
+    const align: Align =
+      (["left", "center", "right", "justify"] as const).find((a) =>
+        editor.isActive({ textAlign: a })
+      ) || "left";
+
+    let heading: 0 | 1 | 2 | 3 = 0;
+    if (editor.isActive("heading", { level: 1 })) heading = 1;
+    else if (editor.isActive("heading", { level: 2 })) heading = 2;
+    else if (editor.isActive("heading", { level: 3 })) heading = 3;
+
+    const linkActive = editor.isActive("link");
+    const linkUrl = editor.getAttributes("link")?.href || "";
+
+    setToolbar({
+      bold: editor.isActive("bold"),
+      italic: editor.isActive("italic"),
+      underline: editor.isActive("underline"),
+      strike: editor.isActive("strike"),
+      bulletList: editor.isActive("bulletList"),
+      orderedList: editor.isActive("orderedList"),
+      blockquote: editor.isActive("blockquote"),
+      codeBlock: editor.isActive("codeBlock"),
+      heading,
+      align,
+      linkActive,
+      linkUrl,
+    });
+
+    setIsTypingInLink(linkActive);
   }, [editor]);
 
   useEffect(() => {
     if (!editor) return;
-    editor.on("selectionUpdate", handleSelectionUpdate);
+    const onSel = () => refreshToolbar();
+    const onTxn = () => refreshToolbar();
+    const onUpd = () => refreshToolbar();
+
+    editor.on("selectionUpdate", onSel);
+    editor.on("transaction", onTxn);
+    editor.on("update", onUpd);
+
+    refreshToolbar();
+
     return () => {
-      editor.off("selectionUpdate", handleSelectionUpdate);
+      editor.off("selectionUpdate", onSel);
+      editor.off("transaction", onTxn);
+      editor.off("update", onUpd);
     };
-  }, [editor, handleSelectionUpdate]);
+  }, [editor, refreshToolbar]);
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -194,8 +269,11 @@ export function RichTextEditor({
 
       if (key === "Backspace") {
         const { from, to } = editor.state.selection;
-        if (from === to) { 
-          const textBefore = editor.state.doc.textBetween(Math.max(0, from - 4), from);
+        if (from === to) {
+          const textBefore = editor.state.doc.textBetween(
+            Math.max(0, from - 4),
+            from
+          );
           if (textBefore === "    ") {
             event.preventDefault();
             editor.chain().focus().deleteRange({ from: from - 4, to }).run();
@@ -217,8 +295,9 @@ export function RichTextEditor({
   useEffect(() => {
     if (editor && content !== editor.getHTML()) {
       editor.commands.setContent(content || "");
+      refreshToolbar();
     }
-  }, [editor, content]);
+  }, [editor, content, refreshToolbar]);
 
   const handleFileUpload = useCallback(
     async (file: File) => {
@@ -237,12 +316,13 @@ export function RichTextEditor({
               alt: file.name || "Uploaded image",
             })
             .run();
+          refreshToolbar();
         }
       } catch (e) {
         alert(e instanceof Error ? e.message : "Failed to process image");
       }
     },
-    [editor]
+    [editor, refreshToolbar]
   );
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -284,11 +364,13 @@ export function RichTextEditor({
     return () => el.removeEventListener("paste", handlePaste);
   }, [editor, handlePaste]);
 
-  /* ========== Link handling (UI) ========== */
+  const getCurrentLinkUrl = () => toolbar.linkUrl;
+
   const addLink = useCallback(() => {
     if (!editor) return;
     if (editor.isActive("link")) {
       editor.chain().focus().extendMarkRange("link").unsetLink().run();
+      refreshToolbar();
       return;
     }
     const prev = editor.getAttributes("link").href;
@@ -301,7 +383,7 @@ export function RichTextEditor({
     setLinkUrl(prev || "");
     setLinkText(selectedText);
     setShowLinkModal(true);
-  }, [editor]);
+  }, [editor, refreshToolbar]);
 
   const handleLinkTextChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -362,9 +444,9 @@ export function RichTextEditor({
     setLinkUrl("");
     setLinkText("");
     setIsUrlInText(false);
-  }, [editor, linkUrl, linkText]);
+    refreshToolbar();
+  }, [editor, linkUrl, linkText, refreshToolbar]);
 
-  /* ========== Image modal handlers ========== */
   const addImage = useCallback(() => setShowImageModal(true), []);
   const handleImageUpload = useCallback(
     () => fileInputRef.current?.click(),
@@ -391,8 +473,9 @@ export function RichTextEditor({
         .setImage({ src: url, alt: alt || "Blog image" })
         .run();
       setShowImageModal(false);
+      refreshToolbar();
     }
-  }, [editor]);
+  }, [editor, refreshToolbar]);
 
   if (!isMounted || !editor) {
     return (
@@ -409,7 +492,7 @@ export function RichTextEditor({
         </div>
       </div>
     );
-  }
+    }
 
   return (
     <>
@@ -446,7 +529,7 @@ export function RichTextEditor({
               onClick={() => setShowTextStyleDropdown(!showTextStyleDropdown)}
               className="flex items-center gap-1 px-3 py-2"
             >
-              <span className="text-sm">{getCurrentTextStyle()}</span>
+              <span className="text-sm">{currentTextStyleLabel()}</span>
               <ChevronDown className="w-3 h-3" />
             </Button>
             {showTextStyleDropdown && (
@@ -456,7 +539,9 @@ export function RichTextEditor({
                     editor.chain().focus().setParagraph().run();
                     setShowTextStyleDropdown(false);
                   }}
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100"
+                  className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100 ${
+                    toolbar.heading === 0 ? "bg-gray-50" : ""
+                  }`}
                 >
                   Normal text
                 </button>
@@ -465,7 +550,9 @@ export function RichTextEditor({
                     editor.chain().focus().toggleHeading({ level: 1 }).run();
                     setShowTextStyleDropdown(false);
                   }}
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100"
+                  className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100 ${
+                    toolbar.heading === 1 ? "bg-gray-50" : ""
+                  }`}
                 >
                   Heading 1
                 </button>
@@ -474,7 +561,9 @@ export function RichTextEditor({
                     editor.chain().focus().toggleHeading({ level: 2 }).run();
                     setShowTextStyleDropdown(false);
                   }}
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100"
+                  className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100 ${
+                    toolbar.heading === 2 ? "bg-gray-50" : ""
+                  }`}
                 >
                   Heading 2
                 </button>
@@ -483,7 +572,9 @@ export function RichTextEditor({
                     editor.chain().focus().toggleHeading({ level: 3 }).run();
                     setShowTextStyleDropdown(false);
                   }}
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100"
+                  className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100 ${
+                    toolbar.heading === 3 ? "bg-gray-50" : ""
+                  }`}
                 >
                   Heading 3
                 </button>
@@ -498,9 +589,8 @@ export function RichTextEditor({
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().setTextAlign("left").run()}
-            className={
-              editor.isActive({ textAlign: "left" }) ? "bg-gray-200" : ""
-            }
+            className={toolbar.align === "left" ? "bg-gray-200" : ""}
+            title="Align Left"
           >
             <AlignLeft className="w-4 h-4" />
           </Button>
@@ -509,9 +599,8 @@ export function RichTextEditor({
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().setTextAlign("center").run()}
-            className={
-              editor.isActive({ textAlign: "center" }) ? "bg-gray-200" : ""
-            }
+            className={toolbar.align === "center" ? "bg-gray-200" : ""}
+            title="Align Center"
           >
             <AlignCenter className="w-4 h-4" />
           </Button>
@@ -520,9 +609,8 @@ export function RichTextEditor({
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().setTextAlign("right").run()}
-            className={
-              editor.isActive({ textAlign: "right" }) ? "bg-gray-200" : ""
-            }
+            className={toolbar.align === "right" ? "bg-gray-200" : ""}
+            title="Align Right"
           >
             <AlignRight className="w-4 h-4" />
           </Button>
@@ -531,9 +619,8 @@ export function RichTextEditor({
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().setTextAlign("justify").run()}
-            className={
-              editor.isActive({ textAlign: "justify" }) ? "bg-gray-200" : ""
-            }
+            className={toolbar.align === "justify" ? "bg-gray-200" : ""}
+            title="Justify"
           >
             <AlignJustify className="w-4 h-4" />
           </Button>
@@ -545,7 +632,8 @@ export function RichTextEditor({
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleBold().run()}
-            className={editor.isActive("bold") ? "bg-gray-200" : ""}
+            className={toolbar.bold ? "bg-gray-200" : ""}
+            title="Bold"
           >
             <Bold className="w-4 h-4" />
           </Button>
@@ -554,7 +642,8 @@ export function RichTextEditor({
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleItalic().run()}
-            className={editor.isActive("italic") ? "bg-gray-200" : ""}
+            className={toolbar.italic ? "bg-gray-200" : ""}
+            title="Italic"
           >
             <Italic className="w-4 h-4" />
           </Button>
@@ -563,7 +652,8 @@ export function RichTextEditor({
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleUnderline().run()}
-            className={editor.isActive("underline") ? "bg-gray-200" : ""}
+            className={toolbar.underline ? "bg-gray-200" : ""}
+            title="Underline"
           >
             <UnderlineIcon className="w-4 h-4" />
           </Button>
@@ -572,7 +662,8 @@ export function RichTextEditor({
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleStrike().run()}
-            className={editor.isActive("strike") ? "bg-gray-200" : ""}
+            className={toolbar.strike ? "bg-gray-200" : ""}
+            title="Strikethrough"
           >
             <Strikethrough className="w-4 h-4" />
           </Button>
@@ -584,7 +675,8 @@ export function RichTextEditor({
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleBulletList().run()}
-            className={editor.isActive("bulletList") ? "bg-gray-200" : ""}
+            className={toolbar.bulletList ? "bg-gray-200" : ""}
+            title="Bullet List"
           >
             <List className="w-4 h-4" />
           </Button>
@@ -593,7 +685,8 @@ export function RichTextEditor({
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
-            className={editor.isActive("orderedList") ? "bg-gray-200" : ""}
+            className={toolbar.orderedList ? "bg-gray-200" : ""}
+            title="Ordered List"
           >
             <ListOrdered className="w-4 h-4" />
           </Button>
@@ -602,7 +695,8 @@ export function RichTextEditor({
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleBlockquote().run()}
-            className={editor.isActive("blockquote") ? "bg-gray-200" : ""}
+            className={toolbar.blockquote ? "bg-gray-200" : ""}
+            title="Blockquote"
           >
             <Quote className="w-4 h-4" />
           </Button>
@@ -611,7 +705,8 @@ export function RichTextEditor({
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-            className={editor.isActive("codeBlock") ? "bg-gray-200" : ""}
+            className={toolbar.codeBlock ? "bg-gray-200" : ""}
+            title="Code Block"
           >
             <Code className="w-4 h-4" />
           </Button>
@@ -624,18 +719,16 @@ export function RichTextEditor({
               variant="ghost"
               size="sm"
               onClick={addLink}
-              className={
-                editor.isActive("link") ? "bg-blue-100 text-blue-600" : ""
-              }
+              className={toolbar.linkActive ? "bg-blue-100 text-blue-600" : ""}
               title={
-                editor.isActive("link")
+                toolbar.linkActive
                   ? `Remove link (${getCurrentLinkUrl()})`
                   : "Add link"
               }
             >
               <LinkIcon className="w-4 h-4" />
             </Button>
-            {editor.isActive("link") && getCurrentLinkUrl() && (
+            {toolbar.linkActive && getCurrentLinkUrl() && (
               <span
                 className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded max-w-32 truncate"
                 title={getCurrentLinkUrl()}
@@ -657,9 +750,7 @@ export function RichTextEditor({
 
         <div
           className={`bg-white flex-1 overflow-y-auto transition-colors relative ${
-            isDragOver
-              ? "bg-blue-50 border-2 border-dashed border-blue-300"
-              : ""
+            isDragOver ? "bg-blue-50 border-2 border-dashed border-blue-300" : ""
           }`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -845,9 +936,7 @@ export function RichTextEditor({
       {showTextStyleDropdown && (
         <div
           className="fixed inset-0 z-[5]"
-          onClick={() => {
-            setShowTextStyleDropdown(false);
-          }}
+          onClick={() => setShowTextStyleDropdown(false)}
         />
       )}
       {(showLinkModal || showImageModal) && (

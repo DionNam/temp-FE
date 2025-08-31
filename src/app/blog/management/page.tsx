@@ -6,7 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { BlogPost } from "@/types/blog";
 import { useBlogs, useDeleteBlog } from "@/hooks/useBlogQueries";
 import { useBlogFilters } from "@/hooks/useBlogFilters";
-import { generateSlug } from "@/lib/utils";
+import { generateSlug, sortBlogPostsByDate } from "@/lib/utils";
 import { ConfirmationModal } from "@/components/ui/modal";
 import { useToast, ToastContainer } from "@/components/ui/toast";
 import { Pagination } from "@/components/ui/pagination";
@@ -248,6 +248,8 @@ export default function BlogManagementPage() {
         ? false
         : undefined,
     limit: 7,
+    sort_by: 'published_at',
+    sort_order: 'desc' as const,
   });
 
   const { data: blogResponse, isLoading, error, refetch } = useBlogs(filters);
@@ -257,16 +259,18 @@ export default function BlogManagementPage() {
     ? blogResponse.data.blogs
     : [];
 
-  const filteredPosts = posts.filter(
-    (post: BlogPost & { status?: "published" | "draft" }) => {
-      const postStatus =
-        (post as BlogPost & { status?: "published" | "draft" }).status ||
-        (post.published ? "published" : "draft");
-      if (activeTab === "all") return true;
-      if (activeTab === "published") return postStatus === "published";
-      if (activeTab === "drafts") return postStatus === "draft";
-      return true;
-    }
+  const filteredPosts = sortBlogPostsByDate(
+    posts.filter(
+      (post: BlogPost & { status?: "published" | "draft" }) => {
+        const postStatus =
+          (post as BlogPost & { status?: "published" | "draft" }).status ||
+          (post.published ? "published" : "draft");
+        if (activeTab === "all") return true;
+        if (activeTab === "published") return postStatus === "published";
+        if (activeTab === "drafts") return postStatus === "draft";
+        return true;
+      }
+    )
   );
 
   const pagination = blogResponse?.data

@@ -6,7 +6,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { useNavbar } from "@/hooks/useNavbar";
 import { BlogPost } from "@/types/blog";
-import { generateSlug } from "@/lib/utils";
+import { generateSlug, sortBlogPostsByDate } from "@/lib/utils";
 import { Pagination } from "@/components/ui/pagination";
 import { useBlogs, useCategories } from "@/hooks/useBlogQueries";
 
@@ -178,13 +178,17 @@ export function BlogClientWrapper({
     limit,
     ...(category && category !== "all" && { category }),
     published: true,
+    sort_by: 'published_at',
+    sort_order: 'desc' as const,
   };
   
   const { data: blogResponse, isLoading: blogsLoading, error: blogsError } = useBlogs(params);
   const { data: categoriesResponse, isLoading: categoriesLoading } = useCategories();
   
   const allPosts = Array.isArray(blogResponse?.data?.blogs) ? blogResponse.data.blogs : [];
-  const posts = allPosts.filter((post: BlogPost) => post.published === true);
+  const posts = sortBlogPostsByDate(
+    allPosts.filter((post: BlogPost) => post.published === true)
+  );
   
   const pagination = blogResponse?.data
     ? {
