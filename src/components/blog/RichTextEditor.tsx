@@ -11,6 +11,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import CodeBlock from "@tiptap/extension-code-block";
 import { Button } from "@/components/ui/button";
 import { compressImage } from "@/utils/imageCompression";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import {
   Bold,
   Italic,
@@ -29,7 +30,6 @@ import {
   Undo,
   Redo,
   ChevronDown,
-  Upload,
   X,
 } from "lucide-react";
 
@@ -125,6 +125,7 @@ export function RichTextEditor({
         HTMLAttributes: {
           class: "max-w-full h-auto rounded-lg shadow-sm",
         },
+        allowBase64: true,
       }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       CodeBlock.configure({
@@ -294,10 +295,18 @@ export function RichTextEditor({
 
   useEffect(() => {
     if (editor && content !== editor.getHTML()) {
-      editor.commands.setContent(content || "");
-      refreshToolbar();
+      if (editor.isDestroyed) return;
+      const timer = setTimeout(() => {
+        if (!editor.isDestroyed) {
+          const safe = sanitizeHtml(content || "");
+          editor.commands.setContent(safe);
+          refreshToolbar();
+        }
+      }, 100);
+      return () => clearTimeout(timer);
     }
   }, [editor, content, refreshToolbar]);
+
 
   const handleFileUpload = useCallback(
     async (file: File) => {
@@ -352,9 +361,18 @@ export function RichTextEditor({
       if (imageItem) {
         const file = imageItem.getAsFile();
         if (file) handleFileUpload(file);
+        return;
+      }
+
+      const html = e.clipboardData?.getData("text/html");
+      if (html && editor) {
+        e.preventDefault();
+        const safe = sanitizeHtml(html);
+        editor.chain().focus().insertContent(safe).run();
+        refreshToolbar();
       }
     },
-    [handleFileUpload]
+    [handleFileUpload, editor, refreshToolbar]
   );
 
   useEffect(() => {
@@ -447,11 +465,7 @@ export function RichTextEditor({
     refreshToolbar();
   }, [editor, linkUrl, linkText, refreshToolbar]);
 
-  const addImage = useCallback(() => setShowImageModal(true), []);
-  const handleImageUpload = useCallback(
-    () => fileInputRef.current?.click(),
-    []
-  );
+  const addImage = useCallback(() => fileInputRef.current?.click(), []);
   const handleFileInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
@@ -463,19 +477,6 @@ export function RichTextEditor({
     },
     [handleFileUpload]
   );
-  const addImageByUrl = useCallback(() => {
-    const url = window.prompt("Enter image URL:");
-    const alt = window.prompt("Enter alt text for the image:");
-    if (url && editor) {
-      editor
-        .chain()
-        .focus()
-        .setImage({ src: url, alt: alt || "Blog image" })
-        .run();
-      setShowImageModal(false);
-      refreshToolbar();
-    }
-  }, [editor, refreshToolbar]);
 
   if (!isMounted || !editor) {
     return (
@@ -770,56 +771,6 @@ export function RichTextEditor({
         </div>
       </div>
 
-      {showImageModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60]">
-          <div
-            className="bg-white rounded-lg p-6 w-96 max-w-[90vw]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">Insert Image</h3>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowImageModal(false)}
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
-
-            <div className="space-y-4">
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full"
-                onClick={handleImageUpload}
-              >
-                <Upload className="w-4 h-4 mr-2" />
-                Upload from file
-              </Button>
-
-              <div className="text-center text-gray-500">or</div>
-
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full"
-                onClick={addImageByUrl}
-              >
-                <ImageIcon className="w-4 h-4 mr-2" />
-                Insert from URL
-              </Button>
-
-              <div className="text-sm text-gray-500 text-center mt-4">
-                <p>You can also:</p>
-                <p>• Copy and paste images directly</p>
-                <p>• Drag and drop images into the editor</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {showLinkModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60]">

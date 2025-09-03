@@ -14,6 +14,7 @@ import { useImageUpload } from "@/hooks/useImageUpload";
 import { CreateBlogRequest } from "@/types/blog";
 import { useToast, ToastContainer } from "@/components/ui/toast";
 import { ImageUploadArea } from "@/components/blog/ImageUploadArea";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 function CreateBlogContent() {
   const router = useRouter();
@@ -648,9 +649,9 @@ function CreateBlogContent() {
                 <div className="prose prose-lg max-w-none mb-8">
                   <div
                     dangerouslySetInnerHTML={{
-                      __html:
-                        formData.content ||
-                        "<p>Start writing your content...</p>",
+                      __html: sanitizeHtml(
+                        formData.content || "<p>Start writing your content...</p>"
+                      ),
                     }}
                     className="blog-content"
                   />

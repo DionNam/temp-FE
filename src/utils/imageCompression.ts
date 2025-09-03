@@ -39,6 +39,9 @@ export const compressImage = async (
     }
 
     const img = new Image();
+    // Hint: drawing onto canvas and re-encoding strips EXIF/metadata
+    (ctx as CanvasRenderingContext2D).imageSmoothingEnabled = true;
+    (ctx as CanvasRenderingContext2D).imageSmoothingQuality = 'high';
     
     img.onload = () => {
       try {
@@ -85,6 +88,9 @@ export const compressImage = async (
         );
       } catch (error) {
         reject(new Error(`Image processing failed: ${error}`));
+      } finally {
+        // Revoke object URL to avoid memory leaks
+        URL.revokeObjectURL(img.src);
       }
     };
 
