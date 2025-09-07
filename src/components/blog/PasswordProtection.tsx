@@ -21,7 +21,7 @@ export function PasswordProtection({ onSuccess }: PasswordProtectionProps) {
 
     await new Promise(resolve => setTimeout(resolve, 500));
 
-    if (password === 'Admin@123') {
+    if (password === process.env.NEXT_PUBLIC_BLOG_PASSWORD) {
       onSuccess();
     } else {
       setError('Incorrect password. Please try again.');
