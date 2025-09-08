@@ -57,18 +57,20 @@ function BlogCard({
                   {post.category}
                 </span>
                 <div className="flex items-center">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={authorAvatar}
-                    alt={`${
-                      typeof post.author === "string"
-                        ? post.author
-                        : post.author?.name || post.author_name
-                    } avatar`}
-                    width={20}
-                    height={20}
-                    className="rounded-full mr-2"
-                  />
+                  <div className="relative w-6 h-6 rounded-full overflow-hidden mr-1">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={authorAvatar}
+                      alt={`${
+                        typeof post.author === "string"
+                          ? post.author
+                          : post.author?.name || post.author_name
+                      } avatar`}
+                      width={20}
+                      height={20}
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
                   <span className="font-medium">
                     {typeof post.author === "string"
                       ? post.author
@@ -98,7 +100,7 @@ function BlogCard({
       <article className="bg-transparent rounded-xl overflow-hidden transition-all duration-300 group cursor-pointer px-2 sm:px-0">
         <div className="flex flex-row sm:flex-col">
           <div className="relative flex-shrink-0 w-1/2 h-28 sm:w-full sm:h-64">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={image}
               alt={post.title}
@@ -114,18 +116,20 @@ function BlogCard({
                   {post.category}
                 </span>
                 <div className="flex items-center">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={authorAvatar}
-                    alt={`${
-                      typeof post.author === "string"
-                        ? post.author
-                        : post.author?.name || post.author_name
-                    } avatar`}
-                    width={16}
-                    height={16}
-                    className="rounded-full mr-1"
-                  />
+                  <div className="relative w-6 h-6 rounded-full overflow-hidden mr-1">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={authorAvatar}
+                      alt={`${
+                        typeof post.author === "string"
+                          ? post.author
+                          : post.author?.name || post.author_name
+                      } avatar`}
+                      width={16}
+                      height={16}
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
                   <span>
                     {typeof post.author === "string"
                       ? post.author
@@ -158,38 +162,45 @@ export function BlogClientWrapper({
   const { handleLoginClick, handleDashboardClick } = useNavbar();
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   const [searchParamsData, setSearchParamsData] = React.useState<{
     page?: string;
     category?: string;
     limit?: string;
   }>({});
-  
+
   React.useEffect(() => {
     searchParamsPromise.then(setSearchParamsData);
   }, [searchParamsPromise]);
-  
+
   const page = parseInt(searchParamsData.page || "1");
   const limit = parseInt(searchParamsData.limit || "7");
   const category = searchParamsData.category || "";
-  
+
   const params = {
     page,
     limit,
     ...(category && category !== "all" && { category }),
     published: true,
-    sort_by: 'published_at',
-    sort_order: 'desc' as const,
+    sort_by: "published_at",
+    sort_order: "desc" as const,
   };
-  
-  const { data: blogResponse, isLoading: blogsLoading, error: blogsError } = useBlogs(params);
-  const { data: categoriesResponse, isLoading: categoriesLoading } = useCategories();
-  
-  const allPosts = Array.isArray(blogResponse?.data?.blogs) ? blogResponse.data.blogs : [];
+
+  const {
+    data: blogResponse,
+    isLoading: blogsLoading,
+    error: blogsError,
+  } = useBlogs(params);
+  const { data: categoriesResponse, isLoading: categoriesLoading } =
+    useCategories();
+
+  const allPosts = Array.isArray(blogResponse?.data?.blogs)
+    ? blogResponse.data.blogs
+    : [];
   const posts = sortBlogPostsByDate(
     allPosts.filter((post: BlogPost) => post.published === true)
   );
-  
+
   const pagination = blogResponse?.data
     ? {
         current_page: blogResponse.data.page,
@@ -198,7 +209,7 @@ export function BlogClientWrapper({
         items_per_page: blogResponse.data.limit,
       }
     : undefined;
-  
+
   const allCategories = [
     { id: "all", name: "전체", label: "All" },
     ...(categoriesResponse?.data || []).map((cat: string) => ({
@@ -207,7 +218,7 @@ export function BlogClientWrapper({
       label: cat,
     })),
   ];
-  
+
   const featuredPost = pagination?.current_page === 1 ? posts[0] : null;
   const regularPosts = pagination?.current_page === 1 ? posts.slice(1) : posts;
 
@@ -227,9 +238,9 @@ export function BlogClientWrapper({
     params.set("page", page.toString());
     router.push(`/blog?${params.toString()}`);
   };
-  
+
   const isLoading = blogsLoading || categoriesLoading;
-  
+
   if (blogsError) {
     return (
       <>
@@ -239,7 +250,9 @@ export function BlogClientWrapper({
         />
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">Error loading blogs</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+              Error loading blogs
+            </h2>
             <p className="text-gray-600">Please try again later.</p>
           </div>
         </div>
@@ -270,8 +283,7 @@ export function BlogClientWrapper({
                 key={cat.id}
                 onClick={() => handleCategorySelect(cat.id)}
                 className={`px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors ${
-                  category === cat.id ||
-                  (category === "" && cat.id === "all")
+                  category === cat.id || (category === "" && cat.id === "all")
                     ? "bg-primary-blue-500 text-primary-blue-50"
                     : "bg-primary-blue-200 text-primary-blue-500 hover:bg-gray-50 border border-gray-200"
                 }`}
@@ -293,7 +305,7 @@ export function BlogClientWrapper({
               </div>
             </div>
           )}
-          
+
           {!isLoading && posts.length === 0 && (
             <div className="flex items-center justify-center py-16">
               <div className="text-center">

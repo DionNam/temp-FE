@@ -132,6 +132,12 @@ function CreateBlogContent() {
     },
     onImageUploaded: (url: string) => {
       handleInputChange("avatar", url);
+      if (fieldErrors.avatar) {
+        setFieldErrors((prev) => ({
+          ...prev,
+          avatar: "",
+        }));
+      }
     },
     onError: (message: string) => {
       showError("File upload error", message);
@@ -186,6 +192,9 @@ function CreateBlogContent() {
     }
     if (!formData.featured_image) {
       errors.featured_image = "Please upload a featured image";
+    }
+    if (!formData.avatar) {
+      errors.avatar = "Please upload an author profile picture";
     }
 
     setFieldErrors(errors);
@@ -470,7 +479,7 @@ function CreateBlogContent() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Author Profile Picture
+                      Author Profile Picture <span className="text-red-500">*</span>
                     </label>
                     <ImageUploadArea
                       type="avatar"
@@ -484,6 +493,7 @@ function CreateBlogContent() {
                       onDragLeave={avatarImageUpload.handleDragLeave}
                       onDrop={avatarImageUpload.handleDrop}
                       onClick={() => {}}
+                      error={fieldErrors.avatar}
                     />
                   </div>
                 </div>
