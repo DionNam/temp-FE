@@ -49,23 +49,23 @@ export default function SocialProofSection({ className }: SocialProofSectionProp
   ];
 
   return (
-    <section className={`bg-white py-24 relative z-20 block w-full ${className}`} style={{ position: 'relative', zIndex: 20, display: 'block' }}>
-      <div className="max-w-[1280px] mx-auto px-8">
-        <div className="flex flex-col gap-8 items-center">
+    <section className={`bg-white py-12 sm:py-16 lg:py-24 relative z-20 block w-full ${className}`} style={{ position: 'relative', zIndex: 20, display: 'block' }}>
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-6 sm:gap-8 items-center">
           {/* Header Text */}
-          <p className="text-[#535862] text-base font-medium text-center leading-6">
+          <p className="text-[#535862] text-sm sm:text-base font-medium text-center leading-6">
             Join 4,000+ companies already growing
           </p>
           
           {/* Company Logos */}
-          <div className="flex flex-wrap items-center justify-center gap-6 w-full">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap items-center justify-center gap-4 sm:gap-6 w-full">
             {companies.map((company, index) => (
               <div 
                 key={index}
-                className="flex items-center gap-2.5 h-12"
+                className="flex items-center gap-2 sm:gap-2.5 h-10 sm:h-12 justify-center lg:justify-start"
               >
                 {/* Logomark */}
-                <div className="relative h-12 w-10 flex-shrink-0">
+                <div className="relative h-8 sm:h-10 lg:h-12 w-8 sm:w-9 lg:w-10 flex-shrink-0">
                   <Image
                     src={company.logomark}
                     alt={`${company.name} logo`}
@@ -75,10 +75,10 @@ export default function SocialProofSection({ className }: SocialProofSectionProp
                 </div>
                 
                 {/* Company Name Text */}
-                <div className="h-12 flex items-center">
+                <div className="h-8 sm:h-10 lg:h-12 flex items-center">
                   <span 
-                    className="text-[#535862] font-medium text-lg leading-none"
-                    style={{ width: `${company.width}px` }}
+                    className="text-[#535862] font-medium text-sm sm:text-base lg:text-lg leading-none"
+                    style={{ maxWidth: `${company.width}px` }}
                   >
                     {company.logotext}
                   </span>

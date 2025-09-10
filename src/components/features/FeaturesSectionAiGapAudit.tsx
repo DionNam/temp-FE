@@ -4,108 +4,105 @@ import React from 'react';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 
-const img = "http://localhost:3845/assets/b5f54a34a588bee25d5d78a7012c8889b97f3597.png";
-const img1 = "http://localhost:3845/assets/dc5469bb8630765e71e1603c145274dff1ea81bd.svg";
-
 interface FeaturesSectionAiGapAuditProps {
   className?: string;
 }
 
 export default function FeaturesSectionAiGapAudit({ className }: FeaturesSectionAiGapAuditProps) {
   return (
-    <section className={`bg-white py-24 ${className}`}>
-      <div className="max-w-[1280px] mx-auto px-8">
-        {/* Header Section */}
-        <div className="flex flex-col gap-8 items-end mb-16">
-          <div className="flex flex-col gap-5 max-w-[800px] w-full">
-            <div className="flex flex-col gap-3 items-end">
-              <div className="text-[16px] text-blue-600 font-semibold text-right">
-                <p className="leading-[24px]">AI Gap Audit Overview</p>
-              </div>
-              <div className="text-[#181d27] text-[36px] tracking-[-0.72px] font-semibold text-right">
-                <p className="leading-[44px]">Elevate your content with our AI Gap Audit.</p>
-              </div>
-            </div>
-            <div className="text-[#535862] text-[20px] font-normal text-right">
-              <p className="leading-[30px]">
-                Easily audit your content and receive clear, actionable guidance to refine it for maximum AI visibility. Our platform identifies areas for improvement, helping you close the gap with competitors and elevate your content's presence.
-              </p>
-            </div>
-          </div>
-        </div>
-        
+    <section className={`bg-white py-12 sm:py-16 lg:py-24 ${className}`}>
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Content Section */}
-        <div className="flex gap-16 items-center">
-          {/* Left Side - Mockup */}
-          <div className="flex-1 h-[512px] relative">
-            <div className="absolute h-[496px] left-0 top-0 w-full">
-              <div className="absolute bg-white flex flex-col items-start left-1/2 p-[4px] rounded-[32px] top-0 transform -translate-x-1/2 border border-[rgba(0,0,0,0.08)] shadow-[0px_12px_16px_-4px_rgba(10,13,18,0.08),0px_4px_6px_-2px_rgba(10,13,18,0.03),0px_2px_2px_-1px_rgba(10,13,18,0.04)]">
-                <div className="bg-white flex flex-col items-start overflow-hidden p-[4px] rounded-[28px]">
-                  <div className="bg-neutral-50 rounded-[24px] border-2 border-[#e9eaeb] overflow-hidden">
-                    <div 
-                      className="bg-[position:0%_4%] bg-no-repeat bg-cover h-[480px] w-[720px]" 
-                      style={{ backgroundImage: `url('${img}')` }}
-                    />
+        <div className="flex flex-col lg:flex-row-reverse gap-8 lg:gap-16 items-start lg:items-center">
+          {/* Right Side - Content */}
+          <div className="w-full lg:flex-1 flex flex-col max-w-none lg:max-w-[560px]">
+            {/* Header */}
+            <div className="flex flex-col gap-6 sm:gap-8 mb-8 sm:mb-12">
+              <div className="flex flex-col gap-4 sm:gap-5">
+                <div className="flex flex-col gap-3">
+                  <div className="text-[14px] sm:text-[16px] text-blue-600 font-semibold">
+                    <p className="leading-[20px] sm:leading-[24px]">AI Gap Audit</p>
+                  </div>
+                  <div className="text-[#181d27] text-[24px] sm:text-[32px] lg:text-[36px] tracking-[-0.48px] sm:tracking-[-0.72px] font-semibold">
+                    <p className="leading-[30px] sm:leading-[38px] lg:leading-[44px]">Discover what's missing in your AI strategy</p>
+                  </div>
+                </div>
+                <div className="text-[#535862] text-[16px] sm:text-[18px] lg:text-[20px] font-normal">
+                  <p className="leading-[24px] sm:leading-[26px] lg:leading-[30px]">
+                    Get a comprehensive audit of your content's AI visibility gaps. 
+                    <br className="hidden sm:block" />
+                    Understand where you're losing opportunities and how to fix them.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Feature Points */}
+            <div className="flex flex-col gap-6 sm:gap-8">
+              {/* Point 1 */}
+              <div className="flex gap-4 sm:gap-6 items-start">
+                <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm sm:text-base font-semibold">1</span>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <div className="text-[#181d27] text-[16px] sm:text-[18px] font-semibold">
+                    <p className="leading-[24px] sm:leading-[28px]">Content Gap Analysis</p>
+                  </div>
+                  <div className="text-[#535862] text-[14px] sm:text-[16px] font-normal">
+                    <p className="leading-[20px] sm:leading-[24px]">Identify missing keywords and topics that AI platforms prioritize in your industry.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Point 2 */}
+              <div className="flex gap-4 sm:gap-6 items-start">
+                <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm sm:text-base font-semibold">2</span>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <div className="text-[#181d27] text-[16px] sm:text-[18px] font-semibold">
+                    <p className="leading-[24px] sm:leading-[28px]">Competitor Benchmarking</p>
+                  </div>
+                  <div className="text-[#535862] text-[14px] sm:text-[16px] font-normal">
+                    <p className="leading-[20px] sm:leading-[24px]">See how your AI visibility compares to competitors and what they're doing differently.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Point 3 */}
+              <div className="flex gap-4 sm:gap-6 items-start">
+                <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm sm:text-base font-semibold">3</span>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <div className="text-[#181d27] text-[16px] sm:text-[18px] font-semibold">
+                    <p className="leading-[24px] sm:leading-[28px]">Actionable Recommendations</p>
+                  </div>
+                  <div className="text-[#535862] text-[14px] sm:text-[16px] font-normal">
+                    <p className="leading-[20px] sm:leading-[24px]">Get specific, prioritized recommendations to improve your AI search rankings.</p>
                   </div>
                 </div>
               </div>
             </div>
+
+            {/* CTA Button */}
+            <div className="mt-8 sm:mt-12">
+              <button className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-[16px] sm:text-[18px] font-semibold transition-colors">
+                Start Your AI Audit
+                <ArrowRight className="w-4 sm:w-5 h-4 sm:h-5" />
+              </button>
+            </div>
           </div>
           
-          {/* Right Side - Feature Tabs */}
-          <div className="flex-1 flex flex-col max-w-[560px]">
-            {/* Feature Tab 1 - Active */}
-            <div className="flex flex-col gap-4 pl-6 py-4 border-l-4 border-blue-600">
-              <div className="flex flex-col gap-1">
-                <div className="text-[#181d27] text-[18px] font-semibold">
-                  <p className="leading-[28px]">Enter your article link and select AI models.</p>
-                </div>
-                <div className="text-[#535862] text-[16px] font-normal">
-                  <p className="leading-[24px]">Start by submitting your article and choosing the AI models you want to analyze it with.</p>
-                </div>
-              </div>
-              <div className="flex gap-1.5 items-center">
-                <div className="text-[16px] text-blue-600 font-semibold">
-                  <p className="leading-[24px]">Learn more</p>
-                </div>
-                <ArrowRight className="w-5 h-5 text-blue-600" />
-              </div>
-            </div>
-            
-            {/* Feature Tab 2 */}
-            <div className="flex flex-col gap-4 pl-6 py-4 border-l-4 border-neutral-100">
-              <div className="flex flex-col gap-1">
-                <div className="text-[#181d27] text-[18px] font-semibold">
-                  <p className="leading-[28px]">See how your article ranks against competitors</p>
-                </div>
-                <div className="text-[#535862] text-[16px] font-normal">
-                  <p className="leading-[24px]">Our platform compares your content with competitors and provides a ranking.</p>
-                </div>
-              </div>
-              <div className="flex gap-1.5 items-center">
-                <div className="text-[16px] text-blue-600 font-semibold">
-                  <p className="leading-[24px]">Learn more</p>
-                </div>
-                <ArrowRight className="w-5 h-5 text-blue-600" />
-              </div>
-            </div>
-            
-            {/* Feature Tab 3 */}
-            <div className="flex flex-col gap-4 pl-6 py-4 border-l-4 border-neutral-100">
-              <div className="flex flex-col gap-1">
-                <div className="text-[#181d27] text-[18px] font-semibold">
-                  <p className="leading-[28px]">Refine high-impact areas in your article.</p>
-                </div>
-                <div className="text-[#535862] text-[16px] font-normal">
-                  <p className="leading-[24px]">Get targeted recommendations to improve sections that will boost your AI visibility the most.</p>
-                </div>
-              </div>
-              <div className="flex gap-1.5 items-center">
-                <div className="text-[16px] text-blue-600 font-semibold">
-                  <p className="leading-[24px]">Learn more</p>
-                </div>
-                <ArrowRight className="w-5 h-5 text-blue-600" />
-              </div>
+          {/* Left Side - Image */}
+          <div className="w-full lg:flex-1 h-[300px] sm:h-[400px] lg:h-[512px] relative">
+            <div className="absolute h-full left-0 top-0 w-full">
+              <div 
+                className="w-full h-full bg-[length:contain] sm:bg-[length:100%_100%] bg-[position:center] bg-no-repeat rounded-lg"
+                style={{
+                  backgroundImage: `url('/prescription.webp')`
+                }}
+              />
             </div>
           </div>
         </div>

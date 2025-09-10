@@ -2,156 +2,141 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { ArrowUpRight } from 'lucide-react';
-
-const img = "http://localhost:3845/assets/69c2d48ba81567d28893e15cd0baf517c39f52ee.png";
-const img1 = "http://localhost:3845/assets/6424b0d14893954b1bbf127484daab7d652e2e3f.png";
-const img2 = "http://localhost:3845/assets/a4c52ab3a3c522719b54dd45b1795921034a3f00.png";
-const img3 = "http://localhost:3845/assets/ab9201148cfdefe023e21366139405f0dda8c4d3.png";
-const img4 = "http://localhost:3845/assets/4f7cb156af7440d6883d7ce6e71818b4d55fde88.png";
-const img5 = "http://localhost:3845/assets/f411169b0890cb85aaf2ca68bc27e793bfc47b0c.png";
-const imgSizeMdPlaceholderFalseTextFalseStatusIconFalse = "http://localhost:3845/assets/08a3b47613f2d0f6aced2c3c467602e3aa1638f1.png";
-
-interface BlogPost {
-  image: string;
-  category: string;
-  title: string;
-  excerpt: string;
-  author: {
-    name: string;
-    avatar: string;
-    date: string;
-  };
-}
-
-const blogPosts: BlogPost[] = [
-  {
-    image: img,
-    category: "AI",
-    title: "AI-Driven Market Insights: How Geo Analytics Transforms Campaigns",
-    excerpt: "Discover how leveraging geo analytics and generative AI sharpens targeting and boosts ROI in modern marketing strategies.",
-    author: {
-      name: "Olivia Rhye",
-      avatar: img1,
-      date: "20 Jan 2025"
-    }
-  },
-  {
-    image: img2,
-    category: "AI",
-    title: "Mastering Local Reach: Geo Optimization Engine Best Practices",
-    excerpt: "Explore actionable tips for marketers to harness generative optimization engines, maximizing customer engagement and local market penetration.",
-    author: {
-      name: "Phoenix Baker",
-      avatar: img3,
-      date: "19 Jan 2025"
-    }
-  },
-  {
-    image: img4,
-    category: "AI",
-    title: "From Data to Action: Next-Gen Tech for Hyperlocal Audience Intelligence",
-    excerpt: "A look at the latest AI-powered tools driving smarter decision-making and competitive advantage in geo-targeted campaigns.",
-    author: {
-      name: "Lana Steiner",
-      avatar: img5,
-      date: "18 Jan 2025"
-    }
-  }
-];
+import Link from 'next/link';
 
 interface BlogSectionProps {
   className?: string;
 }
 
 export default function BlogSection({ className }: BlogSectionProps) {
+  const blogPosts = [
+    {
+      id: 1,
+      title: "AI 검색 최적화의 미래: 2024년 트렌드 분석",
+      excerpt: "인공지능 기반 검색엔진들이 콘텐츠를 평가하는 새로운 방식과 이에 대응하는 최적화 전략을 살펴봅니다.",
+      author: "김진수",
+      role: "AI SEO 전문가",
+      date: "2024년 3월 15일",
+      readTime: "5분 읽기",
+      image: "/blog-placeholder.png",
+      category: "AI 최적화"
+    },
+    {
+      id: 2,
+      title: "GEO vs SEO: 지역 기반 검색의 새로운 패러다임",
+      excerpt: "전통적인 SEO를 넘어서 지역 기반 검색 최적화(GEO)가 비즈니스에 미치는 영향과 실전 적용 방법을 알아봅니다.",
+      author: "이영희",
+      role: "GEO 마케팅 전략가",
+      date: "2024년 3월 12일",
+      readTime: "7분 읽기",
+      image: "/blog-placeholder.png",
+      category: "GEO 마케팅"
+    },
+    {
+      id: 3,
+      title: "Perplexity AI 최적화 가이드: 실전 전략",
+      excerpt: "Perplexity AI에서 높은 순위를 얻기 위한 구체적인 콘텐츠 작성 방법과 최적화 팁을 단계별로 설명합니다.",
+      author: "박민준",
+      role: "콘텐츠 최적화 전문가",
+      date: "2024년 3월 10일",
+      readTime: "6분 읽기",
+      image: "/blog-placeholder.png",
+      category: "실전 가이드"
+    }
+  ];
+
   return (
-    <section className={`bg-white py-24 ${className}`}>
-      <div className="max-w-[1280px] mx-auto px-8">
+    <section className={`bg-gray-50 py-12 sm:py-16 lg:py-24 ${className}`}>
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="flex flex-col gap-8 mb-16">
-          <div className="flex flex-wrap gap-8 items-start justify-between w-full">
-            <div className="flex-1 flex flex-col gap-5 max-w-[768px] min-w-[480px]">
-              <div className="flex flex-col gap-3">
-                <div className="text-[16px] text-blue-600 font-semibold">
-                  <p className="leading-[24px]">Our blog</p>
-                </div>
-                <div className="text-[#181d27] text-[36px] tracking-[-0.72px] font-semibold">
-                  <p className="leading-[44px]">Lastest blog posts</p>
-                </div>
-              </div>
-              <div className="text-[#535862] text-[20px] font-normal">
-                <p className="leading-[30px]">Tool and strategies modern teams need to help their companies grow.</p>
-              </div>
-            </div>
+        <div className="text-center mb-12 sm:mb-16">
+          <div className="text-[14px] sm:text-[16px] text-blue-600 font-semibold mb-3 sm:mb-4">
+            인사이트 & 가이드
           </div>
+          <h2 className="text-[24px] sm:text-[32px] lg:text-[36px] font-semibold text-[#181d27] tracking-[-0.48px] sm:tracking-[-0.72px] mb-4 sm:mb-6">
+            AI 검색 최적화 인사이트
+          </h2>
+          <p className="text-[16px] sm:text-[18px] lg:text-[20px] text-[#535862] max-w-[600px] mx-auto leading-[24px] sm:leading-[26px] lg:leading-[30px]">
+            전문가들이 공유하는 최신 AI 검색 트렌드와 실전 노하우를 확인하세요
+          </p>
         </div>
 
-        {/* Blog Cards */}
-        <div className="flex flex-col gap-8 mb-16">
-          <div className="flex flex-wrap gap-8 items-start justify-start w-full">
-            {blogPosts.map((post, index) => (
-              <article key={index} className="flex-1 flex flex-col gap-4 min-w-80">
-                {/* Image */}
-                <div 
-                  className="aspect-[384/256] bg-center bg-cover bg-no-repeat rounded-[16px] w-full"
-                  style={{ backgroundImage: `url('${post.image}')` }}
+        {/* Blog Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          {blogPosts.map((post) => (
+            <article 
+              key={post.id}
+              className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group cursor-pointer"
+            >
+              {/* Image */}
+              <div className="relative h-[200px] sm:h-[220px] lg:h-[240px] overflow-hidden">
+                <Image
+                  src={post.image}
+                  alt={post.title}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                
-                {/* Content */}
-                <div className="flex flex-col gap-5 w-full">
-                  <div className="flex flex-col gap-2 w-full">
-                    {/* Category */}
-                    <div className="text-[#141c25] text-[14px] font-semibold">
-                      <p className="leading-[20px]">{post.category}</p>
+                <div className="absolute top-3 sm:top-4 left-3 sm:left-4">
+                  <span className="bg-blue-600 text-white text-[12px] sm:text-[14px] font-semibold px-2 sm:px-3 py-1 rounded-full">
+                    {post.category}
+                  </span>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-4 sm:p-6">
+                {/* Title */}
+                <h3 className="text-[16px] sm:text-[18px] lg:text-[20px] font-semibold text-[#181d27] leading-[22px] sm:leading-[24px] lg:leading-[28px] mb-3 sm:mb-4 group-hover:text-blue-600 transition-colors line-clamp-2">
+                  {post.title}
+                </h3>
+
+                {/* Excerpt */}
+                <p className="text-[14px] sm:text-[16px] text-[#535862] leading-[20px] sm:leading-[24px] mb-4 sm:mb-6 line-clamp-3">
+                  {post.excerpt}
+                </p>
+
+                {/* Meta Info */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                      <span className="text-[12px] sm:text-[14px] font-semibold text-gray-600">
+                        {post.author.charAt(0)}
+                      </span>
                     </div>
-                    
-                    {/* Title and Description */}
-                    <div className="flex flex-col gap-1 w-full">
-                      <div className="flex gap-4 items-start justify-between w-full">
-                        <div className="flex-1 text-[#181d27] text-[18px] font-semibold">
-                          <p className="leading-[28px]">{post.title}</p>
-                        </div>
-                        <div className="flex flex-col items-start justify-start pt-0.5">
-                          <ArrowUpRight className="w-6 h-6 text-gray-600" />
-                        </div>
+                    <div>
+                      <div className="text-[12px] sm:text-[14px] font-semibold text-[#181d27]">
+                        {post.author}
                       </div>
-                      <div className="text-[#535862] text-[16px] font-normal line-clamp-3">
-                        <p className="leading-[24px]">{post.excerpt}</p>
+                      <div className="text-[11px] sm:text-[12px] text-[#535862]">
+                        {post.role}
                       </div>
                     </div>
                   </div>
-                  
-                  {/* Author */}
-                  <div className="flex gap-2 items-center">
-                    <div 
-                      className="w-10 h-10 rounded-full bg-center bg-cover bg-no-repeat border border-[rgba(0,0,0,0.08)]"
-                      style={{ backgroundImage: `url('${post.author.avatar}')` }}
-                    />
-                    <div className="flex flex-col text-[14px]">
-                      <div className="text-[#181d27] font-semibold">
-                        <p className="leading-[20px]">{post.author.name}</p>
-                      </div>
-                      <div className="text-[#535862] font-normal">
-                        <p className="leading-[20px]">{post.author.date}</p>
-                      </div>
+                  <div className="text-right">
+                    <div className="text-[11px] sm:text-[12px] text-[#535862]">
+                      {post.date}
+                    </div>
+                    <div className="text-[11px] sm:text-[12px] text-blue-600 font-medium">
+                      {post.readTime}
                     </div>
                   </div>
                 </div>
-              </article>
-            ))}
-          </div>
+              </div>
+            </article>
+          ))}
         </div>
 
-        {/* View More Button */}
-        <div className="flex justify-center">
-          <div className="w-80">
-            <button className="w-full bg-white border border-[rgba(10,13,18,0.18)] rounded-[8px] px-[18px] py-3 flex gap-1.5 items-center justify-center">
-              <div className="text-[#414651] text-[16px] font-semibold">
-                <p className="leading-[24px]">View more posts</p>
-              </div>
-            </button>
-          </div>
+        {/* View All Button */}
+        <div className="text-center mt-12 sm:mt-16">
+          <Link 
+            href="/blog"
+            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-[16px] sm:text-[18px] font-semibold transition-colors"
+          >
+            모든 게시글 보기
+            <svg className="w-4 sm:w-5 h-4 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
         </div>
       </div>
     </section>

@@ -23,9 +23,9 @@ export default function HeroSection({ className }: HeroSectionProps) {
       {/* Navigation Header */}
       <div className="relative z-10 h-[76px] w-full">
         <div className="flex items-center justify-center px-0 py-3">
-          <div className="flex w-full max-w-[1280px] items-center justify-between px-8">
+          <div className="flex w-full max-w-[1280px] items-center justify-between px-4 sm:px-8">
             <div className="flex grow items-center justify-start gap-4 rounded-2xl border border-black/8 bg-white px-3 py-3 pl-4 pr-3 shadow-sm">
-              <div className="flex grow items-center justify-start gap-10">
+              <div className="flex grow items-center justify-start gap-4 sm:gap-10">
                 {/* Logo */}
                 <div className="flex items-center justify-start gap-2">
                   <div className="relative size-8 rounded-lg bg-white border-[0.2px] border-black/25">
@@ -44,8 +44,8 @@ export default function HeroSection({ className }: HeroSectionProps) {
                   </div>
                 </div>
                 
-                {/* Navigation */}
-                <div className="flex items-center gap-4">
+                {/* Navigation - Hidden on mobile */}
+                <div className="hidden md:flex items-center gap-4">
                   <div className="rounded-lg px-1.5 py-1">
                     <div className="px-0.5 py-0">
                       <span className="text-base font-semibold text-[#414651]">Blog</span>
@@ -55,12 +55,13 @@ export default function HeroSection({ className }: HeroSectionProps) {
               </div>
               
               {/* CTA Buttons */}
-              <div className="flex items-start gap-3">
-                <button className="rounded-[10px] border border-neutral-200 bg-neutral-50 px-5 py-2.5 shadow-sm transition-colors hover:bg-neutral-100">
+              <div className="flex items-start gap-2 sm:gap-3">
+                <button className="rounded-[10px] border border-neutral-200 bg-neutral-50 px-3 sm:px-5 py-2.5 shadow-sm transition-colors hover:bg-neutral-100">
                   <span className="text-sm font-medium text-neutral-700">Login</span>
                 </button>
-                <button className="rounded-[10px] bg-blue-600 px-5 py-2.5 shadow-sm transition-colors hover:bg-blue-700">
-                  <span className="text-sm font-medium text-neutral-50">Book a Demo</span>
+                <button className="rounded-[10px] bg-blue-600 px-3 sm:px-5 py-2.5 shadow-sm transition-colors hover:bg-blue-700">
+                  <span className="text-sm font-medium text-neutral-50 hidden sm:inline">Book a Demo</span>
+                  <span className="text-sm font-medium text-neutral-50 sm:hidden">Demo</span>
                 </button>
               </div>
             </div>
@@ -69,12 +70,12 @@ export default function HeroSection({ className }: HeroSectionProps) {
       </div>
 
       {/* Main Hero Content */}
-      <div className="relative z-10 flex w-full flex-col items-center justify-start gap-16 px-0 pb-0 pt-24">
-        <div className="flex w-full max-w-[1280px] flex-col items-center justify-start gap-8 px-8">
-          <div className="flex w-full flex-col items-center justify-start gap-12">
+      <div className="relative z-10 flex w-full flex-col items-center justify-start gap-8 sm:gap-16 px-0 pb-0 pt-12 sm:pt-24">
+        <div className="flex w-full max-w-[1280px] flex-col items-center justify-start gap-6 sm:gap-8 px-4 sm:px-8">
+          <div className="flex w-full flex-col items-center justify-start gap-8 sm:gap-12">
             {/* Hero Text Content */}
-            <div className="flex flex-col items-center justify-start gap-6">
-              <div className="flex flex-col items-center justify-start gap-6">
+            <div className="flex flex-col items-center justify-start gap-4 sm:gap-6">
+              <div className="flex flex-col items-center justify-start gap-4 sm:gap-6">
                 {/* Badge */}
                 <div className="flex items-center justify-start gap-2 rounded-[10px] border border-[#d5d7da] bg-white px-1 py-1 pr-2 shadow-sm">
                   <div className="flex items-center justify-start gap-1.5 rounded-md border border-[#d5d7da] bg-white px-2 py-0.5 shadow-sm">
@@ -85,7 +86,7 @@ export default function HeroSection({ className }: HeroSectionProps) {
                     </div>
                     <span className="text-sm font-medium text-[#414651]">New feature</span>
                   </div>
-                  <div className="flex items-center justify-start gap-1">
+                  <div className="hidden sm:flex items-center justify-start gap-1">
                     <span className="text-sm font-medium text-[#414651]">Perplexity AI Supported</span>
                     <div className="size-4">
                       <ArrowRight className="size-4 text-[#414651]" />
@@ -94,21 +95,21 @@ export default function HeroSection({ className }: HeroSectionProps) {
                 </div>
 
                 {/* Main Heading */}
-                <h1 className="text-center text-5xl font-semibold leading-[60px] tracking-[-0.48px] text-[#181d27]">
+                <h1 className="text-center text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight sm:leading-[60px] tracking-[-0.48px] text-[#181d27] px-4 sm:px-0">
                   See exactly how AI reads your content
                 </h1>
               </div>
 
               {/* Subheading */}
-              <p className="max-w-[768px] text-center text-xl leading-[30px] text-[#535862]">
+              <p className="max-w-[768px] text-center text-lg sm:text-xl leading-7 sm:leading-[30px] text-[#535862] px-4 sm:px-0">
                 AI has changed the rules for content visibility — learn how to stay ahead.
               </p>
             </div>
 
             {/* Email Capture Form */}
-            <div className="flex items-start gap-3">
-              <form onSubmit={handleEmailSubmit} className="flex w-[520px] items-start gap-4">
-                <div className="flex grow flex-col gap-1.5">
+            <div className="flex items-start gap-3 w-full max-w-[520px] px-4 sm:px-0">
+              <form onSubmit={handleEmailSubmit} className="flex w-full flex-col sm:flex-row items-start gap-3 sm:gap-4">
+                <div className="flex w-full sm:grow flex-col gap-1.5">
                   <div className="flex w-full flex-col items-start gap-1.5">
                     <div className="flex w-full items-center justify-start gap-2 rounded-lg border border-[#d5d7da] bg-white px-3.5 py-3 shadow-sm">
                       <div className="flex grow items-center justify-start gap-2">
@@ -123,7 +124,7 @@ export default function HeroSection({ className }: HeroSectionProps) {
                       </div>
                     </div>
                   </div>
-                  <p className="w-full text-sm leading-5 text-[#535862]">
+                  <p className="w-full text-sm leading-5 text-[#535862] text-center sm:text-left">
                     We care about your data in our{' '}
                     <span className="underline decoration-solid underline-offset-[from-font]">
                       privacy policy
@@ -133,7 +134,7 @@ export default function HeroSection({ className }: HeroSectionProps) {
                 </div>
                 <button
                   type="submit"
-                  className="rounded-lg bg-[#0166ff] px-[18px] py-3 shadow-sm transition-colors hover:bg-[#0052cc] focus:outline-none focus:ring-2 focus:ring-[#0166ff] focus:ring-offset-2"
+                  className="w-full sm:w-auto rounded-lg bg-[#0166ff] px-[18px] py-3 shadow-sm transition-colors hover:bg-[#0052cc] focus:outline-none focus:ring-2 focus:ring-[#0166ff] focus:ring-offset-2"
                 >
                   <span className="text-base font-semibold text-white leading-6">
                     Get Early Access
@@ -145,12 +146,12 @@ export default function HeroSection({ className }: HeroSectionProps) {
         </div>
 
         {/* Product Mockup */}
-        <div className="flex w-full max-w-[1280px] flex-col items-center justify-start gap-8 px-8">
-          <div className="relative h-[496px] w-full">
-            <div className="absolute left-1/2 top-0 -translate-x-1/2 rounded-[32px] border border-black/8 bg-white p-1 shadow-[0px_12px_16px_-4px_rgba(10,13,18,0.08),0px_4px_6px_-2px_rgba(10,13,18,0.03),0px_2px_2px_-1px_rgba(10,13,18,0.04)]">
-              <div className="overflow-hidden rounded-[28px] bg-white p-1 shadow-[0px_0px_6px_2px_inset_rgba(10,13,18,0.08),0px_0px_4px_2px_inset_rgba(10,13,18,0.03)]">
-                <div className="overflow-hidden rounded-[24px] border-2 border-[#e9eaeb] bg-neutral-50">
-                  <div className="h-[800px] w-[1200px] bg-[length:100%_93.75%] bg-[position:0%_4%] bg-no-repeat"
+        <div className="flex w-full max-w-[1280px] flex-col items-center justify-start gap-6 sm:gap-8 px-4 sm:px-8">
+          <div className="relative h-[250px] sm:h-[350px] md:h-[450px] lg:h-[496px] w-full">
+            <div className="absolute left-1/2 top-0 -translate-x-1/2 rounded-[16px] sm:rounded-[24px] lg:rounded-[32px] border border-black/8 bg-white p-0.5 sm:p-1 shadow-[0px_12px_16px_-4px_rgba(10,13,18,0.08),0px_4px_6px_-2px_rgba(10,13,18,0.03),0px_2px_2px_-1px_rgba(10,13,18,0.04)]">
+              <div className="overflow-hidden rounded-[14px] sm:rounded-[20px] lg:rounded-[28px] bg-white p-0.5 sm:p-1 shadow-[0px_0px_6px_2px_inset_rgba(10,13,18,0.08),0px_0px_4px_2px_inset_rgba(10,13,18,0.03)]">
+                <div className="overflow-hidden rounded-[12px] sm:rounded-[18px] lg:rounded-[24px] border-2 border-[#e9eaeb] bg-neutral-50">
+                  <div className="h-[240px] sm:h-[340px] md:h-[440px] lg:h-[800px] w-[320px] sm:w-[480px] md:w-[640px] lg:w-[1200px] bg-[length:100%_93.75%] bg-[position:0%_4%] bg-no-repeat"
                     style={{
                       backgroundImage: `url('/tracking.webp')`
                     }}

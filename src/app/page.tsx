@@ -1,10 +1,12 @@
 "use client";
 
-import { HeroSection } from '@/components/hero';
-import { SocialProofSection } from '@/components/social-proof';
-import { FeaturesSection, FeaturesSectionGeoLab, FeaturesSectionAiGapAudit } from '@/components/features';
-import { FaqSection } from '@/components/faq';
-import { BlogSection } from '@/components/blog';
+import HeroSection from '@/components/hero/HeroSection';
+import SocialProofSection from '@/components/social-proof/SocialProofSection';
+import FeaturesSection from '@/components/features/FeaturesSection';
+import FeaturesSectionGeoLab from '@/components/features/FeaturesSectionGeoLab';
+import FeaturesSectionAiGapAudit from '@/components/features/FeaturesSectionAiGapAudit';
+import BlogSection from '@/components/blog/BlogSection';
+import FaqSection from '@/components/faq/FaqSection';
 import Footer from '@/components/layout/Footer';
 
 export default function LandingPage() {
@@ -15,8 +17,8 @@ export default function LandingPage() {
       <FeaturesSection />
       <FeaturesSectionGeoLab />
       <FeaturesSectionAiGapAudit />
-      <FaqSection />
       <BlogSection />
+      <FaqSection />
       <Footer />
     </>
   );
