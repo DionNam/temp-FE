@@ -50,11 +50,11 @@ export default function OnboardingForm({ initialEmail = '', className }: Onboard
       </div>
 
       {/* Main Form Section */}
-      <div className="box-border content-stretch flex flex-col gap-16 items-center justify-start pb-0 pt-24 px-0 relative shrink-0 w-full z-[2]">
-        <div className="box-border content-stretch flex flex-col gap-8 items-center justify-start max-w-[1280px] px-8 py-0 relative shrink-0 w-full">
-          <div className="content-stretch flex flex-col gap-12 items-center justify-start relative shrink-0 w-full">
+      <div className="box-border content-stretch flex flex-col gap-8 sm:gap-16 items-center justify-start pb-0 pt-12 sm:pt-24 px-4 sm:px-0 relative shrink-0 w-full z-[2]">
+        <div className="box-border content-stretch flex flex-col gap-6 sm:gap-8 items-center justify-start max-w-[1280px] w-full px-0 sm:px-8 py-0 relative shrink-0">
+          <div className="content-stretch flex flex-col gap-8 sm:gap-12 items-center justify-start relative shrink-0 w-full">
             {/* Authentication Form */}
-            <div className="bg-[rgba(239,239,239,0.2)] box-border content-stretch flex flex-col gap-7 items-center justify-start px-10 py-8 relative rounded-[20px] shrink-0 w-[540px] border border-[#f2f4f7]">
+            <div className="bg-[rgba(239,239,239,0.2)] box-border content-stretch flex flex-col gap-6 sm:gap-7 items-center justify-start px-4 sm:px-10 py-6 sm:py-8 relative rounded-[20px] shrink-0 w-full max-w-[540px] border border-[#f2f4f7]">
               <div className="content-stretch flex flex-col gap-4 items-center justify-start relative shrink-0 w-full">
                 <div className="content-stretch flex flex-col gap-7 items-start justify-center relative shrink-0 w-full">
                   <div className="content-stretch flex flex-col gap-4 items-center justify-start relative shrink-0 w-full">
@@ -73,16 +73,16 @@ export default function OnboardingForm({ initialEmail = '', className }: Onboard
                     </div>
 
                     {/* Main Heading */}
-                    <div className="font-medium leading-[0] min-w-full not-italic relative shrink-0 text-[#141c25] text-[0px] tracking-[-0.36px]" style={{ width: "min-content" }}>
-                      <p className="leading-[44px] text-center">
-                        <span className="text-[36px]">Unlock What Your Content Needs to </span>
-                        <span className="font-[Apple_Garamond] not-italic text-[40px] tracking-[-0.4px] italic">Rank First</span>
+                    <div className="font-medium not-italic relative shrink-0 text-[#141c25] tracking-[-0.36px] w-full">
+                      <p className="leading-[32px] sm:leading-[44px] text-center">
+                        <span className="text-[24px] sm:text-[36px]">Unlock What Your Content Needs to </span>
+                        <span className="font-[Apple_Garamond] not-italic text-[28px] sm:text-[40px] tracking-[-0.4px] italic">Rank First</span>
                       </p>
                     </div>
 
                     {/* Subtitle */}
-                    <div className="font-normal leading-[0] min-w-full not-italic relative shrink-0 text-[#141c25] text-[18px]" style={{ width: "min-content" }}>
-                      <p className="leading-[28px] text-center">Finally know why your AI content is missing from search, and fix it instantly.</p>
+                    <div className="font-normal not-italic relative shrink-0 text-[#141c25] text-[16px] sm:text-[18px] w-full">
+                      <p className="leading-[24px] sm:leading-[28px] text-center">Finally know why your AI content is missing from search, and fix it instantly.</p>
                     </div>
                   </div>
                 </div>

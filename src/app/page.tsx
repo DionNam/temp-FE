@@ -17,7 +17,7 @@ export default function LandingPage() {
       <FeaturesSection />
       <FeaturesSectionGeoLab />
       <FeaturesSectionAiGapAudit />
-      <BlogSection />
+      {/* <BlogSection /> */}
       <FaqSection />
       <Footer />
     </>
