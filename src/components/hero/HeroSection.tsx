@@ -27,11 +27,32 @@ export default function HeroSection({ className }: HeroSectionProps) {
 
   return (
     <div className={`bg-white relative ${className}`}>
+      {/* Grid Background Pattern */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute h-[1440px] left-1/2 top-0 translate-x-[-50%] w-[1920px]">
+          <div className="absolute left-1/2 top-0 translate-x-[-50%] w-[1920px]">
+            <div className="content-start flex flex-wrap gap-0 items-start justify-start overflow-clip relative w-[1920px] opacity-60">
+              {/* Generate grid pattern with deterministic highlights */}
+              {Array.from({ length: 400 }).map((_, index) => {
+                // Deterministic pattern for highlighted blocks
+                const isHighlighted = (index + 1) % 23 === 0 || (index + 1) % 31 === 0 || (index + 1) % 47 === 0;
+                return (
+                  <div key={index} className={`relative shrink-0 size-24 ${isHighlighted ? 'bg-neutral-100' : ''}`}>
+                    <div aria-hidden="true" className="absolute border-[#e9eaeb] border-[0px_1px_1px_0px] border-solid inset-0 pointer-events-none" />
+                  </div>
+                );
+              })}
+            </div>
+            <div aria-hidden="true" className="absolute border border-[#e9eaeb] border-solid inset-0 pointer-events-none" />
+          </div>
+        </div>
+      </div>
+
       {/* Navigation Header */}
       <Header />
 
       {/* Main Hero Content */}
-      <div className="relative z-0 flex w-full flex-col items-center justify-start gap-8 sm:gap-16 px-0 pb-0 pt-8 sm:pt-16">
+      <div className="relative z-10 flex w-full flex-col items-center justify-start gap-8 sm:gap-16 px-0 pb-0 pt-8 sm:pt-16">
         <div className="flex w-full max-w-[1280px] flex-col items-center justify-start gap-6 sm:gap-8 px-4 sm:px-8">
           <div className="flex w-full flex-col items-center justify-start gap-8 sm:gap-12">
             {/* Hero Text Content */}
