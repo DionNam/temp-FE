@@ -151,7 +151,7 @@ export default function OnboardingForm({ initialEmail = '', className }: Onboard
                                     type="email"
                                     value={formData.email}
                                     onChange={(e) => handleInputChange('email', e.target.value)}
-                                    placeholder="johndoe@markt.com"
+                                    placeholder="john_smith@email.com"
                                     className="font-normal leading-[0] not-italic relative shrink-0 text-[16px] text-neutral-900 text-nowrap bg-transparent border-none outline-none w-full"
                                     required
                                   />

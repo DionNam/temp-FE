@@ -3,12 +3,14 @@
 import React from 'react';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface FeaturesSectionAiGapAuditProps {
   className?: string;
 }
 
 export default function FeaturesSectionAiGapAudit({ className }: FeaturesSectionAiGapAuditProps) {
+  const router = useRouter();
   return (
     <section className={`bg-white py-12 sm:py-16 lg:py-24 ${className}`}>
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -87,7 +89,10 @@ export default function FeaturesSectionAiGapAudit({ className }: FeaturesSection
 
             {/* CTA Button */}
             <div className="mt-8 sm:mt-12">
-              <button className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-[16px] sm:text-[18px] font-semibold transition-colors">
+              <button 
+                onClick={() => router.push('/onboarding')}
+                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-[16px] sm:text-[18px] font-semibold transition-colors"
+              >
                 Start Your AI Audit
                 <ArrowRight className="w-4 sm:w-5 h-4 sm:h-5" />
               </button>

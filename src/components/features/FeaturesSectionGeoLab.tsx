@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface FeatureStep {
   id: number;
@@ -39,6 +40,7 @@ interface FeaturesSectionProps {
 export default function FeaturesSectionGeoLab({ className }: FeaturesSectionProps) {
   const [activeStep, setActiveStep] = useState(1);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const router = useRouter();
 
   // Auto-rotate through steps every 4 seconds
   useEffect(() => {
@@ -112,7 +114,13 @@ export default function FeaturesSectionGeoLab({ className }: FeaturesSectionProp
                     <p className="leading-[20px] sm:leading-[24px]">{step.description}</p>
                   </div>
                 </div>
-                <div className="flex gap-1.5 items-center">
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    router.push('/onboarding');
+                  }}
+                  className="flex gap-1.5 items-center hover:gap-2 transition-all duration-300"
+                >
                   <div className={`text-[14px] sm:text-[16px] font-semibold transition-colors duration-300 ${
                     activeStep === step.id ? 'text-blue-600' : 'text-blue-500 group-hover:text-blue-600'
                   }`}>
@@ -123,7 +131,7 @@ export default function FeaturesSectionGeoLab({ className }: FeaturesSectionProp
                       ? 'text-blue-600 transform translate-x-1' 
                       : 'text-blue-500 group-hover:text-blue-600 group-hover:translate-x-1'
                   }`} />
-                </div>
+                </button>
               </div>
             ))}
           </div>
