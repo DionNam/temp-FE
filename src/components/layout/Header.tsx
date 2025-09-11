@@ -24,18 +24,16 @@ export function Header() {
               {/* Logo */}
               <button 
                 onClick={() => router.push('/')}
-                className="flex items-center justify-start gap-2 cursor-pointer hover:opacity-80 transition-opacity"
+                className="flex items-center justify-start gap-1 cursor-pointer hover:opacity-80 transition-opacity"
               >
-                <div className="relative size-6 sm:size-8 rounded-lg bg-white border-[0.2px] border-black/25">
-                  <div className="absolute left-0.5 sm:left-1 top-1.5 sm:top-2.5 h-2.5 sm:h-3 w-5 sm:w-6">
-                    <Image
-                      src="/showonai.svg"
-                      alt="ShowOnAI Logo"
-                      width={24}
-                      height={12}
-                      className="size-full object-contain"
-                    />
-                  </div>
+                <div className="relative size-6 sm:size-8">
+                  <Image
+                    src="/showonai_logo_small.svg"
+                    alt="ShowOnAI Logo"
+                    width={32}
+                    height={32}
+                    className="size-full object-contain"
+                  />
                 </div>
                 <div className="bg-gradient-to-b from-[#3395ff] to-[#0166ff] bg-clip-text text-sm sm:text-base font-semibold text-transparent">
                   ShowOnAI
@@ -54,11 +52,11 @@ export function Header() {
             
             {/* Desktop Right side buttons */}
             <div className="hidden sm:flex items-center gap-2 sm:gap-3">
-              <button className="bg-neutral-50 box-border flex gap-2 items-center justify-center px-3 sm:px-5 py-2 sm:py-2.5 rounded-[10px] border border-neutral-200 shadow-[0px_1px_2px_0px_rgba(20,28,37,0.04)] hover:bg-neutral-100 transition-colors">
+              {/* <button className="bg-neutral-50 box-border flex gap-2 items-center justify-center px-3 sm:px-5 py-2 sm:py-2.5 rounded-[10px] border border-neutral-200 shadow-[0px_1px_2px_0px_rgba(20,28,37,0.04)] hover:bg-neutral-100 transition-colors">
                 <div className="font-medium text-[12px] sm:text-[14px] text-center text-neutral-700">
                   Login
                 </div>
-              </button>
+              </button> */}
               <button 
                 onClick={handleGetEarlyAccess}
                 className="bg-blue-600 box-border flex gap-2 items-center justify-center px-3 sm:px-5 py-2 sm:py-2.5 rounded-[10px] shadow-[0px_1px_2px_0px_rgba(20,28,37,0.04)] hover:bg-blue-700 transition-colors"
@@ -93,11 +91,11 @@ export function Header() {
               <span className="text-base font-semibold text-[#414651]">Blog</span>
             </div>
             <div className="flex flex-col gap-3">
-              <button className="bg-neutral-50 box-border flex gap-2 items-center justify-center px-4 py-3 rounded-[10px] border border-neutral-200 shadow-[0px_1px_2px_0px_rgba(20,28,37,0.04)] hover:bg-neutral-100 transition-colors">
+              {/* <button className="bg-neutral-50 box-border flex gap-2 items-center justify-center px-4 py-3 rounded-[10px] border border-neutral-200 shadow-[0px_1px_2px_0px_rgba(20,28,37,0.04)] hover:bg-neutral-100 transition-colors">
                 <div className="font-medium text-[14px] text-center text-neutral-700">
                   Login
                 </div>
-              </button>
+              </button> */}
               <button 
                 onClick={() => {
                   handleGetEarlyAccess();
