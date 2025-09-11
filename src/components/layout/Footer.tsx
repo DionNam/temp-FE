@@ -9,9 +9,9 @@ interface FooterProps {
 
 const Footer = React.memo(function Footer({ className }: FooterProps) {
   return (
-    <footer className={`relative bg-gradient-to-b from-[#66afff00] to-[#0669ff00] py-16 sm:py-20 md:py-24 lg:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden min-h-[400px] sm:min-h-[450px] md:min-h-[500px] lg:min-h-[600px] ${className}`}>
+    <footer className={`relative bg-gradient-to-b from-[#66afff00] to-[#0669ff00] px-4 sm:px-6 lg:px-8 overflow-hidden ${className}`} style={{ aspectRatio: '4/1' }}>
       <div className="absolute inset-0 flex items-end justify-center">
-        <div className="w-full max-w-[2000px] relative px-4">
+        <div className="w-full max-w-[1000px] sm:max-w-[1200px] md:max-w-[1500px] lg:max-w-[1800px] xl:max-w-[2000px] relative px-2 sm:px-4">
           <Image
             src="/ShowOnAI_text.svg"
             alt="ShowOnAI"
