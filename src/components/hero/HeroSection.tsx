@@ -135,9 +135,6 @@ export default function HeroSection({ className }: HeroSectionProps) {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 }
