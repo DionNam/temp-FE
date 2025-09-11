@@ -49,15 +49,14 @@ export default function FeaturesSection({ className }: FeaturesSectionProps) {
                   </p>
                 </div>
                 
-                {/* Illustration Placeholder */}
-                <div className="h-[200px] sm:h-[250px] lg:h-[300px] bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
-                  <div className="w-16 sm:w-20 h-16 sm:h-20 bg-blue-500 rounded-2xl flex items-center justify-center">
+                {/* AI Visibility Illustration */}
+                <div className="h-[200px] sm:h-[250px] lg:h-[300px] bg-neutral-50 flex items-center justify-center p-2 sm:p-4">
+                  <div className="w-full h-full relative">
                     <Image
-                      src="/assets/Icon-1.svg"
-                      alt="AI Visibility Icon"
-                      width={32}
-                      height={32}
-                      className="w-6 sm:w-8 h-6 sm:h-8 text-white"
+                      src="/ai_visibility.svg"
+                      alt="AI Visibility Diagram"
+                      fill
+                      className="object-cover"
                     />
                   </div>
                 </div>
@@ -67,22 +66,15 @@ export default function FeaturesSection({ className }: FeaturesSectionProps) {
             {/* Card 2 - Content Analysis */}
             <div className="bg-neutral-50 rounded-[20px] border border-neutral-200 overflow-hidden">
               <div className="flex flex-col">
-                {/* Illustration Placeholder */}
-                <div className="h-[200px] sm:h-[250px] lg:h-[300px] bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center relative">
-                  {/* Chart visualization placeholder */}
-                  <div className="relative w-full h-full flex items-center justify-center">
-                    <div className="w-24 sm:w-32 h-24 sm:h-32 bg-green-500 rounded-full opacity-20"></div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-12 sm:w-16 h-12 sm:h-16 bg-green-600 rounded-lg flex items-center justify-center">
-                        <Image
-                          src="/chart-donut.svg"
-                          alt="Analytics Icon"
-                          width={24}
-                          height={24}
-                          className="w-5 sm:w-6 h-5 sm:h-6 text-white"
-                        />
-                      </div>
-                    </div>
+                {/* Globe Illustration */}
+                <div className="h-[200px] sm:h-[250px] lg:h-[300px] bg-neutral-50 flex items-center justify-center p-2 sm:p-4">
+                  <div className="w-full h-full relative">
+                    <Image
+                      src="/globe.png"
+                      alt="Global Content Analysis"
+                      fill
+                      className="object-cover"
+                    />
                   </div>
                 </div>
                 
@@ -111,19 +103,15 @@ export default function FeaturesSection({ className }: FeaturesSectionProps) {
                   </p>
                 </div>
                 
-                {/* Illustration Placeholder */}
-                <div className="h-[200px] sm:h-[250px] lg:h-[300px] bg-white flex items-center justify-center relative">
-                  {/* Graph visualization placeholder */}
-                  <div className="relative w-full h-full p-6 sm:p-8">
-                    <div className="w-full h-full bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 rounded-lg opacity-20"></div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="flex items-end gap-1 sm:gap-2">
-                        <div className="w-3 sm:w-4 h-12 sm:h-16 bg-blue-500 rounded-t"></div>
-                        <div className="w-3 sm:w-4 h-16 sm:h-20 bg-blue-600 rounded-t"></div>
-                        <div className="w-3 sm:w-4 h-8 sm:h-12 bg-blue-400 rounded-t"></div>
-                        <div className="w-3 sm:w-4 h-20 sm:h-24 bg-blue-700 rounded-t"></div>
-                      </div>
-                    </div>
+                {/* Tracking Performance Illustration */}
+                <div className="h-[200px] sm:h-[250px] lg:h-[300px] bg-neutral-50 flex items-center justify-center p-2 sm:p-4">
+                  <div className="w-full h-full relative">
+                    <Image
+                      src="/tracking.png"
+                      alt="Performance Tracking Dashboard"
+                      fill
+                      className="object-cover"
+                    />
                   </div>
                 </div>
               </div>
