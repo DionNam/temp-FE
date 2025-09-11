@@ -147,15 +147,20 @@ export default function HeroSection({ className }: HeroSectionProps) {
 
         {/* Product Mockup */}
         <div className="flex w-full max-w-[1280px] flex-col items-center justify-start gap-6 sm:gap-8 px-4 sm:px-8">
-          <div className="relative h-[250px] sm:h-[350px] md:h-[450px] lg:h-[496px] w-full">
-            <div className="absolute left-1/2 top-0 -translate-x-1/2 rounded-[16px] sm:rounded-[24px] lg:rounded-[32px] border border-black/8 bg-white p-0.5 sm:p-1 shadow-[0px_12px_16px_-4px_rgba(10,13,18,0.08),0px_4px_6px_-2px_rgba(10,13,18,0.03),0px_2px_2px_-1px_rgba(10,13,18,0.04)]">
+          <div className="relative w-full max-w-[1200px]">
+            <div className="relative rounded-[16px] sm:rounded-[24px] lg:rounded-[32px] border border-black/8 bg-white p-0.5 sm:p-1 shadow-[0px_12px_16px_-4px_rgba(10,13,18,0.08),0px_4px_6px_-2px_rgba(10,13,18,0.03),0px_2px_2px_-1px_rgba(10,13,18,0.04)] mx-auto">
               <div className="overflow-hidden rounded-[14px] sm:rounded-[20px] lg:rounded-[28px] bg-white p-0.5 sm:p-1 shadow-[0px_0px_6px_2px_inset_rgba(10,13,18,0.08),0px_0px_4px_2px_inset_rgba(10,13,18,0.03)]">
                 <div className="overflow-hidden rounded-[12px] sm:rounded-[18px] lg:rounded-[24px] border-2 border-[#e9eaeb] bg-neutral-50">
-                  <div className="h-[240px] sm:h-[340px] md:h-[440px] lg:h-[800px] w-[320px] sm:w-[480px] md:w-[640px] lg:w-[1200px] bg-[length:100%_93.75%] bg-[position:0%_4%] bg-no-repeat"
-                    style={{
-                      backgroundImage: `url('/tracking.webp')`
-                    }}
-                  />
+                  <div className="aspect-[15/8] w-full relative">
+                    <Image
+                      src="/main_geo_lab.png"
+                      alt="ShowOnAI Dashboard Preview"
+                      fill
+                      className="object-cover object-top"
+                      sizes="(max-width: 768px) 320px, (max-width: 1024px) 640px, 1200px"
+                      priority
+                    />
+                  </div>
                 </div>
               </div>
             </div>

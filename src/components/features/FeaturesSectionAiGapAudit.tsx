@@ -95,13 +95,15 @@ export default function FeaturesSectionAiGapAudit({ className }: FeaturesSection
           </div>
           
           {/* Left Side - Image */}
-          <div className="w-full lg:flex-1 h-[300px] sm:h-[400px] lg:h-[512px] relative">
-            <div className="absolute h-full left-0 top-0 w-full">
-              <div 
-                className="w-full h-full bg-[length:contain] sm:bg-[length:100%_100%] bg-[position:center] bg-no-repeat rounded-lg"
-                style={{
-                  backgroundImage: `url('/prescription.webp')`
-                }}
+          <div className="w-full lg:flex-1 relative">
+            <div className="aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3] w-full relative rounded-lg overflow-hidden shadow-lg">
+              <Image
+                src="/prescription.webp"
+                alt="AI Gap Audit Report"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 40vw"
+                priority
               />
             </div>
           </div>
