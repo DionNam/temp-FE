@@ -134,11 +134,18 @@ export default function HeroSection({ className }: HeroSectionProps) {
                 </div>
                 <button
                   type="submit"
-                  className="w-full sm:w-auto rounded-lg bg-[#0166ff] px-[18px] py-3 shadow-sm transition-colors hover:bg-[#0052cc] focus:outline-none focus:ring-2 focus:ring-[#0166ff] focus:ring-offset-2"
+                  className="relative w-full sm:w-auto bg-[#0166ff] rounded-[8px] overflow-hidden"
                 >
-                  <span className="text-base font-semibold text-white leading-6">
-                    Get Early Access
-                  </span>
+                  <div className="box-border flex gap-1.5 items-center justify-center overflow-clip px-8 py-3 relative w-full h-full">
+                    <div className="box-border flex items-center justify-center px-6 py-0 relative shrink-0">
+                      <div className="font-semibold text-[16px] leading-[24px] text-white whitespace-pre">
+                        Get Early Access
+                      </div>
+                    </div>
+                  </div>
+                  {/* Skeumorphic shadows */}
+                  <div className="absolute inset-0 pointer-events-none shadow-[0px_0px_0px_1px_inset_rgba(10,13,18,0.18),0px_-2px_0px_0px_inset_rgba(10,13,18,0.05)]" />
+                  <div aria-hidden="true" className="absolute border-2 border-[rgba(255,255,255,0.12)] border-solid inset-0 pointer-events-none rounded-[8px] shadow-[0px_1px_2px_0px_rgba(10,13,18,0.05)]" />
                 </button>
               </form>
             </div>
