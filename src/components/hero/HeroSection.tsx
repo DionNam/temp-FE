@@ -3,6 +3,9 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Header } from '../layout/Header';
+import Footer from '../layout/Footer';
 
 interface HeroSectionProps {
   className?: string;
@@ -10,64 +13,22 @@ interface HeroSectionProps {
 
 export default function HeroSection({ className }: HeroSectionProps) {
   const [email, setEmail] = useState('');
+  const router = useRouter();
 
   const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle email submission logic here
-    console.log('Email submitted:', email);
+    // Use Next.js router instead of window.location.href
+    const params = new URLSearchParams();
+    if (email) {
+      params.set('email', email);
+    }
+    router.push(`/onboarding?${params.toString()}`);
   };
 
   return (
     <div className={`bg-white relative ${className}`}>
-
       {/* Navigation Header */}
-      <div className="relative z-10 h-[76px] w-full">
-        <div className="flex items-center justify-center px-0 py-3">
-          <div className="flex w-full max-w-[1280px] items-center justify-between px-4 sm:px-8">
-            <div className="flex grow items-center justify-start gap-4 rounded-2xl border border-black/8 bg-white px-3 py-3 pl-4 pr-3 shadow-sm">
-              <div className="flex grow items-center justify-start gap-4 sm:gap-10">
-                {/* Logo */}
-                <div className="flex items-center justify-start gap-2">
-                  <div className="relative size-8 rounded-lg bg-white border-[0.2px] border-black/25">
-                    <div className="absolute left-1 top-2.5 h-3 w-6">
-                      <Image
-                        src="/showonai.svg"
-                        alt="ShowOnAI Logo"
-                        width={24}
-                        height={12}
-                        className="size-full object-contain"
-                      />
-                    </div>
-                  </div>
-                  <div className="bg-gradient-to-b from-[#3395ff] to-[#0166ff] bg-clip-text text-base font-semibold text-transparent">
-                    ShowOnAI
-                  </div>
-                </div>
-                
-                {/* Navigation - Hidden on mobile */}
-                <div className="hidden md:flex items-center gap-4">
-                  <div className="rounded-lg px-1.5 py-1">
-                    <div className="px-0.5 py-0">
-                      <span className="text-base font-semibold text-[#414651]">Blog</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* CTA Buttons */}
-              <div className="flex items-start gap-2 sm:gap-3">
-                <button className="rounded-[10px] border border-neutral-200 bg-neutral-50 px-3 sm:px-5 py-2.5 shadow-sm transition-colors hover:bg-neutral-100">
-                  <span className="text-sm font-medium text-neutral-700">Login</span>
-                </button>
-                <button className="rounded-[10px] bg-blue-600 px-3 sm:px-5 py-2.5 shadow-sm transition-colors hover:bg-blue-700">
-                  <span className="text-sm font-medium text-neutral-50 hidden sm:inline">Book a Demo</span>
-                  <span className="text-sm font-medium text-neutral-50 sm:hidden">Demo</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Header />
 
       {/* Main Hero Content */}
       <div className="relative z-10 flex w-full flex-col items-center justify-start gap-8 sm:gap-16 px-0 pb-0 pt-12 sm:pt-24">
@@ -174,6 +135,9 @@ export default function HeroSection({ className }: HeroSectionProps) {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
