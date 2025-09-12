@@ -13,20 +13,24 @@ interface FAQItem {
 
 const faqData: FAQItem[] = [
   {
-    question: "What sets GEO apart from traditional SEO?",
-    answer: "GEO focuses on geographical relevance, optimizing content for local searches, while SEO targets broader search engine visibility."
+    question: "Do I really need an AI Gap Audit if I already do SEO?",
+    answer: "Yes. Traditional SEO tells you how you rank on Google. AI Gap Audit shows whether your content is actually being cited in ChatGPT, Gemini, and Perplexity — a completely different visibility layer."
   },
   {
-    question: "What factors does Perplexity consider for content visibility?",
-    answer: "Perplexity evaluates content based on relevance, engagement metrics, and user feedback to determine its visibility."
+    question: "How is GEO Factor Lab useful for me?",
+    answer: "Instead of giving you generic best practices, it pinpoints the GEO factors that matter most in your industry and for your type of content. No more guessing, just data-backed priorities."
   },
   {
-    question: "How is your data gathered and analyzed?",
-    answer: "We collect data through user interactions and feedback, analyzing it to improve our services and content delivery."
+    question: "Is this only for agencies or can individuals use it too?",
+    answer: "Both. Agencies use it to deliver AI-SEO results for clients, while individual founders, marketers, and content creators use it to amplify their own visibility."
   },
   {
-    question: "How can I update my account email?",
-    answer: "You can update your account email through the account settings page in your dashboard."
+    question: "Do I need technical expertise to use the platform?",
+    answer: "Not at all. The platform provides clear, actionable recommendations — you don't need to be a data scientist to apply them."
+  },
+  {
+    question: "What kind of results can I expect?",
+    answer: "Most users discover why their content isn't appearing in AI engines, then apply targeted optimizations that lead to 3–5× higher AI visibility within weeks."
   }
 ];
 
