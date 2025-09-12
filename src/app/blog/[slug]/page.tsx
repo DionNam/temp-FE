@@ -3,7 +3,7 @@
 import React, { Suspense } from 'react';
 import { useParams } from 'next/navigation';
 import { Navbar } from '@/components/layout/Navbar';
-import { Footer } from '@/components/layout/Footer';
+import Footer from '@/components/layout/Footer';
 import { BlogContent } from '@/components/blog/BlogContent';
 import { useNavbar } from '@/hooks/useNavbar';
 import { useBlog, useRelatedBlogs } from '@/hooks/useBlogQueries';

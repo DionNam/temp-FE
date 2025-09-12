@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 // import Image from "next/image";
-import { Footer } from "@/components/layout/Footer";
+import Footer from "@/components/layout/Footer";
 import { BlogPost } from "@/types/blog";
 import { useBlogs, useDeleteBlog } from "@/hooks/useBlogQueries";
 import { useBlogFilters } from "@/hooks/useBlogFilters";

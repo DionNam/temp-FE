@@ -26,14 +26,14 @@ export default function FeaturesSectionAiGapAudit({ className }: FeaturesSection
                     <p className="leading-[20px] sm:leading-[24px]">AI Gap Audit</p>
                   </div>
                   <div className="text-[#181d27] text-[24px] sm:text-[32px] lg:text-[36px] tracking-[-0.48px] sm:tracking-[-0.72px] font-semibold">
-                    <p className="leading-[30px] sm:leading-[38px] lg:leading-[44px]">Discover what's missing in your AI strategy</p>
+                    <p className="leading-[30px] sm:leading-[38px] lg:leading-[44px]">Discover what&apos;s missing in your AI strategy</p>
                   </div>
                 </div>
                 <div className="text-[#535862] text-[16px] sm:text-[18px] lg:text-[20px] font-normal">
                   <p className="leading-[24px] sm:leading-[26px] lg:leading-[30px]">
-                    Get a comprehensive audit of your content's AI visibility gaps. 
+                    Get a comprehensive audit of your content&apos;s AI visibility gaps. 
                     <br className="hidden sm:block" />
-                    Understand where you're losing opportunities and how to fix them.
+                    Understand where you&apos;re losing opportunities and how to fix them.
                   </p>
                 </div>
               </div>
@@ -66,7 +66,7 @@ export default function FeaturesSectionAiGapAudit({ className }: FeaturesSection
                     <p className="leading-[24px] sm:leading-[28px]">Competitor Benchmarking</p>
                   </div>
                   <div className="text-[#535862] text-[14px] sm:text-[16px] font-normal">
-                    <p className="leading-[20px] sm:leading-[24px]">See how your AI visibility compares to competitors and what they're doing differently.</p>
+                    <p className="leading-[20px] sm:leading-[24px]">See how your AI visibility compares to competitors and what they&apos;re doing differently.</p>
                   </div>
                 </div>
               </div>

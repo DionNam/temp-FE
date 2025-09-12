@@ -3,7 +3,7 @@
 import React from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
+import Footer from "@/components/layout/Footer";
 import { useNavbar } from "@/hooks/useNavbar";
 import { BlogPost } from "@/types/blog";
 import { generateSlug, sortBlogPostsByDate } from "@/lib/utils";

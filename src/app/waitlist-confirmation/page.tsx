@@ -38,7 +38,7 @@ export default function WaitlistConfirmationPage() {
                       {/* Call to Action Text */}
                       <div className="content-stretch flex flex-col gap-1.5 items-start justify-start text-[#141c25] text-[16px] sm:text-[18px] text-center w-full">
                         <div className="font-semibold relative shrink-0 w-full leading-[24px] sm:leading-[28px]">
-                          Curious to see what's coming?
+                          Curious to see what&apos;s coming?
                         </div>
                         <div className="font-normal relative shrink-0 w-full leading-[24px] sm:leading-[28px]">
                           Check out a glimpse of our demo app and discover the future of AI content optimization!

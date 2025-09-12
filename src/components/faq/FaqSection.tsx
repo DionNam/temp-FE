@@ -3,9 +3,6 @@
 import React, { useState } from 'react';
 import { Plus, Minus } from 'lucide-react';
 
-const imgIcon = "http://localhost:3845/assets/1aa6cedb5f3bf851c5800c3a311d795dc9cce157.svg";
-const imgIcon1 = "http://localhost:3845/assets/425898491650a6a3f2f1a6727e763a82a24cf9e3.svg";
-
 interface FAQItem {
   question: string;
   answer: string;

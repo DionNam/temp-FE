@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Header } from '../layout/Header';
-import Footer from '../layout/Footer';
 
 interface HeroSectionProps {
   className?: string;

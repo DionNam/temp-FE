@@ -1,6 +1,6 @@
 import { Header } from "@/components/layout/Header";
 import ReportContent from "@/components/report/ReportContent";
-import { Footer } from "@/components/layout/Footer";
+import Footer from "@/components/layout/Footer";
 
 const ReportPage = () => {
   return (

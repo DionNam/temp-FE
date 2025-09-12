@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Footer } from "@/components/layout/Footer";
+import Footer from "@/components/layout/Footer";
 import { RichTextEditor } from "@/components/blog/RichTextEditor";
 import { Button } from "@/components/ui/button";
 import { Eye, Save, Send, X } from "lucide-react";

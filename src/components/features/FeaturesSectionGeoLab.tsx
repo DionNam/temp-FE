@@ -75,7 +75,7 @@ export default function FeaturesSectionGeoLab({ className }: FeaturesSectionProp
                 <p className="leading-[20px] sm:leading-[24px]">Lab Overview</p>
               </div>
               <div className="text-[#181d27] text-[24px] sm:text-[32px] lg:text-[36px] tracking-[-0.48px] sm:tracking-[-0.72px] font-semibold">
-                <p className="leading-[30px] sm:leading-[38px] lg:leading-[44px]">Boost your content's reach with GEO Factor Lab</p>
+                <p className="leading-[30px] sm:leading-[38px] lg:leading-[44px]">Boost your content&apos;s reach with GEO Factor Lab</p>
               </div>
             </div>
             <div className="text-[#535862] text-[16px] sm:text-[18px] lg:text-[20px] font-normal">

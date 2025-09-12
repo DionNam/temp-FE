@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { Header } from '../layout/Header';
 
 interface OnboardingFormProps {
@@ -61,10 +61,13 @@ export default function OnboardingForm({ initialEmail = '', className }: Onboard
                     {/* Badge */}
                     <div className="bg-[#e4e7ec] box-border content-stretch flex gap-1 items-center justify-center pl-2 pr-2.5 py-1 relative rounded-[6px] shrink-0">
                       <div className="overflow-clip relative shrink-0 size-[18px]">
-                        <img 
+                        <Image 
                           alt="Star icon"
                           className="block max-w-none size-full"
                           src={starIcon}
+                          width={18}
+                          height={18}
+                          unoptimized
                         />
                       </div>
                       <div className="font-medium leading-[0] not-italic relative shrink-0 text-[#141c25] text-[14px] text-nowrap">
@@ -106,10 +109,13 @@ export default function OnboardingForm({ initialEmail = '', className }: Onboard
                             <div className="basis-0 content-stretch flex gap-2 grow items-center justify-start min-h-px min-w-px relative shrink-0">
                               <div className="content-stretch flex items-start justify-start relative shrink-0">
                                 <div className="overflow-clip relative shrink-0 size-6">
-                                  <img 
+                                  <Image 
                                     alt="User icon"
                                     className="block max-w-none size-full"
                                     src={userIcon}
+                                    width={24}
+                                    height={24}
+                                    unoptimized
                                   />
                                 </div>
                               </div>
@@ -139,10 +145,13 @@ export default function OnboardingForm({ initialEmail = '', className }: Onboard
                               <div className="basis-0 content-stretch flex gap-2 grow items-center justify-start min-h-px min-w-px relative shrink-0">
                                 <div className="content-stretch flex items-start justify-start relative shrink-0">
                                   <div className="overflow-clip relative shrink-0 size-6">
-                                    <img 
+                                    <Image 
                                       alt="Mail icon"
                                       className="block max-w-none size-full"
                                       src={mailIcon}
+                                      width={24}
+                                      height={24}
+                                      unoptimized
                                     />
                                   </div>
                                 </div>
@@ -165,17 +174,20 @@ export default function OnboardingForm({ initialEmail = '', className }: Onboard
                         <div className="content-stretch flex flex-col gap-2 isolate items-start justify-start relative shrink-0 w-full">
                           <div className="content-stretch flex gap-1 items-center justify-start relative shrink-0 z-[3]">
                             <div className="font-medium leading-[0] not-italic relative shrink-0 text-[14px] text-neutral-900 text-nowrap">
-                              <p className="leading-[20px] whitespace-pre">What's your role?</p>
+                              <p className="leading-[20px] whitespace-pre">What&apos;s your role?</p>
                             </div>
                           </div>
                           <div className="bg-neutral-50 box-border content-stretch flex items-center justify-between pl-3 pr-2.5 py-2 relative rounded-[10px] shrink-0 w-full z-[2] border border-neutral-200 shadow-[0px_1px_2px_0px_rgba(20,28,37,0.04)]">
                             <div className="basis-0 content-stretch flex gap-2 grow items-center justify-start min-h-px min-w-px relative shrink-0">
                               <div className="content-stretch flex items-start justify-start relative shrink-0">
                                 <div className="overflow-clip relative shrink-0 size-6">
-                                  <img 
+                                  <Image 
                                     alt="Building icon"
                                     className="block max-w-none size-full"
                                     src={buildingIcon}
+                                    width={24}
+                                    height={24}
+                                    unoptimized
                                   />
                                 </div>
                               </div>
@@ -197,17 +209,20 @@ export default function OnboardingForm({ initialEmail = '', className }: Onboard
                         <div className="content-stretch flex flex-col gap-2 isolate items-start justify-start relative shrink-0 w-full">
                           <div className="content-stretch flex gap-1 items-center justify-start relative shrink-0 z-[3]">
                             <div className="font-medium leading-[0] not-italic relative shrink-0 text-[14px] text-neutral-900 text-nowrap">
-                              <p className="leading-[20px] whitespace-pre">What's your main reason for joining the waitlist for ShowOnAI?</p>
+                              <p className="leading-[20px] whitespace-pre">What&apos;s your main reason for joining the waitlist for ShowOnAI?</p>
                             </div>
                           </div>
                           <div className="bg-neutral-50 box-border content-stretch flex items-center justify-between pl-3 pr-2.5 py-2 relative rounded-[10px] shrink-0 w-full z-[2] border border-neutral-200 shadow-[0px_1px_2px_0px_rgba(20,28,37,0.04)]">
                             <div className="basis-0 content-stretch flex gap-2 grow items-center justify-start min-h-px min-w-px relative shrink-0">
                               <div className="content-stretch flex items-start justify-start relative shrink-0">
                                 <div className="overflow-clip relative shrink-0 size-6">
-                                  <img 
+                                  <Image 
                                     alt="Chat icon"
                                     className="block max-w-none size-full"
                                     src={chatIcon}
+                                    width={24}
+                                    height={24}
+                                    unoptimized
                                   />
                                 </div>
                               </div>
