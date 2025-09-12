@@ -1,118 +1,29 @@
 "use client";
 
-import React, { memo, useCallback } from 'react';
+import React from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 
-const Footer = memo(function Footer({ className }: { className?: string }) {
-  const handlePricingScroll = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    const element = document.getElementById('pricing');
-    element?.scrollIntoView({ behavior: 'smooth' });
-  }, []);
+interface FooterProps {
+  className?: string;
+}
 
-  const handleBlogClick = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    window.location.href = '/blog';
-  }, []);
-
+const Footer = React.memo(function Footer({ className }: FooterProps) {
   return (
-    <footer className={`relative px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:py-12 lg:py-16 bg-white ${className}`}>
-      <div className="max-w-7xl mx-auto">
-        {/* Mobile Layout */}
-        <div className="block md:hidden">
-          <div className="flex flex-col items-center space-y-2">
-            <div className="flex flex-col items-center gap-3">
-              <div className="flex items-center gap-2">
-                <Image 
-                  src="/showonai.svg" 
-                  alt="ShowOnAI" 
-                  width={220} 
-                  height={64}
-                  className="h-8 w-auto"
-                  loading="lazy"
-                  placeholder="blur"
-                  blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTc2IiBoZWlnaHQ9IjQ4IiB2aWV3Qm94PSIwIDAgMTc2IDQ4IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxNzYiIGhlaWdodD0iNDgiIGZpbGw9IiNmZmZmZmYiIG9wYWNpdHk9IjAuNSIvPjwvc3ZnPg=="
-                />
-              </div>
-              <p className="text-blue-500 text-lg sm:text-xl text-center max-w-xs font-semibold">
-                Smart local AI-powered SEO Analysis
-              </p>
-            </div>
-            
-            <nav className="flex items-center justify-center gap-8 pt-2"> 
-              <button 
-                onClick={(e) => e.preventDefault()}
-                className="text-neutral-500 hover:text-blue-600 transition-colors font-medium text-base py-2 hover:underline focus:outline-none focus:underline"
-              >
-                기능
-              </button>
-              <button
-                onClick={handlePricingScroll}
-                className="text-neutral-500 hover:text-blue-600 transition-colors font-medium text-base py-2 hover:underline focus:outline-none focus:underline"
-              >
-                가격정책
-              </button>
-              <button
-                onClick={handleBlogClick}
-                className="text-neutral-500 hover:text-blue-600 transition-colors font-medium text-base py-2 hover:underline focus:outline-none focus:underline"
-              >
-                블로그
-              </button>
-            </nav>
-          </div>
-        </div>
-
-        {/* Desktop Layout */}
-        <div className="hidden md:flex md:flex-row md:items-center md:justify-between">
-          <div className="flex flex-col items-start gap-2 sm:gap-3">
-            <Image 
-              src="/showonai.svg" 
-              alt="ShowOnAI" 
-              width={176} 
-              height={48}
-              className="h-6 sm:h-8 md:h-10 lg:h-12 w-auto"
-              loading="lazy"
-              placeholder="blur"
-              blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTc2IiBoZWlnaHQ9IjQ4IiB2aWV3Qm94PSIwIDAgMTc2IDQ4IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxNzYiIGhlaWdodD0iNDgiIGZpbGw9IiNmZmZmZmYiIG9wYWNpdHk9IjAuNSIvPjwvc3ZnPg=="
-            />
-            <p className="text-gray-500 text-sm sm:text-sm md:text-base max-w-xs">
-              Smart local AI-powered SEO Analysis
-            </p>
-          </div>
-          
-          <div className="flex flex-wrap items-end gap-4 sm:gap-6 md:gap-8 md:self-end">
-            <nav className="flex flex-wrap items-center gap-4 sm:gap-6 md:gap-8">
-              <button 
-                onClick={(e) => e.preventDefault()}
-                className="text-gray-400 hover:text-gray-900 transition-colors font-medium text-sm md:text-base py-2 sm:py-1 hover:underline focus:outline-none focus:underline focus:ring-2 focus:ring-gray-300 rounded px-1"
-              >
-                About
-              </button>
-              <button
-                onClick={handlePricingScroll}
-                className="text-gray-400 hover:text-gray-900 transition-colors font-medium text-sm md:text-base py-2 sm:py-1 hover:underline focus:outline-none focus:underline focus:ring-2 focus:ring-gray-300 rounded px-1"
-              >
-                Pricing
-              </button>
-              <button 
-                onClick={(e) => e.preventDefault()}
-                className="text-gray-400 hover:text-gray-900 transition-colors font-medium text-sm md:text-base py-2 sm:py-1 hover:underline focus:outline-none focus:underline focus:ring-2 focus:ring-gray-300 rounded px-1"
-              >
-                Docs
-              </button>
-              <Link
-                href="/blog" 
-                className="text-gray-400 hover:text-gray-900 transition-colors font-medium text-sm md:text-base py-2 sm:py-1 hover:underline focus:outline-none focus:underline"
-              >
-                Blog
-              </Link>
-            </nav>
-          </div>
+    <footer className={`relative bg-gradient-to-b from-[#66afff00] to-[#0669ff00] px-4 sm:px-6 lg:px-8 overflow-hidden ${className}`} style={{ aspectRatio: '4/1' }}>
+      <div className="absolute inset-0 flex items-end justify-center">
+        <div className="w-full max-w-[1000px] sm:max-w-[1200px] md:max-w-[1500px] lg:max-w-[1800px] xl:max-w-[2000px] relative px-2 sm:px-4">
+          <Image
+            src="/ShowOnAI_text.svg"
+            alt="ShowOnAI"
+            width={2000}
+            height={300}
+            className="w-full h-auto object-contain"
+            priority
+          />
         </div>
       </div>
     </footer>
   );
 });
 
-export { Footer };
+export default Footer;

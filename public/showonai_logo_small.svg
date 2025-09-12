@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<svg width="480" height="480" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+ <!-- Created with SVG-edit - https://github.com/SVG-Edit/svgedit-->
+ <defs>
+  <symbol height="12" id="svg_1" viewBox="0 0 24 12" width="24" xmlns="http://www.w3.org/2000/svg">
+   <path d="m24,0c0,6.63 -5.37,12 -12,12l0,-12l12,0z" fill="#3B82F6"/>
+   <path d="m0,12c0,-6.63 5.37,-12 12,-12l0,12l-12,0z" fill="#3B82F6"/>
+   <path d="m20.16,1.92c0,4.51 -3.65,8.16 -8.16,8.16l0,-8.16l8.16,0z" fill="white"/>
+   <path d="m3.84,10.08c0,-4.51 3.65,-8.16 8.16,-8.16l0,8.16l-8.16,0z" fill="white"/>
+   <path d="m13.04,10.8c-2.48,-0.63 -3.94,-3.03 -3.28,-5.37l4.48,1.14l-1.2,4.23z" fill="#3B82F6"/>
+   <path d="m10.96,1.2c2.48,0.63 3.94,3.03 3.28,5.37l-4.48,-1.14l1.2,-4.23z" fill="#3B82F6"/>
+  </symbol>
+ </defs>
+ <g class="layer">
+  <title>Layer 1</title>
+  <use href="#svg_1" id="svg_2" transform="matrix(16.5513 0 0 16.5513 41.384 143.384)"/>
+ </g>
+</svg>
