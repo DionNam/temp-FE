@@ -9,6 +9,7 @@ import FeaturesSection from '../components/landing/FeaturesSection';
 import PricingSection from '../components/landing/PricingSection';
 import FAQSection from '../components/landing/FAQSection';
 import { sendDemoEmail, openGmail, DemoFormData } from '../services/emailService';
+import { validateForm, sanitizeInput, sanitizeEmail, FORM_VALIDATION_SCHEMAS, checkRateLimit } from '../utils/validation';
 
 interface DemoDialogProps {
   isOpen: boolean;
@@ -102,8 +103,29 @@ function DemoDialog({ isOpen, onClose, formData, setFormData }: DemoDialogProps)
     setIsLoading(true);
     setSubmitError('');
 
-    try {      
-      const success = await sendDemoEmail(formData);
+    try {
+      const clientId = formData.email || 'anonymous';
+      if (!checkRateLimit(clientId)) {
+        setSubmitError('Too many requests. Please try again later.');
+        setIsLoading(false);
+        return;
+      }
+
+      const validationResult = validateForm(formData, FORM_VALIDATION_SCHEMAS.demo);
+      if (!validationResult.isValid) {
+        setSubmitError('Please check your input and try again.');
+        setIsLoading(false);
+        return;
+      }
+
+      const sanitizedData = {
+        ...formData,
+        name: sanitizeInput(formData.name),
+        email: sanitizeEmail(formData.email),
+        agencyName: formData.agencyName ? sanitizeInput(formData.agencyName) : undefined,
+      };
+      
+      const success = await sendDemoEmail(sanitizedData);
       
       if (success) {
         setIsSubmitted(true);
@@ -112,9 +134,9 @@ function DemoDialog({ isOpen, onClose, formData, setFormData }: DemoDialogProps)
         if (typeof window !== 'undefined' && (window as any).gtag) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (window as any).gtag('event', 'demo_request_submitted', {
-            email: formData.email,
-            employees: formData.employees,
-            agency: formData.agency,
+            email: sanitizedData.email,
+            employees: sanitizedData.employees,
+            agency: sanitizedData.agency,
           });
         }
         
@@ -130,7 +152,15 @@ function DemoDialog({ isOpen, onClose, formData, setFormData }: DemoDialogProps)
   };
 
   const handleInputChange = (field: keyof DemoFormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    let sanitizedValue = value;
+    
+    if (field === 'name' || field === 'agencyName') {
+      sanitizedValue = sanitizeInput(value);
+    } else if (field === 'email') {
+      sanitizedValue = sanitizeEmail(value);
+    }
+    
+    setFormData(prev => ({ ...prev, [field]: sanitizedValue }));
   };
 
   const handleGoToEmail = () => {

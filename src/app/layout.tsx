@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import "./globals.css";
 import { QueryProvider } from "@/providers/QueryProvider";
+import { getNonce } from "@/utils/nonce";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -205,16 +206,19 @@ const structuredData = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const nonce = await getNonce();
+  
   return (
     <html lang="ko">
       <head>
         <script
           type="application/ld+json"
+          nonce={nonce}
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(structuredData),
           }}

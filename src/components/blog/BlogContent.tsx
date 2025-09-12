@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { BlogPost } from '@/types/blog';
+import { sanitizeHtml } from '@/utils/sanitizeHtml';
 
 interface BlogContentProps {
   post: BlogPost;
@@ -95,7 +96,7 @@ export function BlogContent({ post }: BlogContentProps) {
 
       <div className="prose prose-lg max-w-none">
         <div 
-          dangerouslySetInnerHTML={{ __html: processedContent || post.excerpt }}
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(processedContent || post.excerpt || '') }}
           className="blog-content"
         />
       </div>
