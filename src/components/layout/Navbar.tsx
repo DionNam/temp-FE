@@ -52,19 +52,19 @@ const Navbar = memo(function Navbar({ onLoginClick, onDashboardClick }: HeaderPr
               onClick={handleFeatureScroll}
               className="text-white/90 hover:text-white transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-white/20 rounded-lg px-2 py-1"
             >
-              기능
+              Features
             </button>
             <button
               onClick={handlePricingScroll}
               className="text-white/90 hover:text-white transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-white/20 rounded-lg px-2 py-1"
             >
-              가격정책
+              Pricing
             </button>
             <button
               onClick={handleBlogClick}
               className="text-white/90 hover:text-white transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-white/20 rounded-lg px-2 py-1"
             >
-              블로그
+              Blog
             </button>
           </div>
           <div className="hidden lg:flex items-center space-x-2">
@@ -72,13 +72,13 @@ const Navbar = memo(function Navbar({ onLoginClick, onDashboardClick }: HeaderPr
               onClick={onDashboardClick}
               className="px-4 py-2 rounded-full bg-white text-blue-600 font-semibold text-base hover:bg-gray-50 transition-colors active:scale-95 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-blue-500/20"
             >
-              데모 요청
+              Request Demo
             </button>
             <button
               onClick={onLoginClick}
               className="px-4 py-2 rounded-full bg-blue-600 text-white font-semibold text-base hover:bg-blue-700 transition-colors active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
             >
-              로그인
+              Login
             </button>
           </div>
 
@@ -106,9 +106,9 @@ const Navbar = memo(function Navbar({ onLoginClick, onDashboardClick }: HeaderPr
             <div className="bg-white/95 rounded-2xl border border-white/40 shadow-2xl overflow-hidden">
               <div className="p-2">
                 {[
-                  { label: '기능', onClick: handleFeatureScroll },
-                  { label: '가격정책', onClick: handlePricingScroll },
-                  { label: '블로그', onClick: handleBlogClick }
+                  { label: 'Features', onClick: handleFeatureScroll },
+                  { label: 'Pricing', onClick: handlePricingScroll },
+                  { label: 'Blog', onClick: handleBlogClick }
                 ].map((item, index) => (
                   <button
                     key={index}
@@ -129,7 +129,7 @@ const Navbar = memo(function Navbar({ onLoginClick, onDashboardClick }: HeaderPr
                   }}
                   className="w-full px-4 py-3 rounded-xl bg-gray-50 text-blue-600 font-semibold text-center hover:bg-gray-100 active:scale-[0.98] transition-all duration-200"
                 >
-                  데모 요청
+                  Request Demo
                 </button>
                 <button
                   onClick={() => {
@@ -138,7 +138,7 @@ const Navbar = memo(function Navbar({ onLoginClick, onDashboardClick }: HeaderPr
                   }}
                   className="w-full px-4 py-3 rounded-xl bg-blue-600 text-white font-semibold text-center hover:bg-blue-700 active:scale-[0.98] transition-all duration-200 shadow-lg shadow-blue-600/25"
                 >
-                  로그인
+                  Login
                 </button>
               </div>
             </div>

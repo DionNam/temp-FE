@@ -8,7 +8,7 @@ interface SocialProofSectionProps {
 }
 
 export default function SocialProofSection({ className }: SocialProofSectionProps) {
-  // 임시 로고 데이터 - 나중에 실제 로고로 교체 예정
+  // Temporary logo data - to be replaced with actual logos later
   const companies = [
     {
       name: "OdeaoLabs",

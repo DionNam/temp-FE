@@ -12,36 +12,36 @@ export default function BlogSection({ className }: BlogSectionProps) {
   const blogPosts = [
     {
       id: 1,
-      title: "AI 검색 최적화의 미래: 2024년 트렌드 분석",
-      excerpt: "인공지능 기반 검색엔진들이 콘텐츠를 평가하는 새로운 방식과 이에 대응하는 최적화 전략을 살펴봅니다.",
-      author: "김진수",
-      role: "AI SEO 전문가",
-      date: "2024년 3월 15일",
-      readTime: "5분 읽기",
+      title: "The Future of AI Search Optimization: 2024 Trend Analysis",
+      excerpt: "Explore new ways AI-powered search engines evaluate content and optimization strategies to respond to these changes.",
+      author: "Jin Kim",
+      role: "AI SEO Expert",
+      date: "March 15, 2024",
+      readTime: "5 min read",
       image: "/blog-placeholder.png",
-      category: "AI 최적화"
+      category: "AI Optimization"
     },
     {
       id: 2,
-      title: "GEO vs SEO: 지역 기반 검색의 새로운 패러다임",
-      excerpt: "전통적인 SEO를 넘어서 지역 기반 검색 최적화(GEO)가 비즈니스에 미치는 영향과 실전 적용 방법을 알아봅니다.",
-      author: "이영희",
-      role: "GEO 마케팅 전략가",
-      date: "2024년 3월 12일",
-      readTime: "7분 읽기",
+      title: "GEO vs SEO: A New Paradigm for Location-Based Search",
+      excerpt: "Learn about the impact of Geographic Engine Optimization (GEO) on businesses beyond traditional SEO and practical implementation methods.",
+      author: "Sarah Lee",
+      role: "GEO Marketing Strategist",
+      date: "March 12, 2024",
+      readTime: "7 min read",
       image: "/blog-placeholder.png",
-      category: "GEO 마케팅"
+      category: "GEO Marketing"
     },
     {
       id: 3,
-      title: "Perplexity AI 최적화 가이드: 실전 전략",
-      excerpt: "Perplexity AI에서 높은 순위를 얻기 위한 구체적인 콘텐츠 작성 방법과 최적화 팁을 단계별로 설명합니다.",
-      author: "박민준",
-      role: "콘텐츠 최적화 전문가",
-      date: "2024년 3월 10일",
-      readTime: "6분 읽기",
+      title: "Perplexity AI Optimization Guide: Practical Strategies",
+      excerpt: "Step-by-step guide on specific content creation methods and optimization tips to achieve high rankings in Perplexity AI.",
+      author: "Mike Park",
+      role: "Content Optimization Specialist",
+      date: "March 10, 2024",
+      readTime: "6 min read",
       image: "/blog-placeholder.png",
-      category: "실전 가이드"
+      category: "Practical Guide"
     }
   ];
 
@@ -51,13 +51,13 @@ export default function BlogSection({ className }: BlogSectionProps) {
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16">
           <div className="text-[14px] sm:text-[16px] text-blue-600 font-semibold mb-3 sm:mb-4">
-            인사이트 & 가이드
+            Insights & Guides
           </div>
           <h2 className="text-[24px] sm:text-[32px] lg:text-[36px] font-semibold text-[#181d27] tracking-[-0.48px] sm:tracking-[-0.72px] mb-4 sm:mb-6">
-            AI 검색 최적화 인사이트
+            AI Search Optimization Insights
           </h2>
           <p className="text-[16px] sm:text-[18px] lg:text-[20px] text-[#535862] max-w-[600px] mx-auto leading-[24px] sm:leading-[26px] lg:leading-[30px]">
-            전문가들이 공유하는 최신 AI 검색 트렌드와 실전 노하우를 확인하세요
+            Discover the latest AI search trends and practical know-how shared by experts
           </p>
         </div>
 
@@ -133,7 +133,7 @@ export default function BlogSection({ className }: BlogSectionProps) {
             href="/blog"
             className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-[16px] sm:text-[18px] font-semibold transition-colors"
           >
-            모든 게시글 보기
+            View All Posts
             <svg className="w-4 sm:w-5 h-4 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>

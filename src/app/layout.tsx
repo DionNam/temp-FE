@@ -13,21 +13,31 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://showonai.com'),
   title: {
-    default: "ShowOnAI - 국내 AI 검색 최적화 솔루션 | GEO & SEO 전문",
+    default: "ShowOnAI - AI Search Optimization for Maximum Brand Visibility | GEO & SEO Expert",
     template: "%s | ShowOnAI",
   },
-  description: "국내 시장의 AI 검색 최적화를 위한 단 하나의 솔루션. ChatGPT, Gemini에서 브랜드 노출을 극대화하는 GEO 전략과 SEO 컨설팅을 제공합니다. 무료 SEO 진단으로 시작하세요.",
-  keywords: ["GEO", "SEO", "AI 검색 최적화", "브랜드 최적화", "ChatGPT 최적화", "생성형 AI", "검색엔진최적화", "국내 SEO"],
-  authors: [{ name: "ShowOnAI" }],
+  description: "Maximize your brand exposure in generative AI platforms like ChatGPT, Gemini, and Perplexity. Achieve top rankings in AI search results with GEO (Generative Engine Optimization) strategy and expand customer touchpoints.",
+  keywords: [
+    "GEO", "Generative Engine Optimization", "AI search optimization", "ChatGPT optimization", 
+    "Gemini search", "Perplexity optimization", "generative AI SEO", "brand visibility", 
+    "AI marketing", "content optimization", "digital marketing", "search engine optimization", 
+    "SEO", "marketing", "AI search strategy"
+  ],
+  authors: [{ name: "ShowOnAI", url: "https://showonai.com" }],
   creator: "ShowOnAI",
   publisher: "ShowOnAI",
+  applicationName: "ShowOnAI",
+  referrer: "origin-when-cross-origin",
   robots: {
     index: true,
     follow: true,
+    nocache: false,
     googleBot: {
       index: true,
       follow: true,
+      noimageindex: false,
       'max-video-preview': -1,
       'max-image-preview': 'large',
       'max-snippet': -1,
@@ -35,26 +45,51 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: "https://showonai.com",
+    languages: {
+      'en-US': 'https://showonai.com',
+      'x-default': 'https://showonai.com',
+    },
   },
   verification: {
     google: "your-google-verification-code",
+    other: {
+      "naver-site-verification": "your-naver-verification-code",
+      "msvalidate.01": "your-bing-verification-code",
+    },
   },
   category: "Technology",
+  classification: "Business Software",
   
   openGraph: {
     type: "website",
-    locale: "ko_KR",
+    locale: "en_US",
+    alternateLocale: ["ko_KR"],
     url: "https://showonai.com",
     siteName: "ShowOnAI",
-    title: "ShowOnAI - 국내 AI 검색 최적화 솔루션",
-    description: "국내 시장의 AI 검색 최적화를 위한 단 하나의 솔루션. ChatGPT, Gemini에서 브랜드 노출을 극대화하는 GEO 전략과 SEO 컨설팅을 제공합니다. 무료 SEO 진단으로 시작하세요.",
+    title: "ShowOnAI - AI Search Optimization for Maximum Brand Visibility",
+    description: "Maximize your brand exposure in generative AI platforms like ChatGPT, Gemini, and Perplexity. Achieve top rankings in AI search results with GEO strategy and expand customer touchpoints.",
     images: [
       {
-        url: "https://showonai.com/og-image.webp",
+        url: "https://showonai.com/og-image-main.jpg",
         width: 1200,
         height: 630,
-        alt: "ShowOnAI - AI 검색 최적화 솔루션",
-        type: "image/webp",
+        alt: "ShowOnAI - AI Search Optimization Solution for Maximum Brand Visibility",
+        type: "image/jpeg",
+      },
+      {
+        url: "https://showonai.com/og-image-square.jpg",
+        width: 1200,
+        height: 1200,
+        alt: "ShowOnAI - GEO and AI Search Optimization Expert",
+        type: "image/jpeg",
+      },
+    ],
+    videos: [
+      {
+        url: "https://showonai.com/intro-video.mp4",
+        width: 1280,
+        height: 720,
+        type: "video/mp4",
       },
     ],
   },
@@ -63,20 +98,66 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@showonai",
     creator: "@showonai",
-    title: "ShowOnAI - 국내 AI 검색 최적화 솔루션",
-    description: "국내 시장의 AI 검색 최적화를 위한 단 하나의 솔루션. ChatGPT, Gemini에서 브랜드 노출을 극대화하는 GEO 전략과 SEO 컨설팅을 제공합니다.",
-    images: ["https://showonai.com/og-image.webp"],
+    title: "ShowOnAI - AI Search Optimization for Maximum Brand Visibility",
+    description: "Maximize your brand exposure in generative AI platforms like ChatGPT, Gemini, and Perplexity. Achieve top rankings in AI search results with GEO strategy.",
+    images: {
+      url: "https://showonai.com/og-image-main.jpg",
+      alt: "ShowOnAI - AI Search Optimization Solution",
+    },
+  },
+
+  appleWebApp: {
+    capable: true,
+    title: "ShowOnAI",
+    statusBarStyle: "default",
+    startupImage: [
+      "/apple-touch-startup-image-768x1004.png",
+      {
+        url: "/apple-touch-startup-image-1536x2008.png",
+        media: "(device-width: 768px) and (device-height: 1024px)",
+      },
+    ],
   },
 
   formatDetection: {
     telephone: false,
   },
-  metadataBase: new URL("https://showonai.com"),
   
+  icons: {
+    icon: [
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+      { url: "/favicon-192x192.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon-57x57.png", sizes: "57x57" },
+      { url: "/apple-touch-icon-60x60.png", sizes: "60x60" },
+      { url: "/apple-touch-icon-72x72.png", sizes: "72x72" },
+      { url: "/apple-touch-icon-76x76.png", sizes: "76x76" },
+      { url: "/apple-touch-icon-114x114.png", sizes: "114x114" },
+      { url: "/apple-touch-icon-120x120.png", sizes: "120x120" },
+      { url: "/apple-touch-icon-144x144.png", sizes: "144x144" },
+      { url: "/apple-touch-icon-152x152.png", sizes: "152x152" },
+      { url: "/apple-touch-icon-180x180.png", sizes: "180x180" },
+    ],
+    other: [
+      {
+        rel: "mask-icon",
+        url: "/safari-pinned-tab.svg",
+        color: "#2353DF",
+      },
+    ],
+  },
+
+  manifest: "/site.webmanifest",
+
   other: {
     "google-site-verification": "your-verification-code",
     "naver-site-verification": "your-naver-verification",
     "msvalidate.01": "your-bing-verification",
+    "facebook-domain-verification": "your-facebook-verification",
+    "p:domain_verify": "your-pinterest-verification",
   },
 };
 
@@ -95,7 +176,7 @@ const structuredData = {
         width: 176,
         height: 48,
       },
-      description: "국내 시장의 AI 검색 최적화를 위한 솔루션",
+      description: "A specialized generative AI search optimization (GEO) company that provides solutions to maximize brand visibility in ChatGPT, Gemini, Perplexity, and other AI platforms.",
       foundingDate: "2024",
       founders: [{
         "@type": "Person",
@@ -115,7 +196,7 @@ const structuredData = {
       "@id": "https://showonai.com/#website", 
       url: "https://showonai.com",
       name: "ShowOnAI",
-      description: "국내 AI 검색 최적화 솔루션",
+      description: "Generative AI Search Optimization (GEO) Solution",
       publisher: {
         "@id": "https://showonai.com/#organization",
       },
@@ -130,22 +211,22 @@ const structuredData = {
       "@type": "WebPage",
       "@id": "https://showonai.com/#webpage",
       url: "https://showonai.com",
-      name: "ShowOnAI - 국내 AI 검색 최적화 솔루션",
+      name: "ShowOnAI - AI Search Optimization for Maximum Brand Visibility",
       isPartOf: {
         "@id": "https://showonai.com/#website"
       },
       about: {
         "@id": "https://showonai.com/#organization"
       },
-      description: "국내 시장의 AI 검색 최적화를 위한 단 하나의 솔루션. GEO와 SEO 전문 컨설팅",
-      inLanguage: "ko-KR",
+      description: "Maximize your brand exposure in generative AI platforms like ChatGPT, Gemini, and Perplexity. Achieve top rankings in AI search results with GEO strategy and expand customer touchpoints.",
+      inLanguage: "en-US",
       datePublished: "2024-01-01",
       dateModified: new Date().toISOString(),
     },
     {
       "@type": "Service",
-      name: "GEO 최적화 서비스",
-      description: "생성형 AI 검색 최적화 서비스",
+      name: "GEO Optimization Service",
+      description: "Generative AI search optimization service that improves brand visibility in ChatGPT, Gemini, Perplexity, and other AI platforms.",
       provider: {
         "@id": "https://showonai.com/#organization",
       },
@@ -220,10 +301,10 @@ export default function RootLayout({
           }}
         />
         
-        <meta name="description" content="국내 시장의 AI 검색 최적화를 위한 단 하나의 솔루션. ChatGPT, Gemini에서 브랜드 노출을 극대화하는 GEO 전략과 SEO 컨설팅을 제공합니다. 무료 SEO 진단으로 시작하세요." />
-        <meta name="keywords" content="GEO, SEO, AI 검색 최적화, 브랜드 최적화, ChatGPT 최적화, 생성형 AI, 검색엔진최적화, 국내 SEO" />
+        <meta name="description" content="Maximize your brand exposure in generative AI platforms like ChatGPT, Gemini, and Perplexity. Achieve top rankings in AI search results with GEO strategy and expand customer touchpoints. Start with free AI visibility audit." />
+        <meta name="keywords" content="GEO, SEO, AI search optimization, brand optimization, ChatGPT optimization, generative AI, search engine optimization, AI visibility, Perplexity AI, Gemini AI" />
         
-        <meta httpEquiv="Content-Language" content="ko" />
+        <meta httpEquiv="Content-Language" content="en" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="theme-color" content="#2353DF" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -242,6 +323,13 @@ export default function RootLayout({
         
         <meta name="apple-mobile-web-app-title" content="ShowOnAI" />
         <meta name="application-name" content="ShowOnAI" />
+        
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(structuredData),
+          }}
+        />
       </head>
       <body className={`${manrope.variable} antialiased`}>
         <QueryProvider>

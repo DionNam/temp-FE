@@ -1,43 +1,65 @@
 User-agent: *
 Allow: /
 
-# Disallow admin and API routes
+# Disallow admin, private, and system routes
 Disallow: /admin/
 Disallow: /dashboard/
 Disallow: /api/
 Disallow: /_next/
 Disallow: /auth/
 Disallow: /*.json$
+Disallow: /private/
 
 # Allow specific important pages
 Allow: /blog/
-Allow: /login
-Allow: /signup
+Allow: /onboarding
+Allow: /report
+Allow: /waitlist-confirmation
 
-# Crawl specific pages
+# Allow important files
 Allow: /sitemap.xml
 Allow: /robots.txt
+Allow: /favicon.ico
+Allow: /manifest.json
 
 # Sitemap location
 Sitemap: https://showonai.com/sitemap.xml
 
-# Crawl delay (optional - for politeness)
+# Crawl delay for politeness
 Crawl-delay: 1
 
-# Google specific
+# Google specific settings
 User-agent: Googlebot
 Allow: /
 Disallow: /admin/
 Disallow: /api/
+Disallow: /private/
 
-# Bing specific
+# Bing specific settings
 User-agent: Bingbot
 Allow: /
 Disallow: /admin/
 Disallow: /api/
+Disallow: /private/
 
-# Naver specific (for Korean market)
-User-agent: Yeti
+# AI crawlers (for AI search engines)
+User-agent: ChatGPT-User
 Allow: /
 Disallow: /admin/
-Disallow: /api/
+Disallow: /private/
+
+User-agent: GPTBot
+Allow: /
+Disallow: /admin/
+Disallow: /private/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin/
+Disallow: /private/
+
+# Global AI search optimization
+User-agent: *
+Allow: /blog/
+Allow: /onboarding
+Allow: /report

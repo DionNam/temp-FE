@@ -12,11 +12,11 @@ interface RelatedArticlesProps {
 }
 
 const categories = {
-  'news': '뉴스',
-  'tip': '팁',
-  'interview': '인터뷰',
-  'product-update': '제품 업데이트',
-  'team': '팀'
+  'news': 'News',
+  'tip': 'Tips',
+  'interview': 'Interview',
+  'product-update': 'Product Update',
+  'team': 'Team'
 };
 
 export const RelatedArticles: React.FC<RelatedArticlesProps> = ({ posts, currentPostId }) => {
@@ -30,12 +30,12 @@ export const RelatedArticles: React.FC<RelatedArticlesProps> = ({ posts, current
 
   return (
     <section className="max-w-7xl w-full mx-auto mt-16 pt-16 border-t border-gray-200">
-      <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">더 읽어보기</h2>
+      <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Read More</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredPosts.map((post) => {
           const imageUrl = post.featured_image || post.image || '/blog-placeholder.png';
           const publishDate = post.published_at || post.publishedAt || post.date;
-          const formattedDate = new Date(publishDate || '').toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+          const formattedDate = new Date(publishDate || '').toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
           const authorName = typeof post.author === 'string' ? post.author : (post.author?.name || post.author_name);
           const categoryLabel = categories[post.category as keyof typeof categories] || post.category;
           const slug = `${generateSlug(post?.title)}-${post?.id || 'unknown'}`;

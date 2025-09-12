@@ -211,7 +211,7 @@ export function BlogClientWrapper({
     : undefined;
 
   const allCategories = [
-    { id: "all", name: "전체", label: "All" },
+    { id: "all", name: "All", label: "All" },
     ...(categoriesResponse?.data || []).map((cat: string) => ({
       id: cat,
       name: cat,
@@ -270,11 +270,11 @@ export function BlogClientWrapper({
 
       <section className="relative px-2 sm:px-4 md:px-6 lg:px-8 py-8 sm:py-12 md:py-16 lg:py-20">
         <div className="max-w-7xl mx-auto text-center">
-          <h1 className={`${typography.h1} text-gray-900 mb-4`}>블로그</h1>
+          <h1 className={`${typography.h1} text-gray-900 mb-4`}>Blog</h1>
           <p
             className={`${typography.subtitle} text-gray-600 mb-8 max-w-3xl mx-auto`}
           >
-            새로운 소식과 유용한 정보를 한눈에 확인하세요.
+            Stay updated with our latest news and insights at a glance.
           </p>
 
           <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-8 sm:mb-12">

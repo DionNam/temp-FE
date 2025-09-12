@@ -33,10 +33,10 @@ const typography = {
 } as const;
 
 const categories = {
-  news: "뉴스",
-  tip: "팁",
-  interview: "인터뷰",
-  "product-update": "제품 업데이트",
+  news: "News",
+  tip: "Tips",
+  interview: "Interview",
+  "product-update": "Product Update",
 };
 
 function BlogManagementCard({
@@ -392,7 +392,7 @@ export default function BlogManagementPage() {
                   d="M12 4v16m8-8H4"
                 />
               </svg>
-              새 블로그 작성
+              Create New Blog Post
             </Link>
           </div>
 
