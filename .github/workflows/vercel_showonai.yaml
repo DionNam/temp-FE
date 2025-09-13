@@ -30,6 +30,10 @@ jobs:
         run: |
           cat << EOF > .env
           
+          RESEND_API_KEY = ${{ secrets.RESEND_API_KEY }}
+          EMAIL_FROM = ${{ secrets.EMAIL_FROM }}
+          NOTIFICATION_EMAIL = ${{ secrets.NOTIFICATION_EMAIL }}
+
           # CLIENT
           NEXT_PUBLIC_API_URL=https://www.showon.ai
           
