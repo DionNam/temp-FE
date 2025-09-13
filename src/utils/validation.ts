@@ -13,7 +13,7 @@ export interface ValidationRules {
 
 export const VALIDATION_PATTERNS = {
   email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-  name: /^[a-zA-Z\s가-힣]{2,50}$/,
+  name: /^[a-zA-Z0-9\s가-힣\-_.,!?()]{2,50}$/,
   title: /^[a-zA-Z0-9\s가-힣!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{5,200}$/,
   slug: /^[a-z0-9-]{3,100}$/,
   url: /^https?:\/\/.+/,
@@ -31,7 +31,7 @@ export function sanitizeInput(input: string): string {
     .trim()
     .replace(/\s+/g, ' ') 
     .replace(/[<>]/g, '') 
-    .slice(0, 1000); 
+    .slice(0, 1000);
 }
 
 export function sanitizeHtml(input: string): string {
