@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { randomBytes } from 'crypto';
 
 export function middleware(request: NextRequest) {
   // Generate unique nonce for each request
-  const nonce = randomBytes(16).toString('base64');
-  
+  const rand = crypto.getRandomValues(new Uint8Array(16));
+  const nonce = btoa(String.fromCharCode(...rand)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
   // Clone the request headers and set a new header
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-nonce', nonce);
@@ -20,7 +20,7 @@ export function middleware(request: NextRequest) {
   // Set CSP header with nonce
   response.headers.set(
     'Content-Security-Policy',
-    `default-src 'self'; img-src 'self' https: data: blob:; media-src 'self' https: data:; font-src 'self' https: data:; connect-src 'self' https:; script-src 'self' 'nonce-${nonce}'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests`
+    `default-src 'self'; img-src 'self' https: data: blob:; media-src 'self' https: data:; font-src 'self' https: data:; connect-src 'self' https:; script-src 'self' 'nonce-${nonce}'; style-src 'self' 'unsafe-inline'; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests`
   );
 
   return response;

@@ -28,7 +28,6 @@ export function sanitizeInput(input: string): string {
   if (!input) return '';
   
   return input
-    .trim()
     .replace(/\s+/g, ' ') 
     .replace(/[<>]/g, '') 
     .slice(0, 1000);
@@ -159,6 +158,7 @@ export const FORM_VALIDATION_SCHEMAS = {
 
 // Main validation function
 export function validateForm(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: Record<string, any>,
   schema: Record<string, ValidationRules>
 ): ValidationResult {

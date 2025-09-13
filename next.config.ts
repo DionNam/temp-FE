@@ -5,8 +5,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**',
-      }
+        hostname: 'landingblogs.s3.amazonaws.com',
+      },
     ],
   },
   async headers() {

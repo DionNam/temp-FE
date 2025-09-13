@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import "./globals.css";
 import { QueryProvider } from "@/providers/QueryProvider";
-import { getNonce } from "@/utils/nonce";
+import { StructuredDataScript } from "@/components/StructuredDataScript";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -211,18 +211,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const nonce = await getNonce();
-  
   return (
     <html lang="ko">
       <head>
-        <script
-          type="application/ld+json"
-          nonce={nonce}
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(structuredData),
-          }}
-        />
+        <StructuredDataScript data={structuredData} />
         
         <meta name="description" content="국내 시장의 AI 검색 최적화를 위한 단 하나의 솔루션. ChatGPT, Gemini에서 브랜드 노출을 극대화하는 GEO 전략과 SEO 컨설팅을 제공합니다. 무료 SEO 진단으로 시작하세요." />
         <meta name="keywords" content="GEO, SEO, AI 검색 최적화, 브랜드 최적화, ChatGPT 최적화, 생성형 AI, 검색엔진최적화, 국내 SEO" />
