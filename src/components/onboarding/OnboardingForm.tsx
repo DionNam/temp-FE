@@ -19,6 +19,7 @@ const chatIcon = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQi
 
 export default function OnboardingForm({ initialEmail = '', className }: OnboardingFormProps) {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false); // TEMPORARY: Remove with backend
   const [formData, setFormData] = useState({
     name: '',
     email: initialEmail,
@@ -33,10 +34,31 @@ export default function OnboardingForm({ initialEmail = '', className }: Onboard
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log('Form submitted:', formData);
+    setIsSubmitting(true); // TEMPORARY: Remove with backend
+    
+    // TEMPORARY: Remove this API call when permanent backend is ready
+    try {
+      const response = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit waitlist registration');
+      }
+
+      console.log('Waitlist registration successful');
+    } catch (error) {
+      console.error('Error submitting waitlist:', error);
+      // Continue to confirmation page even if email fails
+    } finally {
+      setIsSubmitting(false); // TEMPORARY: Remove with backend
+    }
     
     // Redirect to waitlist confirmation page
     router.push('/waitlist-confirmation');
@@ -245,10 +267,17 @@ export default function OnboardingForm({ initialEmail = '', className }: Onboard
                       <div className="content-stretch flex flex-col gap-4 items-center justify-start relative shrink-0 w-full z-[1]">
                         <button
                           type="submit"
-                          className="bg-[#141c25] box-border content-stretch flex gap-2 items-center justify-center px-5 py-2.5 relative rounded-[10px] shadow-[0px_1px_2px_0px_rgba(20,28,37,0.04)] shrink-0 w-full hover:bg-[#0f1419] transition-colors"
+                          disabled={isSubmitting}
+                          className={`box-border content-stretch flex gap-2 items-center justify-center px-5 py-2.5 relative rounded-[10px] shadow-[0px_1px_2px_0px_rgba(20,28,37,0.04)] shrink-0 w-full transition-colors ${
+                            isSubmitting 
+                              ? 'bg-[#6b7280] cursor-not-allowed' 
+                              : 'bg-[#141c25] hover:bg-[#0f1419]'
+                          }`}
                         >
                           <div className="font-medium leading-[0] not-italic relative shrink-0 text-[16px] text-center text-white text-nowrap">
-                            <p className="leading-[24px] whitespace-pre">Get Early Access</p>
+                            <p className="leading-[24px] whitespace-pre">
+                              {isSubmitting ? 'Submitting...' : 'Get Early Access'}
+                            </p>
                           </div>
                         </button>
                       </div>
