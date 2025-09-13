@@ -77,13 +77,13 @@ export default function HeroSection({ className }: HeroSectionProps) {
 
                 {/* Main Heading */}
                 <h1 className="text-center text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight sm:leading-[60px] tracking-[-0.48px] text-[#181d27] px-4 sm:px-0">
-                  See exactly how AI reads your content
+                  Get Your Content AI Ready with Proven-Data
                 </h1>
               </div>
 
               {/* Subheading */}
               <p className="max-w-[768px] text-center text-lg sm:text-xl leading-7 sm:leading-[30px] text-[#535862] px-4 sm:px-0">
-                AI has changed the rules for content visibility — learn how to stay ahead.
+                Tailor your AI strategy with insights that actually work!
               </p>
             </div>
 
