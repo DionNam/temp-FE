@@ -15,7 +15,7 @@ import { CreateBlogRequest } from "@/types/blog";
 import { useToast, ToastContainer } from "@/components/ui/toast";
 import { ImageUploadArea } from "@/components/blog/ImageUploadArea";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
-import { validateForm, sanitizeInput, sanitizeHtml as sanitizeHtmlInput, FORM_VALIDATION_SCHEMAS } from "@/utils/validation";
+import { validateForm, sanitizeInput, FORM_VALIDATION_SCHEMAS } from "@/utils/validation";
 
 function CreateBlogContent() {
   const router = useRouter();
@@ -86,7 +86,7 @@ function CreateBlogContent() {
     if (field === 'title' || field === 'author_name' || field === 'category') {
       sanitizedValue = sanitizeInput(value);
     } else if (field === 'content') {
-      sanitizedValue = sanitizeHtmlInput(value);
+      sanitizedValue = value;
     } else if (field === 'excerpt') {
       sanitizedValue = sanitizeInput(value);
     }

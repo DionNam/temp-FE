@@ -40,7 +40,6 @@ export function sanitizeHtml(input: string): string {
     .replace(VALIDATION_PATTERNS.noScript, '') 
     .replace(/javascript:/gi, '') 
     .replace(/on\w+\s*=/gi, '') 
-    .slice(0, 10000);
 }
 
 export function sanitizeEmail(email: string): string {
@@ -101,7 +100,6 @@ export const FORM_VALIDATION_SCHEMAS = {
     content: {
       required: true,
       minLength: 50,
-      maxLength: 10000,
       custom: (value: string) => {
         const textContent = value.replace(VALIDATION_PATTERNS.noHtml, '').trim();
         if (textContent.length < 50) {

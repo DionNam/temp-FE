@@ -1,3 +1,5 @@
+import { SECURITY_CONFIG, isAllowedImageType, isBlockedFileType } from './security';
+
 export interface CompressionOptions {
   maxSizeMB?: number;
   maxWidth?: number;
@@ -8,8 +10,8 @@ export interface CompressionOptions {
 
 const DEFAULT_OPTIONS: CompressionOptions = {
   maxSizeMB: 5,
-  maxWidth: 1920,
-  maxHeight: 1080,
+  maxWidth: SECURITY_CONFIG.MAX_IMAGE_DIMENSIONS.width,
+  maxHeight: SECURITY_CONFIG.MAX_IMAGE_DIMENSIONS.height,
   quality: 0.8,
   format: 'webp'
 };
@@ -23,6 +25,14 @@ export const compressImage = async (
 
   if (!file.type.startsWith('image/')) {
     throw new Error('File must be an image');
+  }
+
+  if (isBlockedFileType(file.type)) {
+    throw new Error('This file type is not allowed for security reasons');
+  }
+
+  if (!isAllowedImageType(file.type)) {
+    throw new Error('Only JPEG, PNG, WebP, and GIF images are allowed');
   }
 
   if (file.size > opts.maxSizeMB! * 1024 * 1024) {

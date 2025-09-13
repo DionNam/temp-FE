@@ -35,14 +35,27 @@ export function BlogContent({ post }: BlogContentProps) {
     if (!post.content) return '';
     
     return post.content.replace(
-      /<img([^>]*?)(?:\s+alt=["'][^"']*["'])?([^>]*?)>/g,
-      (match, before, after) => {
-        if (match.includes('alt=')) {
+      /<img([^>]*?)>/g,
+      (match) => {
+        const altMatch = match.match(/alt=["']([^"']*)["']/);
+        if (altMatch && altMatch[1].trim() !== '') {
           return match;
         }
+        
         const srcMatch = match.match(/src=["']([^"']*?)["']/);
-        const defaultAlt = srcMatch ? `Image: ${srcMatch[1].split('/').pop()?.split('.')[0] || 'Blog image'}` : 'Blog image';
-        return `<img${before} alt="${defaultAlt}"${after}>`;
+        let defaultAlt = 'Blog image';
+        
+        if (srcMatch) {
+          const src = srcMatch[1];
+          if (src.startsWith('data:image/')) {
+            defaultAlt = 'Uploaded image';
+          } else {
+            const filename = src.split('/').pop()?.split('.')[0];
+            defaultAlt = filename ? `Image: ${filename}` : 'Blog image';
+          }
+        }
+        
+        return match.replace(/>$/, ` alt="${defaultAlt}">`);
       }
     );
   }, [post.content]);

@@ -298,9 +298,14 @@ export function RichTextEditor({
       if (editor.isDestroyed) return;
       const timer = setTimeout(() => {
         if (!editor.isDestroyed) {
-          const safe = sanitizeHtml(content || "");
-          editor.commands.setContent(safe);
-          refreshToolbar();
+          const currentContent = editor.getHTML();
+          if (content !== currentContent) {
+            const safe = sanitizeHtml(content || "");
+            if (safe !== currentContent) {
+              editor.commands.setContent(safe);
+              refreshToolbar();
+            }
+          }
         }
       }, 100);
       return () => clearTimeout(timer);

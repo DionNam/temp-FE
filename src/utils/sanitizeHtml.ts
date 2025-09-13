@@ -21,14 +21,29 @@ export function sanitizeHtml(unsafeHtml: string): string {
         continue;
       }
 
-      // Disallow javascript: and data: URIs except data:image/* for img src
+      // Disallow javascript: and data: URIs except safe data:image/* for img src
       if (name === "href" || name === "src" || name === "srcset") {
         const lower = value.toLowerCase();
         const isJavascript = lower.startsWith("javascript:");
         const isData = lower.startsWith("data:");
         const isImg = node.tagName === "IMG";
-        const isAllowedDataImage = isImg && lower.startsWith("data:image/");
-        if (isJavascript || (isData && !isAllowedDataImage)) {
+        
+        const isAllowedDataImage = isImg && (
+          lower.startsWith("data:image/jpeg;base64,") ||
+          lower.startsWith("data:image/jpg;base64,") ||
+          lower.startsWith("data:image/png;base64,") ||
+          lower.startsWith("data:image/webp;base64,") ||
+          lower.startsWith("data:image/gif;base64,")
+        );
+        
+        const isSvgData = lower.includes("data:image/svg");
+        
+        if (isJavascript || isSvgData || (isData && !isAllowedDataImage)) {
+          node.removeAttribute(attr.name);
+          continue;
+        }
+        
+        if (isAllowedDataImage && value.length > 10 * 1024 * 1024) { // 10MB limit
           node.removeAttribute(attr.name);
           continue;
         }
