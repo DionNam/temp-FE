@@ -101,9 +101,31 @@ export const FORM_VALIDATION_SCHEMAS = {
       required: true,
       minLength: 50,
       custom: (value: string) => {
-        const textContent = value.replace(VALIDATION_PATTERNS.noHtml, '').trim();
-        if (textContent.length < 50) {
-          return 'Content must be at least 50 characters';
+        // Check content size limit (prevent oversized payloads)
+        if (value.length > 1000000) { // 1MB limit for content with compressed images
+          return 'Content is too large. Please reduce image sizes or content length.';
+        }
+        
+        const textContent = value
+          .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // Remove scripts
+          .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '') // Remove styles
+          .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '') // Remove iframes
+          .replace(/<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi, '') // Remove objects
+          .replace(/<embed\b[^<]*>/gi, '') // Remove embeds
+          .replace(/<link\b[^>]*>/gi, '') // Remove links
+          .replace(/<meta\b[^>]*>/gi, '') // Remove meta tags
+          .trim();
+        
+        // Check if there's meaningful content (text + images)
+        const hasText = textContent.replace(/<[^>]*>/g, '').trim().length >= 20;
+        const hasImages = textContent.includes('<img');
+        
+        if (!hasText && !hasImages) {
+          return 'Content must contain at least 20 characters of text or at least one image';
+        }
+        
+        if (hasText && textContent.replace(/<[^>]*>/g, '').trim().length < 20) {
+          return 'Text content must be at least 20 characters long';
         }
         return null;
       },
