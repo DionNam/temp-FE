@@ -8,6 +8,7 @@ import FeaturesSectionAiGapAudit from '@/components/features/FeaturesSectionAiGa
 import TestimonialsSection from '@/components/testimonials/TestimonialsSection';
 import FaqSection from '@/components/faq/FaqSection';
 import Footer from '@/components/layout/Footer';
+import { BlogSection } from '@/components/blog';
 
 export default function LandingPage() {
   return (
@@ -18,7 +19,7 @@ export default function LandingPage() {
       <FeaturesSectionGeoLab />
       <FeaturesSectionAiGapAudit />
       <TestimonialsSection />
-      {/* <BlogSection /> */}
+      <BlogSection />
       <FaqSection />
       <Footer />
     </>
