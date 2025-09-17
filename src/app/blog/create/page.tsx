@@ -15,6 +15,7 @@ import { CreateBlogRequest } from "@/types/blog";
 import { useToast, ToastContainer } from "@/components/ui/toast";
 import { ImageUploadArea } from "@/components/blog/ImageUploadArea";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
+import { validateForm, sanitizeInput, FORM_VALIDATION_SCHEMAS } from "@/utils/validation";
 
 function CreateBlogContent() {
   const router = useRouter();
@@ -80,9 +81,19 @@ function CreateBlogContent() {
   }, [existingBlog, isEditing]);
 
   const handleInputChange = (field: keyof CreateBlogRequest, value: string) => {
+    let sanitizedValue = value;
+    
+    if (field === 'title' || field === 'author_name' || field === 'category') {
+      sanitizedValue = sanitizeInput(value);
+    } else if (field === 'content') {
+      sanitizedValue = value;
+    } else if (field === 'excerpt') {
+      sanitizedValue = sanitizeInput(value);
+    }
+    
     setFormData((prev) => ({
       ...prev,
-      [field]: value,
+      [field]: sanitizedValue,
     }));
 
     if (fieldErrors[field]) {
@@ -168,28 +179,11 @@ function CreateBlogContent() {
     setIsPreviewMode(!isPreviewMode);
   };
 
-  const validateForm = () => {
-    const errors: Record<string, string> = {};
-
-    if (!formData.title.trim()) {
-      errors.title = "Please enter a title";
-    }
-    if (!formData.excerpt.trim()) {
-      errors.excerpt = "Please enter an excerpt";
-    }
-
-    const contentWithoutHtml = formData.content.replace(/<[^>]*>/g, "").trim();
-    if (!contentWithoutHtml) {
-      errors.content =
-        "Content cannot be empty or only contain whitespace/tabs";
-    }
-
-    if (!formData.category) {
-      errors.category = "Please select a category";
-    }
-    if (!formData.author_name.trim()) {
-      errors.author_name = "Please enter an author name";
-    }
+  const validateFormData = () => {
+    const validationResult = validateForm(formData, FORM_VALIDATION_SCHEMAS.blog);
+    
+    const errors = { ...validationResult.errors };
+    
     if (!formData.featured_image) {
       errors.featured_image = "Please upload a featured image";
     }
@@ -202,7 +196,7 @@ function CreateBlogContent() {
   };
 
   const handleSaveDraft = async () => {
-    if (!validateForm()) return;
+    if (!validateFormData()) return;
 
     try {
       const uploadedUrls = await uploadTemporaryImages();
@@ -248,7 +242,7 @@ function CreateBlogContent() {
   };
 
   const handlePublish = async () => {
-    if (!validateForm()) return;
+    if (!validateFormData()) return;
 
     try {
       const uploadedUrls = await uploadTemporaryImages();
