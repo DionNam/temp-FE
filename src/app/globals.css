@@ -616,4 +616,23 @@
   .fixed { -webkit-transform: translateZ(0); transform: translateZ(0); }
 
   body { overflow-x: hidden; }
+
+  /* Hide scrollbar for horizontal scroll on mobile */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Smooth scroll behavior for testimonials */
+  .testimonials-scroll {
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+  }
+  
+  .testimonials-scroll::-webkit-scrollbar {
+    display: none;
+  }
 }
