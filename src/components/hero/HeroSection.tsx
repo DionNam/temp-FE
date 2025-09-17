@@ -141,8 +141,8 @@ export default function HeroSection({ className }: HeroSectionProps) {
                 <div className="overflow-hidden rounded-[12px] sm:rounded-[18px] lg:rounded-[24px] border-2 border-[#e9eaeb] bg-neutral-50">
                   <div className="aspect-[15/8] w-full relative">
                     <Image
-                      src="/main_geo_lab.png"
-                      alt="ShowOnAI Dashboard Preview"
+                      src="/main_ai_gap_audit.png"
+                      alt="ShowOnAI AI Gap Audit Dashboard Preview"
                       fill
                       className="object-cover object-top"
                       sizes="(max-width: 768px) 320px, (max-width: 1024px) 640px, 1200px"
