@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import "./globals.css";
 import { QueryProvider } from "@/providers/QueryProvider";
-import { getNonce } from "@/utils/nonce";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -24,7 +23,10 @@ export const metadata: Metadata = {
     "GEO", "Generative Engine Optimization", "AI search optimization", "ChatGPT optimization", 
     "Gemini search", "Perplexity optimization", "generative AI SEO", "brand visibility", 
     "AI marketing", "content optimization", "digital marketing", "search engine optimization", 
-    "SEO", "marketing", "AI search strategy"
+    "SEO", "marketing", "AI search strategy", "artificial intelligence", "machine learning SEO",
+    "AI content marketing", "generative AI marketing", "AI brand optimization", "digital presence",
+    "online visibility", "search marketing", "AI powered SEO", "intelligent search optimization",
+    "AI search engine marketing", "automated SEO", "smart content optimization"
   ],
   authors: [{ name: "ShowOnAI", url: "https://showonai.com" }],
   creator: "ShowOnAI",
@@ -186,11 +188,22 @@ const structuredData = {
       contactPoint: {
         "@type": "ContactPoint",
         contactType: "customer service",
-        availableLanguage: ["Korean", "English"]
+        availableLanguage: ["English", "Korean"]
       },
       sameAs: [
         "https://blog.showonai.com",
+        "https://linkedin.com/company/showonai",
+        "https://twitter.com/showonai",
+        "https://github.com/showonai"
       ],
+      address: {
+        "@type": "PostalAddress",
+        addressCountry: "US",
+        addressLocality: "San Francisco",
+        addressRegion: "CA"
+      },
+      telephone: "+1-800-SHOWONAI",
+      email: "contact@showonai.com"
     },
     {
       "@type": "WebSite",
@@ -201,7 +214,7 @@ const structuredData = {
       publisher: {
         "@id": "https://showonai.com/#organization",
       },
-      inLanguage: "ko-KR",
+      inLanguage: "en-US",
       potentialAction: {
         "@type": "SearchAction",
         target: "https://showonai.com/search?q={search_term_string}",
@@ -231,14 +244,51 @@ const structuredData = {
       provider: {
         "@id": "https://showonai.com/#organization",
       },
-      areaServed: {
-        "@type": "Country",
-        name: "South Korea"
-      },
+      areaServed: [
+        {
+          "@type": "Country",
+          name: "South Korea"
+        },
+        {
+          "@type": "Country", 
+          name: "United States"
+        }
+      ],
       serviceType: "SEO and GEO Optimization",
+      category: "Digital Marketing",
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: "ShowOnAI Services",
+        itemListElement: [
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              name: "AI Search Audit",
+              description: "Comprehensive analysis of your current AI search visibility"
+            }
+          },
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service", 
+              name: "GEO Strategy Development",
+              description: "Custom generative engine optimization strategy for your brand"
+            }
+          },
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              name: "Content Optimization",
+              description: "AI-focused content optimization for maximum visibility"
+            }
+          }
+        ]
+      },
       audience: {
         "@type": "BusinessAudience",
-        name: "Korean Businesses"
+        name: "Global Businesses"
       },
       offers: [
         {
@@ -274,6 +324,43 @@ const structuredData = {
       ],
     },
     {
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "What is GEO (Generative Engine Optimization)?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "GEO (Generative Engine Optimization) is the practice of optimizing content to appear prominently in AI-powered search platforms like ChatGPT, Gemini, and Perplexity. It focuses on making your brand visible in generative AI responses."
+          }
+        },
+        {
+          "@type": "Question",
+          name: "How does ShowOnAI improve AI search visibility?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "ShowOnAI uses advanced SEO and GEO techniques to optimize your content for AI platforms. We analyze AI search patterns, optimize content structure, and implement strategies that increase your brand's chances of being mentioned in AI responses."
+          }
+        },
+        {
+          "@type": "Question",
+          name: "What AI platforms does ShowOnAI optimize for?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "ShowOnAI optimizes for major AI platforms including ChatGPT, Google Gemini, Perplexity AI, Claude, and other generative AI search engines that are becoming increasingly important for brand discovery."
+          }
+        },
+        {
+          "@type": "Question",
+          name: "How long does it take to see results from GEO optimization?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "GEO optimization results typically begin showing within 2-4 weeks, with significant improvements in AI search visibility usually achieved within 2-3 months of consistent optimization efforts."
+          }
+        }
+      ]
+    },
+    {
       "@type": "BreadcrumbList",
       itemListElement: [
         {
@@ -287,26 +374,39 @@ const structuredData = {
   ],
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const nonce = await getNonce();
-  
   return (
-    <html lang="ko">
+    <html lang="en">
       <head>
-        <script
-          type="application/ld+json"
-          nonce={nonce}
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(structuredData),
-          }}
-        />
-        
         <meta name="description" content="Maximize your brand exposure in generative AI platforms like ChatGPT, Gemini, and Perplexity. Achieve top rankings in AI search results with GEO strategy and expand customer touchpoints. Start with free AI visibility audit." />
         <meta name="keywords" content="GEO, SEO, AI search optimization, brand optimization, ChatGPT optimization, generative AI, search engine optimization, AI visibility, Perplexity AI, Gemini AI" />
+        
+        {/* Enhanced SEO Meta Tags */}
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+        <meta name="googlebot" content="index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1" />
+        <meta name="bingbot" content="index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1" />
+        
+        {/* Geo Targeting */}
+        <meta name="geo.region" content="US" />
+        <meta name="geo.placename" content="San Francisco" />
+        <meta name="geo.position" content="37.7749;-122.4194" />
+        <meta name="ICBM" content="37.7749, -122.4194" />
+        
+        {/* Business Info */}
+        <meta name="business.name" content="ShowOnAI" />
+        <meta name="business.type" content="Digital Marketing Agency" />
+        <meta name="business.hours" content="Mo-Fr 09:00-18:00" />
+        
+        {/* Content Classification */}
+        <meta name="classification" content="Business Software" />
+        <meta name="category" content="Technology" />
+        <meta name="coverage" content="Worldwide" />
+        <meta name="distribution" content="Global" />
+        <meta name="rating" content="General" />
         
         <meta httpEquiv="Content-Language" content="en" />
         <meta name="format-detection" content="telephone=no" />
@@ -319,6 +419,17 @@ export default async function RootLayout({
         
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
         <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+        <link rel="dns-prefetch" href="//www.google-analytics.com" />
+        <link rel="dns-prefetch" href="//www.googletagmanager.com" />
+        
+        {/* Canonical and Alternate Links */}
+        <link rel="canonical" href="https://showonai.com" />
+        <link rel="alternate" hrefLang="en" href="https://showonai.com" />
+        <link rel="alternate" hrefLang="x-default" href="https://showonai.com" />
+        
+        {/* Preload Critical Resources */}
+        <link rel="preload" href="/brand-sov.webp" as="image" />
+        <link rel="preload" href="/showonai-logo.png" as="image" />
         
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
