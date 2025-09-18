@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'landingblogs.s3.amazonaws.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'stg-showonai-blog.s3.ap-southeast-1.amazonaws.com',
+      },
     ],
   },
   async headers() {
