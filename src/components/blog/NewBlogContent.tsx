@@ -98,9 +98,28 @@ function RelatedBlogCard({ post }: { post: BlogPost }) {
         
         <div className="flex flex-col gap-4 lg:gap-6">
           <div className="flex flex-col gap-2">
-            <p className="font-semibold text-sm text-blue-600">
-              {post.author_name} • {formatDate(post.published_at || post.created_at)}
-            </p>
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded-full overflow-hidden flex-shrink-0">
+                {post.avatar || (typeof post.author === 'object' && post.author?.avatar) ? (
+                  <Image
+                    src={post.avatar || (typeof post.author === 'object' && post.author?.avatar) || ''}
+                    alt={post.author_name}
+                    width={24}
+                    height={24}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
+                    <span className="text-xs font-semibold text-gray-700">
+                      {post.author_name.charAt(0)}
+                    </span>
+                  </div>
+                )}
+              </div>
+              <p className="font-semibold text-sm text-blue-600">
+                {post.author_name} • {formatDate(post.published_at || post.created_at)}
+              </p>
+            </div>
             
             <div className="flex gap-3 lg:gap-4 items-start">
               <h3 className="font-semibold text-base lg:text-lg text-gray-900 leading-6 lg:leading-7 flex-1 group-hover:text-blue-600 transition-colors">
@@ -192,17 +211,29 @@ export function NewBlogContent({ post, relatedPosts = [] }: NewBlogContentProps)
               
               {/* Author Info */}
               <div className="flex gap-3 items-center justify-start">
-                <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
-                  <span className="text-base lg:text-lg font-semibold text-gray-700">
-                    {post.author_name.charAt(0)}
-                  </span>
+                <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden">
+                  {post.avatar || (typeof post.author === 'object' && post.author?.avatar) ? (
+                    <Image
+                      src={post.avatar || (typeof post.author === 'object' && post.author?.avatar) || ''}
+                      alt={post.author_name}
+                      width={48}
+                      height={48}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
+                      <span className="text-base lg:text-lg font-semibold text-gray-700">
+                        {post.author_name.charAt(0)}
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col items-start justify-start text-sm lg:text-base">
                   <p className="font-semibold text-gray-900">
                     {post.author_name}
                   </p>
                   <p className="font-normal text-gray-600">
-                    {post.author_email || formatDate(post.published_at || post.created_at)}
+                    {formatDate(post.published_at || post.created_at)}
                   </p>
                 </div>
               </div>
