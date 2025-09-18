@@ -139,13 +139,13 @@ export default function HeroSection({ className }: HeroSectionProps) {
             <div className="relative rounded-[16px] sm:rounded-[24px] lg:rounded-[32px] border border-black/8 bg-white p-0.5 sm:p-1 shadow-[0px_12px_16px_-4px_rgba(10,13,18,0.08),0px_4px_6px_-2px_rgba(10,13,18,0.03),0px_2px_2px_-1px_rgba(10,13,18,0.04)] mx-auto">
               <div className="overflow-hidden rounded-[14px] sm:rounded-[20px] lg:rounded-[28px] bg-white p-0.5 sm:p-1 shadow-[0px_0px_6px_2px_inset_rgba(10,13,18,0.08),0px_0px_4px_2px_inset_rgba(10,13,18,0.03)]">
                 <div className="overflow-hidden rounded-[12px] sm:rounded-[18px] lg:rounded-[24px] border-2 border-[#e9eaeb] bg-neutral-50">
-                  <div className="aspect-[15/8] w-full relative">
+                  <div className="aspect-[4096/2560] w-full relative">
                     <Image
                       src="/main_ai_gap_audit.png"
                       alt="ShowOnAI AI Gap Audit Dashboard Preview"
                       fill
-                      className="object-cover object-top"
-                      sizes="(max-width: 768px) 320px, (max-width: 1024px) 640px, 1200px"
+                      className="object-contain"
+                      sizes="100vw"
                       priority
                     />
                   </div>

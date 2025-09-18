@@ -2,7 +2,8 @@
 
 import HeroSection from '@/components/hero/HeroSection';
 import SocialProofSection from '@/components/social-proof/SocialProofSection';
-import FeaturesSection from '@/components/features/FeaturesSection';
+import QuestionSection from '@/components/features/QuestionSection';
+import DataVisualizationSection from '@/components/features/DataVisualizationSection';
 import FeaturesSectionGeoLab from '@/components/features/FeaturesSectionGeoLab';
 import FeaturesSectionAiGapAudit from '@/components/features/FeaturesSectionAiGapAudit';
 import TestimonialsSection from '@/components/testimonials/TestimonialsSection';
@@ -15,9 +16,10 @@ export default function LandingPage() {
     <>
       <HeroSection />
       <SocialProofSection />
-      <FeaturesSection />
-      <FeaturesSectionGeoLab />
+      <QuestionSection />
+      <DataVisualizationSection />
       <FeaturesSectionAiGapAudit />
+      <FeaturesSectionGeoLab />
       <TestimonialsSection />
       <BlogSection />
       <FaqSection />
