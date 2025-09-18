@@ -47,7 +47,7 @@ export default function FaqSection({ className }: FaqSectionProps) {
   };
 
   return (
-    <section className={`bg-white py-12 sm:py-16 lg:py-24 ${className}`}>
+    <section className={`bg-white py-16 sm:py-20 lg:py-28 ${className}`}>
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex flex-col gap-6 sm:gap-8 items-center mb-12 sm:mb-16">

@@ -49,7 +49,7 @@ export default function SocialProofSection({ className }: SocialProofSectionProp
   ];
 
   return (
-    <section className={`bg-white py-12 sm:py-16 lg:py-24 relative z-20 block w-full ${className}`} style={{ position: 'relative', zIndex: 20, display: 'block' }}>
+    <section className={`bg-white pt-10 pb-12 sm:pb-16 lg:pb-24 relative z-20 block w-full ${className}`} style={{ position: 'relative', zIndex: 20, display: 'block' }}>
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-6 sm:gap-8 items-center">
           {/* Header Text */}

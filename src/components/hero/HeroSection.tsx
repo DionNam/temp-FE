@@ -51,7 +51,7 @@ export default function HeroSection({ className }: HeroSectionProps) {
       <Header />
 
       {/* Main Hero Content */}
-      <div className="relative z-10 flex w-full flex-col items-center justify-start gap-8 sm:gap-16 px-0 pb-0 pt-8 sm:pt-16">
+      <div className="relative z-10 flex w-full flex-col items-center justify-start gap-8 sm:gap-16 px-0 pb-8 sm:pb-16 pt-8 sm:pt-16">
         <div className="flex w-full max-w-[1280px] flex-col items-center justify-start gap-6 sm:gap-8 px-4 sm:px-8">
           <div className="flex w-full flex-col items-center justify-start gap-8 sm:gap-12">
             {/* Hero Text Content */}

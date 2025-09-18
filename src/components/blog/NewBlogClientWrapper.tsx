@@ -311,7 +311,7 @@ export function NewBlogClientWrapper({ searchParams }: NewBlogClientWrapperProps
   }
 
   return (
-    <div className="box-border flex flex-col gap-8 sm:gap-12 lg:gap-16 items-center justify-start pb-0 pt-12 sm:pt-16 lg:pt-24 px-0 w-full">
+    <div className="box-border flex flex-col gap-10 sm:gap-12 lg:gap-16 items-center justify-start pb-0 pt-16 sm:pt-20 lg:pt-24 px-0 w-full">
       {/* Header Section */}
       <div className="box-border flex flex-col gap-6 sm:gap-8 lg:gap-8 items-center justify-start max-w-[1280px] px-4 sm:px-6 lg:px-8 py-0 w-full">
         <div className="flex flex-col gap-6 sm:gap-8 lg:gap-12 items-center justify-start w-full">
@@ -350,8 +350,8 @@ export function NewBlogClientWrapper({ searchParams }: NewBlogClientWrapperProps
       </div>
 
       {/* Content Section */}
-      <div className="box-border flex flex-col gap-8 sm:gap-12 lg:gap-16 items-center justify-start pb-12 sm:pb-16 lg:pb-24 pt-0 px-0 w-full">
-        <div className="box-border flex flex-col gap-8 sm:gap-12 lg:gap-16 items-center justify-start max-w-[1280px] px-4 sm:px-6 lg:px-8 py-0 w-full">
+      <div className="box-border flex flex-col gap-10 sm:gap-12 lg:gap-16 items-center justify-start pb-16 sm:pb-20 lg:pb-24 pt-0 px-0 w-full">
+        <div className="box-border flex flex-col gap-10 sm:gap-12 lg:gap-16 items-center justify-start max-w-[1280px] px-4 sm:px-6 lg:px-8 py-0 w-full">
           {posts.length === 0 ? (
             <div className="flex flex-col items-center gap-3 sm:gap-4 py-8 sm:py-12 lg:py-16 px-4">
               <div className="text-gray-400 text-3xl sm:text-4xl lg:text-6xl">📝</div>
@@ -369,7 +369,7 @@ export function NewBlogClientWrapper({ searchParams }: NewBlogClientWrapperProps
               
               {/* Other Posts Grid */}
               {otherPosts.length > 0 && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-8 w-full">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 lg:gap-8 w-full">
                   {otherPosts.map((post) => (
                     <BlogCard key={post.id} post={post} />
                   ))}

@@ -9,7 +9,7 @@ interface DataVisualizationSectionProps {
 
 export default function DataVisualizationSection({ className }: DataVisualizationSectionProps) {
   return (
-    <section className={`bg-white py-16 sm:py-20 lg:py-32 ${className}`}>
+    <section className={`bg-white py-20 sm:py-24 lg:py-36 ${className}`}>
       <div className="max-w-[1216px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-8 sm:gap-10 lg:gap-12 items-center">
           {/* Header Section */}
@@ -26,7 +26,7 @@ export default function DataVisualizationSection({ className }: DataVisualizatio
                 </div>
                 <div className="text-[#535862] text-[16px] sm:text-[18px] lg:text-[20px] font-normal w-full">
                   <p className="leading-[24px] sm:leading-[26px] lg:leading-[30px]">
-                    To understand how AI platforms like ChatGPT, Gemini, and Perplexity cite content, we ran one of the largest GEO analyses to date. Through this large-scale analysis, we uncovered the unique signals that make content more likely to be cited — insights that traditional SEO alone could never reveal.
+                   We analyzed 1M of the most cited contents from ChatGPT, Gemini, and Perplexity across 1K factors to reveal which ones truly drive citations.
                   </p>
                 </div>
               </div>

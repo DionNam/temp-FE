@@ -198,7 +198,7 @@ export default function TestimonialsSection({ className }: TestimonialsProps) {
   const column3 = testimonials.slice(6, 9);
 
   return (
-    <div className="bg-white box-border content-stretch flex flex-col gap-[48px] md:gap-[64px] items-center justify-start pb-[64px] md:pb-[96px] pt-[32px] md:pt-0 px-0 relative size-full">
+    <div className="bg-white box-border content-stretch flex flex-col gap-[48px] md:gap-[64px] items-center justify-start pb-16 sm:pb-20 lg:pb-24 pt-16 sm:pt-20 lg:pt-24 px-0 relative size-full">
       {/* Header Section */}
       <div className="box-border content-stretch flex flex-col gap-[32px] items-start justify-start max-w-[1280px] px-[16px] md:px-[32px] py-0 relative shrink-0 w-full">
         <div className="content-stretch flex flex-col gap-[32px] items-center justify-start relative shrink-0 w-full">

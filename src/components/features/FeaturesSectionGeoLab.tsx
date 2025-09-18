@@ -38,7 +38,7 @@ interface FeaturesSectionProps {
 
 export default function FeaturesSectionGeoLab({ className }: FeaturesSectionProps) {
   return (
-    <section className={`bg-white py-12 sm:py-16 lg:py-[96px] ${className}`}>
+    <section className={`bg-white py-16 sm:py-20 lg:py-28 ${className}`}>
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-8 sm:gap-12 lg:gap-16 items-center">
           {/* Header Section */}
