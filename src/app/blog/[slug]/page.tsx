@@ -8,8 +8,8 @@ import { NewBlogContent } from '@/components/blog/NewBlogContent';
 import { useBlogBySlug, useRelatedBlogs } from '@/hooks/useBlogQueries';
 import { extractIdFromSlug } from '@/lib/utils';
 import { useToast, ToastContainer } from '@/components/ui/toast';
-import { BlogSEO } from '@/components/blog/BlogSEO';
 import Link from 'next/link';
+import Head from 'next/head';
 
 function BlogPostContent() {
   const params = useParams();
@@ -94,9 +94,71 @@ function BlogPostContent() {
     );
   }
 
+  // SEO data
+  const pageTitle = post.data.seo_title || `${post.data.title} | ShowOnAI Blog`;
+  const pageDescription = post.data.seo_description || post.data.excerpt;
+  const canonicalUrl = `https://showonai.com/blog/${slug}`;
+  
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": post.data.title,
+    "description": post.data.excerpt,
+    "image": post.data.featured_image ? [post.data.featured_image] : [],
+    "author": {
+      "@type": "Person",
+      "name": post.data.author_name || 'ShowOnAI Team'
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "ShowOnAI",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://showonai.com/logo.png"
+      }
+    },
+    "datePublished": post.data.published_at || post.data.created_at,
+    "dateModified": post.data.updated_at || post.data.published_at || post.data.created_at,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": canonicalUrl
+    }
+  };
+
   return (
     <>
-      <BlogSEO post={post.data} />
+      <Head>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <link rel="canonical" href={canonicalUrl} />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:image" content={post.data.featured_image || 'https://showonai.com/og-default.png'} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:type" content="article" />
+        <meta property="og:site_name" content="ShowOnAI" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        <meta name="twitter:image" content={post.data.featured_image || 'https://showonai.com/og-default.png'} />
+        
+        {/* Article specific */}
+        <meta property="article:author" content={post.data.author_name || 'ShowOnAI Team'} />
+        <meta property="article:published_time" content={post.data.published_at || post.data.created_at} />
+        <meta property="article:modified_time" content={post.data.updated_at || post.data.published_at || post.data.created_at} />
+        <meta property="article:section" content={post.data.category} />
+        
+        {/* Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd, null, 2) }}
+        />
+      </Head>
+      
       <div className="min-h-screen bg-white">
         <ToastContainer toasts={toasts} removeToast={removeToast} />
         <Header />
