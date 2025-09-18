@@ -6,12 +6,29 @@ import Link from "next/link";
 import { ArrowUpRight, ArrowLeft, ArrowRight } from "lucide-react";
 import { useBlogs } from "@/hooks/useBlogQueries";
 import { useBlogCategories } from "@/hooks/useBlogFilters";
+import { getBlogCategories, getCategorySlug, getCategoryDisplayName } from "@/config/blog";
 
 interface NewBlogClientWrapperProps {
   searchParams: Promise<{ page?: string; category?: string; limit?: string }>;
 }
 
 const categoryColors = {
+  "Content Marketing": {
+    bg: "bg-blue-50",
+    border: "border-blue-200",
+    text: "text-blue-800"
+  },
+  "Data and Research": {
+    bg: "bg-green-50",
+    border: "border-green-200",
+    text: "text-green-800"
+  },
+  "Case Study": {
+    bg: "bg-purple-50",
+    border: "border-purple-200",
+    text: "text-purple-800"
+  },
+  // Legacy categories for backward compatibility
   "Design": {
     bg: "bg-orange-50",
     border: "border-orange-200",
@@ -37,10 +54,20 @@ const categoryColors = {
     border: "border-gray-200",
     text: "text-gray-800"
   },
+  "tutorial": {
+    bg: "bg-indigo-50",
+    border: "border-indigo-200",
+    text: "text-indigo-800"
+  },
+  "opinion": {
+    bg: "bg-red-50",
+    border: "border-red-200",
+    text: "text-red-800"
+  },
   "default": {
-    bg: "bg-blue-50",
-    border: "border-blue-200",
-    text: "text-blue-800"
+    bg: "bg-gray-50",
+    border: "border-gray-200",
+    text: "text-gray-800"
   }
 };
 
@@ -237,11 +264,18 @@ export function NewBlogClientWrapper({ searchParams }: NewBlogClientWrapperProps
   const [activeCategory, setActiveCategory] = useState(params.category || 'all');
   const [currentPage, setCurrentPage] = useState(parseInt(params.page || '1'));
   
+  // Convert category slug back to category name for API call
+  const getActualCategoryName = (categorySlug: string) => {
+    if (categorySlug === 'all') return undefined;
+    const category = getBlogCategories().find(cat => getCategorySlug(cat) === categorySlug);
+    return category || categorySlug;
+  };
+  
   const { data: categoriesData } = useBlogCategories();
   const { data: blogData, isLoading } = useBlogs({
     page: currentPage,
     limit: 9,
-    category: activeCategory === 'all' ? undefined : activeCategory,
+    category: getActualCategoryName(activeCategory),
   });
 
   const posts = blogData?.data?.blogs || [];
@@ -251,10 +285,10 @@ export function NewBlogClientWrapper({ searchParams }: NewBlogClientWrapperProps
 
   const categories = [
     { id: 'all', name: 'View all' },
-    { id: 'design', name: 'Design' },
-    { id: 'product', name: 'Product' },
-    { id: 'software-development', name: 'Software Development' },
-    { id: 'customer-success', name: 'Customer Success' },
+    ...getBlogCategories().map(category => ({
+      id: getCategorySlug(category),
+      name: getCategoryDisplayName(category)
+    }))
   ];
 
   const handleCategoryChange = (categoryId: string) => {

@@ -16,6 +16,7 @@ import { useToast, ToastContainer } from "@/components/ui/toast";
 import { ImageUploadArea } from "@/components/blog/ImageUploadArea";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import { validateForm, sanitizeInput, FORM_VALIDATION_SCHEMAS } from "@/utils/validation";
+import { getBlogCategories, BLOG_CONFIG } from "@/config/blog";
 
 function CreateBlogContent() {
   const router = useRouter();
@@ -29,7 +30,7 @@ function CreateBlogContent() {
     title: "",
     excerpt: "",
     content: "",
-    category: "",
+    category: BLOG_CONFIG.defaultCategory,
     author_name: "",
     avatar: "",
     featured_image: "",
@@ -519,20 +520,11 @@ function CreateBlogContent() {
                     }`}
                   >
                     <option value="">Select a category...</option>
-                    {Array.isArray(categories) &&
-                      categories.map((category) => (
-                        <option key={category} value={category}>
-                          {category}
-                        </option>
-                      ))}
-                    {(!categories || categories.length === 0) && (
-                      <>
-                        <option value="news">News</option>
-                        <option value="tip">Tip</option>
-                        <option value="interview">Interview</option>
-                        <option value="product-update">Product Update</option>
-                      </>
-                    )}
+                    {getBlogCategories().map((category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
                   </select>
                   {fieldErrors.category && (
                     <p className="text-red-500 text-sm mt-1">
