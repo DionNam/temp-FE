@@ -41,11 +41,14 @@ export function Header() {
               
               {/* Desktop Navigation - next to logo */}
               <div className="hidden md:flex items-center">
-                <div className="rounded-lg px-1.5 py-1">
+                <button 
+                  onClick={() => router.push('/blog')}
+                  className="rounded-lg px-1.5 py-1 hover:bg-gray-100 transition-colors cursor-pointer"
+                >
                   <div className="px-0.5 py-0">
-                    <span className="text-base font-semibold text-[#414651]">Blog</span>
+                    <span className="text-base font-semibold text-[#414651] hover:text-[#0166ff] transition-colors">Blog</span>
                   </div>
-                </div>
+                </button>
               </div>
             </div>
             
@@ -86,9 +89,15 @@ export function Header() {
       {isMobileMenuOpen && (
         <div className="sm:hidden absolute top-full left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-lg">
           <div className="px-4 py-4 space-y-3">
-            <div className="px-3 py-2">
-              <span className="text-base font-semibold text-[#414651]">Blog</span>
-            </div>
+            <button 
+              onClick={() => {
+                router.push('/blog');
+                setIsMobileMenuOpen(false);
+              }}
+              className="px-3 py-2 hover:bg-gray-100 rounded-lg transition-colors w-full text-left"
+            >
+              <span className="text-base font-semibold text-[#414651] hover:text-[#0166ff] transition-colors">Blog</span>
+            </button>
             <div className="flex flex-col gap-3">
               {/* <button className="bg-neutral-50 box-border flex gap-2 items-center justify-center px-4 py-3 rounded-[10px] border border-neutral-200 shadow-[0px_1px_2px_0px_rgba(20,28,37,0.04)] hover:bg-neutral-100 transition-colors">
                 <div className="font-medium text-[14px] text-center text-neutral-700">

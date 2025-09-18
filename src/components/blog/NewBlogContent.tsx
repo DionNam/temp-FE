@@ -235,22 +235,151 @@ export function NewBlogContent({ post, relatedPosts = [] }: NewBlogContentProps)
               <div className="flex flex-col items-start justify-start max-w-[720px] w-full">
                 {/* Blog Content */}
                 <div 
-                  className="prose prose-sm sm:prose lg:prose-lg max-w-none w-full
-                    prose-headings:font-semibold prose-headings:text-gray-900 prose-headings:mt-8 prose-headings:mb-4
-                    prose-h1:text-3xl prose-h1:leading-tight prose-h1:mt-0
-                    prose-h2:text-2xl prose-h2:leading-snug prose-h2:mt-8 prose-h2:mb-4
-                    prose-h3:text-xl prose-h3:leading-snug prose-h3:mt-6 prose-h3:mb-3
-                    prose-p:text-gray-600 prose-p:leading-7 prose-p:mb-4
-                    prose-li:text-gray-600 prose-li:leading-7
-                    prose-ul:mb-6 prose-ol:mb-6 prose-li:mb-2
-                    prose-strong:text-gray-900 prose-strong:font-semibold
-                    prose-a:text-blue-600 prose-a:underline hover:prose-a:text-blue-700
-                    prose-img:rounded-lg prose-img:shadow-sm prose-img:my-8
-                    prose-blockquote:border-l-4 prose-blockquote:border-blue-200 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-gray-700
-                    prose-code:bg-gray-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
-                    prose-pre:bg-gray-900 prose-pre:text-gray-100 prose-pre:rounded-lg prose-pre:p-4"
+                  className="blog-content max-w-none w-full"
                   dangerouslySetInnerHTML={{ __html: post.content }}
                 />
+                
+                <style jsx>{`
+                  .blog-content {
+                    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                    line-height: 1.7;
+                    color: #4B5563;
+                  }
+                  
+                  .blog-content h1 {
+                    font-size: 2rem;
+                    font-weight: 600;
+                    color: #111827;
+                    margin-top: 0;
+                    margin-bottom: 1.5rem;
+                    line-height: 1.25;
+                  }
+                  
+                  .blog-content h2 {
+                    font-size: 1.75rem;
+                    font-weight: 600;
+                    color: #111827;
+                    margin-top: 2.5rem;
+                    margin-bottom: 1.25rem;
+                    line-height: 1.3;
+                  }
+                  
+                  .blog-content h3 {
+                    font-size: 1.5rem;
+                    font-weight: 600;
+                    color: #111827;
+                    margin-top: 2rem;
+                    margin-bottom: 1rem;
+                    line-height: 1.35;
+                  }
+                  
+                  .blog-content h4 {
+                    font-size: 1.25rem;
+                    font-weight: 600;
+                    color: #111827;
+                    margin-top: 1.5rem;
+                    margin-bottom: 0.75rem;
+                    line-height: 1.4;
+                  }
+                  
+                  .blog-content p {
+                    margin-bottom: 1.25rem;
+                    font-size: 1.125rem;
+                    line-height: 1.75;
+                    color: #4B5563;
+                  }
+                  
+                  .blog-content strong, .blog-content b {
+                    font-weight: 600;
+                    color: #111827;
+                  }
+                  
+                  .blog-content em, .blog-content i {
+                    font-style: italic;
+                  }
+                  
+                  .blog-content a {
+                    color: #2563EB;
+                    text-decoration: underline;
+                    text-underline-offset: 2px;
+                  }
+                  
+                  .blog-content a:hover {
+                    color: #1D4ED8;
+                  }
+                  
+                  .blog-content ul, .blog-content ol {
+                    margin-bottom: 1.5rem;
+                    padding-left: 1.5rem;
+                  }
+                  
+                  .blog-content li {
+                    margin-bottom: 0.5rem;
+                    font-size: 1.125rem;
+                    line-height: 1.75;
+                    color: #4B5563;
+                  }
+                  
+                  .blog-content ul li {
+                    list-style-type: disc;
+                  }
+                  
+                  .blog-content ol li {
+                    list-style-type: decimal;
+                  }
+                  
+                  .blog-content img {
+                    max-width: 100%;
+                    height: auto;
+                    margin: 2rem 0;
+                    border-radius: 0.5rem;
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                  }
+                  
+                  .blog-content blockquote {
+                    border-left: 4px solid #93C5FD;
+                    padding-left: 1rem;
+                    margin: 1.5rem 0;
+                    font-style: italic;
+                    color: #374151;
+                    background-color: #F8FAFC;
+                    padding: 1rem;
+                    border-radius: 0.375rem;
+                  }
+                  
+                  .blog-content code {
+                    background-color: #F3F4F6;
+                    padding: 0.125rem 0.375rem;
+                    border-radius: 0.25rem;
+                    font-size: 0.875rem;
+                    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+                    color: #1F2937;
+                  }
+                  
+                  .blog-content pre {
+                    background-color: #1F2937;
+                    color: #F9FAFB;
+                    padding: 1rem;
+                    border-radius: 0.5rem;
+                    overflow-x: auto;
+                    margin: 1.5rem 0;
+                  }
+                  
+                  .blog-content pre code {
+                    background-color: transparent;
+                    padding: 0;
+                    color: inherit;
+                  }
+                  
+                  @media (max-width: 640px) {
+                    .blog-content h1 { font-size: 1.75rem; }
+                    .blog-content h2 { font-size: 1.5rem; }
+                    .blog-content h3 { font-size: 1.25rem; }
+                    .blog-content h4 { font-size: 1.125rem; }
+                    .blog-content p { font-size: 1rem; }
+                    .blog-content li { font-size: 1rem; }
+                  }
+                `}</style>
                 
                 {/* Categories and Social Links */}
                 <div className="box-border flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-center justify-between pt-6 border-t border-gray-200 w-full mt-8 lg:mt-12">
