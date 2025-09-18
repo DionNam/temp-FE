@@ -10,6 +10,7 @@ interface BlogPost {
   title: string;
   excerpt: string;
   author_name: string;
+  avatar?: string;
   category: string;
   featured_image?: string;
   published_at?: string;
@@ -84,11 +85,17 @@ export default function BlogSection({ className }: BlogSectionProps) {
                   <div className="h-4 bg-gray-200 rounded mb-3" />
                   <div className="h-4 bg-gray-200 rounded mb-2" />
                   <div className="h-4 bg-gray-200 rounded w-3/4 mb-4" />
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gray-200 rounded-full" />
-                    <div>
-                      <div className="h-3 bg-gray-200 rounded w-20 mb-1" />
-                      <div className="h-3 bg-gray-200 rounded w-16" />
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 rounded-full" />
+                      <div>
+                        <div className="h-3 bg-gray-200 rounded w-20 mb-1" />
+                        <div className="h-3 bg-gray-200 rounded w-16" />
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="h-3 bg-gray-200 rounded w-16 mb-1" />
+                      <div className="h-3 bg-gray-200 rounded w-12" />
                     </div>
                   </div>
                 </div>
@@ -140,11 +147,23 @@ export default function BlogSection({ className }: BlogSectionProps) {
                   {/* Meta Info */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 sm:gap-3">
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
-                        <span className="text-[12px] sm:text-[14px] font-semibold text-gray-700">
-                          {post.author_name.charAt(0)}
-                        </span>
-                      </div>
+                      {post.avatar ? (
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden">
+                          <Image
+                            src={post.avatar}
+                            alt={`${post.author_name} avatar`}
+                            width={40}
+                            height={40}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
+                          <span className="text-[12px] sm:text-[14px] font-semibold text-gray-700">
+                            {post.author_name.charAt(0)}
+                          </span>
+                        </div>
+                      )}
                       <div>
                         <div className="text-[12px] sm:text-[14px] font-semibold text-[#181d27]">
                           {post.author_name}

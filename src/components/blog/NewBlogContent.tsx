@@ -181,10 +181,13 @@ export function NewBlogContent({ post, relatedPosts = [] }: NewBlogContentProps)
   return (
     <div className="bg-white flex flex-col items-center justify-start w-full">
       {/* Back Navigation */}
-      <div className="box-border flex flex-col items-center justify-start pt-16 lg:pt-24 pb-0 px-0 w-full">
-        <div className="flex gap-2 items-center justify-start max-w-[1216px] w-full px-4 lg:px-8">
-          <ArrowLeft className="w-5 h-5 lg:w-6 lg:h-6 text-gray-400" />
-          <Link href="/blog" className="font-normal text-lg lg:text-xl text-gray-500 hover:text-gray-700">
+      <div className="box-border flex flex-col items-center justify-start pt-12 sm:pt-16 lg:pt-24 pb-0 px-0 w-full">
+        <div className="max-w-[1216px] w-full px-4 sm:px-6 lg:px-8">
+          <Link 
+            href="/blog" 
+            className="inline-flex gap-2 items-center justify-start font-normal text-base sm:text-lg lg:text-xl text-gray-500 hover:text-gray-700 transition-colors py-2 -ml-2 pl-2 pr-4 rounded-lg hover:bg-gray-50"
+          >
+            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-gray-400" />
             Back
           </Link>
         </div>
@@ -192,19 +195,19 @@ export function NewBlogContent({ post, relatedPosts = [] }: NewBlogContentProps)
 
       {/* Header Section */}
       <div className="bg-white flex flex-col items-center justify-start overflow-hidden w-full">
-        <div className="box-border flex flex-col gap-12 lg:gap-16 items-center justify-start px-0 py-16 lg:py-24 w-full">
-          <div className="box-border flex flex-col gap-6 lg:gap-8 items-center justify-start max-w-[1280px] px-4 lg:px-8 w-full">
+        <div className="box-border flex flex-col gap-8 sm:gap-12 lg:gap-16 items-center justify-start px-0 py-12 sm:py-16 lg:py-24 w-full">
+          <div className="box-border flex flex-col gap-6 sm:gap-8 lg:gap-8 items-center justify-start max-w-[1280px] px-4 sm:px-6 lg:px-8 w-full">
             <div className="flex flex-col gap-6 lg:gap-8 items-center justify-start w-full">
-              <div className="flex flex-col gap-4 lg:gap-6 items-center justify-start max-w-[768px] w-full text-center">
-                <div className="flex flex-col gap-2 lg:gap-3 items-start justify-start w-full">
-                  <p className="font-semibold text-sm lg:text-base text-blue-500 w-full text-center">
+              <div className="flex flex-col gap-4 sm:gap-5 lg:gap-6 items-center justify-start max-w-[768px] w-full text-center px-2 sm:px-0">
+                <div className="flex flex-col gap-3 sm:gap-4 lg:gap-3 items-start justify-start w-full">
+                  <p className="font-semibold text-sm sm:text-base lg:text-base text-blue-500 w-full text-center">
                     {post.category}
                   </p>
-                  <h1 className="font-semibold text-2xl sm:text-3xl lg:text-5xl text-gray-900 tracking-tight w-full text-center leading-tight lg:leading-[60px]">
+                  <h1 className="font-semibold text-2xl sm:text-3xl lg:text-5xl text-gray-900 tracking-tight w-full text-center leading-tight sm:leading-tight lg:leading-[60px]">
                     {post.title}
                   </h1>
                 </div>
-                <p className="font-normal text-base sm:text-lg lg:text-xl text-gray-600 w-full text-center leading-6 sm:leading-7 lg:leading-[30px]">
+                <p className="font-normal text-base sm:text-lg lg:text-xl text-gray-600 w-full text-center leading-6 sm:leading-7 lg:leading-[30px] max-w-[640px]">
                   {post.excerpt}
                 </p>
               </div>
@@ -241,17 +244,17 @@ export function NewBlogContent({ post, relatedPosts = [] }: NewBlogContentProps)
           </div>
           
           {/* Featured Image */}
-          <div className="box-border flex flex-col gap-12 lg:gap-16 items-center justify-start max-w-[1280px] px-4 lg:px-8 w-full">
+          <div className="box-border flex flex-col gap-8 sm:gap-12 lg:gap-16 items-center justify-start max-w-[1280px] px-4 sm:px-6 lg:px-8 w-full">
             <div className="flex flex-col gap-8 lg:gap-12 items-center justify-start w-full">
               {post.featured_image && (
-                <div className="aspect-[16/10] lg:aspect-[1024/560] bg-gray-200 rounded-xl lg:rounded-2xl w-full overflow-hidden">
+                <div className="aspect-[16/10] lg:aspect-[1024/560] bg-gray-200 rounded-lg sm:rounded-xl lg:rounded-2xl w-full overflow-hidden">
                   <Image
                     src={post.featured_image}
                     alt={post.title}
                     width={1024}
                     height={560}
                     className="w-full h-full object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 1024px"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1024px"
                   />
                 </div>
               )}
@@ -260,10 +263,10 @@ export function NewBlogContent({ post, relatedPosts = [] }: NewBlogContentProps)
         </div>
         
         {/* Content Section */}
-        <div className="box-border flex flex-col gap-12 lg:gap-16 items-center justify-start pb-16 lg:pb-24 pt-0 px-0 w-full">
-          <div className="box-border flex flex-col gap-12 lg:gap-16 items-center justify-start max-w-[1280px] px-4 lg:px-8 w-full">
+        <div className="box-border flex flex-col gap-8 sm:gap-12 lg:gap-16 items-center justify-start pb-12 sm:pb-16 lg:pb-24 pt-0 px-0 w-full">
+          <div className="box-border flex flex-col gap-8 sm:gap-12 lg:gap-16 items-center justify-start max-w-[1280px] px-5 sm:px-6 lg:px-8 w-full">
             <div className="flex flex-col gap-8 lg:gap-12 items-center justify-start w-full">
-              <div className="flex flex-col items-start justify-start max-w-[720px] w-full">
+              <div className="flex flex-col items-start justify-start max-w-[720px] w-full px-1 sm:px-0">
                 {/* Blog Content */}
                 <div 
                   className="blog-content max-w-none w-full"
@@ -458,8 +461,8 @@ export function NewBlogContent({ post, relatedPosts = [] }: NewBlogContentProps)
 
       {/* Related Posts Section */}
       {relatedPosts && relatedPosts.length > 0 && (
-        <div className="bg-white box-border flex flex-col gap-12 lg:gap-16 items-center justify-start overflow-hidden px-0 py-16 lg:py-24 w-full">
-          <div className="box-border flex flex-col gap-6 lg:gap-8 items-start justify-start max-w-[1280px] px-4 lg:px-8 w-full">
+        <div className="bg-white box-border flex flex-col gap-8 sm:gap-12 lg:gap-16 items-center justify-start overflow-hidden px-0 py-12 sm:py-16 lg:py-24 w-full">
+          <div className="box-border flex flex-col gap-6 sm:gap-8 lg:gap-8 items-start justify-start max-w-[1280px] px-4 sm:px-6 lg:px-8 w-full">
             <div className="flex flex-wrap gap-6 lg:gap-8 items-start justify-between w-full">
               <div className="flex flex-col gap-4 lg:gap-5 items-start justify-start max-w-[768px] min-w-0 w-full lg:min-w-[480px]">
                 <div className="flex flex-col gap-2 lg:gap-3 items-start justify-start w-full">
@@ -477,8 +480,8 @@ export function NewBlogContent({ post, relatedPosts = [] }: NewBlogContentProps)
             </div>
           </div>
           
-          <div className="box-border flex flex-col gap-6 lg:gap-8 items-start justify-start max-w-[1280px] px-4 lg:px-8 w-full">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 w-full">
+          <div className="box-border flex flex-col gap-6 sm:gap-8 lg:gap-8 items-start justify-start max-w-[1280px] px-4 sm:px-6 lg:px-8 w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-8 w-full">
               {relatedPosts.slice(0, 3).map((relatedPost) => (
                 <RelatedBlogCard key={relatedPost.id} post={relatedPost} />
               ))}

@@ -14,6 +14,7 @@ import { BlogManagementLayout } from "@/components/blog/BlogManagementLayout";
 import { PasswordProtection } from "@/components/blog/PasswordProtection";
 import Link from "next/link";
 import { Header } from "@/components/layout/Header";
+import { isBlogAuthenticated, setBlogAuthSession } from "@/utils/blogAuth";
 
 const typography = {
   h1: "font-manrope font-semibold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-tight",
@@ -222,6 +223,7 @@ function BlogManagementCard({
 
 export default function BlogManagementPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const [activeTab, setActiveTab] = useState<"all" | "published" | "drafts">(
     "published"
   );
@@ -237,8 +239,17 @@ export default function BlogManagementPage() {
   });
 
   const handleAuthSuccess = () => {
+    setBlogAuthSession();
     setIsAuthenticated(true);
   };
+
+  React.useEffect(() => {
+    setIsMounted(true);
+    // Check if already authenticated
+    if (isBlogAuthenticated()) {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   const { filters, updateFilter } = useBlogFilters({
     published:
@@ -290,7 +301,7 @@ export default function BlogManagementPage() {
   };
 
   const handleEdit = (post: BlogPost) => {
-    window.open(`/blog/create?edit=${post.id}`, "_blank");
+    window.open(`/blog/create?edit=${post.id}&from=management`, "_blank");
   };
 
   const handleDeleteClick = (id: string, title: string) => {
@@ -311,6 +322,16 @@ export default function BlogManagementPage() {
       showError("Failed to delete blog post", "Please try again.");
     }
   };
+
+  if (!isMounted) {
+    return (
+      <div className="min-h-screen bg-white">
+        <div className="flex items-center justify-center h-screen">
+          <div className="text-gray-500">Loading...</div>
+        </div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return <PasswordProtection onSuccess={handleAuthSuccess} />;
@@ -376,7 +397,7 @@ export default function BlogManagementPage() {
               <div className="absolute bottom-0 left-0 right-0 h-px bg-gray-300"></div>
             </div>
             <Link
-              href="/blog/create"
+              href="/blog/create?from=management"
               className="hidden md:inline-flex px-4 py-2 bg-primary-blue-600 text-white font-medium rounded-lg hover:bg-primary-blue-700 transition-colors items-center gap-2"
             >
               <svg
@@ -475,7 +496,7 @@ export default function BlogManagementPage() {
                   : "Get started by creating your first blog post."}
               </p>
               <Link
-                href="/blog/create"
+                href="/blog/create?from=management"
                 className="mt-4 inline-block px-4 py-2 bg-primary-blue-600 text-white rounded-lg hover:bg-primary-blue-700"
               >
                 Create New Post

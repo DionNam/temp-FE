@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { checkBlogPassword } from '@/utils/blogAuth';
 
 interface PasswordProtectionProps {
   onSuccess: () => void;
@@ -21,7 +22,7 @@ export function PasswordProtection({ onSuccess }: PasswordProtectionProps) {
 
     await new Promise(resolve => setTimeout(resolve, 500));
 
-    if (password === process.env.NEXT_PUBLIC_BLOG_PASSWORD) {
+    if (checkBlogPassword(password)) {
       onSuccess();
     } else {
       setError('Incorrect password. Please try again.');

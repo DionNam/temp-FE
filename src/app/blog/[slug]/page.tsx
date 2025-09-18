@@ -95,26 +95,38 @@ function BlogPostContent() {
   }
 
   // SEO data
-  const pageTitle = post.data.seo_title || `${post.data.title} | ShowOnAI Blog`;
-  const pageDescription = post.data.seo_description || post.data.excerpt;
+  const pageTitle = post.data.seo_title || `${post.data.title} | ShowOnAI Blog - GEO & AI Search Optimization Insights`;
+  const pageDescription = post.data.seo_description || post.data.excerpt || `Discover insights on ${post.data.category.toLowerCase()} and AI search optimization. Learn about GEO (Generative Engine Optimization) strategies for ChatGPT, Gemini, and Perplexity.`;
   const canonicalUrl = `https://showonai.com/blog/${slug}`;
+  const featuredImage = post.data.featured_image || 'https://showonai.com/og-blog-default.jpg';
+  
+  // Generate keywords based on content
+  const contentKeywords = [
+    'ShowOnAI', 'GEO', 'AI search optimization', 'generative engine optimization',
+    'ChatGPT optimization', 'Gemini AI', 'Perplexity AI', 'SEO', 'digital marketing',
+    post.data.category?.toLowerCase(), 'AI marketing', 'brand visibility', 'search optimization'
+  ].filter(Boolean).join(', ');
   
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     "headline": post.data.title,
-    "description": post.data.excerpt,
-    "image": post.data.featured_image ? [post.data.featured_image] : [],
+    "description": pageDescription,
+    "image": post.data.featured_image ? [post.data.featured_image] : ['https://showonai.com/og-blog-default.jpg'],
     "author": {
       "@type": "Person",
-      "name": post.data.author_name || 'ShowOnAI Team'
+      "name": post.data.author_name || 'ShowOnAI Team',
+      "url": "https://showonai.com/about"
     },
     "publisher": {
       "@type": "Organization",
       "name": "ShowOnAI",
+      "url": "https://showonai.com",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://showonai.com/logo.png"
+        "url": "https://showonai.com/showonai-logo.png",
+        "width": 176,
+        "height": 48
       }
     },
     "datePublished": post.data.published_at || post.data.created_at,
@@ -122,7 +134,35 @@ function BlogPostContent() {
     "mainEntityOfPage": {
       "@type": "WebPage",
       "@id": canonicalUrl
-    }
+    },
+    "isPartOf": {
+      "@type": "Blog",
+      "@id": "https://showonai.com/blog",
+      "name": "ShowOnAI Blog",
+      "description": "Insights and strategies for AI search optimization and GEO"
+    },
+    "about": [
+      {
+        "@type": "Thing",
+        "name": "AI Search Optimization"
+      },
+      {
+        "@type": "Thing", 
+        "name": "Generative Engine Optimization"
+      },
+      {
+        "@type": "Thing",
+        "name": post.data.category
+      }
+    ],
+    "keywords": contentKeywords,
+    "wordCount": post.data.content ? post.data.content.replace(/<[^>]*>/g, '').split(' ').length : undefined,
+    "inLanguage": "en-US",
+    "copyrightHolder": {
+      "@type": "Organization",
+      "name": "ShowOnAI"
+    },
+    "copyrightYear": new Date(post.data.created_at).getFullYear()
   };
 
   return (
@@ -130,29 +170,85 @@ function BlogPostContent() {
       <Head>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
+        <meta name="keywords" content={contentKeywords} />
+        <meta name="author" content={post.data.author_name || 'ShowOnAI Team'} />
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+        <meta name="googlebot" content="index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1" />
+        
         <link rel="canonical" href={canonicalUrl} />
         
         {/* Open Graph */}
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
-        <meta property="og:image" content={post.data.featured_image || 'https://showonai.com/og-default.png'} />
+        <meta property="og:image" content={featuredImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content={`${post.data.title} - ShowOnAI Blog`} />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:type" content="article" />
         <meta property="og:site_name" content="ShowOnAI" />
+        <meta property="og:locale" content="en_US" />
         
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@showonai" />
+        <meta name="twitter:creator" content="@showonai" />
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
-        <meta name="twitter:image" content={post.data.featured_image || 'https://showonai.com/og-default.png'} />
+        <meta name="twitter:image" content={featuredImage} />
+        <meta name="twitter:image:alt" content={`${post.data.title} - ShowOnAI Blog`} />
         
         {/* Article specific */}
         <meta property="article:author" content={post.data.author_name || 'ShowOnAI Team'} />
         <meta property="article:published_time" content={post.data.published_at || post.data.created_at} />
         <meta property="article:modified_time" content={post.data.updated_at || post.data.published_at || post.data.created_at} />
         <meta property="article:section" content={post.data.category} />
+        <meta property="article:tag" content="AI search optimization" />
+        <meta property="article:tag" content="GEO" />
+        <meta property="article:tag" content="generative engine optimization" />
+        {post.data.category && <meta property="article:tag" content={post.data.category} />}
         
-        {/* Structured Data */}
+        {/* Additional SEO */}
+        <meta name="theme-color" content="#2353DF" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="format-detection" content="telephone=no" />
+        
+        {/* Preload critical resources */}
+        {featuredImage && <link rel="preload" href={featuredImage} as="image" />}
+        
+        {/* Breadcrumb structured data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ 
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://showonai.com"
+                },
+                {
+                  "@type": "ListItem", 
+                  "position": 2,
+                  "name": "Blog",
+                  "item": "https://showonai.com/blog"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": post.data.title,
+                  "item": canonicalUrl
+                }
+              ]
+            })
+          }}
+        />
+        
+        {/* Main structured data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd, null, 2) }}

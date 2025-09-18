@@ -17,12 +17,15 @@ import { ImageUploadArea } from "@/components/blog/ImageUploadArea";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import { validateForm, sanitizeInput, FORM_VALIDATION_SCHEMAS } from "@/utils/validation";
 import { getBlogCategories, BLOG_CONFIG } from "@/config/blog";
+import { isBlogAuthenticated } from "@/utils/blogAuth";
 
 function CreateBlogContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const editId = searchParams.get("edit");
+  const fromManagement = searchParams.get("from") === "management";
 
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { toasts, removeToast, success, error: showError } = useToast();
@@ -62,7 +65,14 @@ function CreateBlogContent() {
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+    // Only allow access if coming from management page AND user is authenticated
+    if (fromManagement && isBlogAuthenticated()) {
+      setIsAuthenticated(true);
+    } else {
+      // Redirect to management page if not properly authenticated
+      router.push('/blog/management');
+    }
+  }, [fromManagement, router]);
 
   useEffect(() => {
     if (existingBlog && isEditing) {
@@ -104,6 +114,7 @@ function CreateBlogContent() {
       }));
     }
   };
+
 
   const handleContentChange = (newContent: string) => {
     handleInputChange("content", newContent);
@@ -297,6 +308,7 @@ function CreateBlogContent() {
       </div>
     );
   }
+
 
   if (isEditing && fetchLoading) {
     return (

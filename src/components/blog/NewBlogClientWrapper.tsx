@@ -96,8 +96,8 @@ function BlogCard({ post, isFeatured = false }: { post: any; isFeatured?: boolea
   if (isFeatured) {
     return (
       <Link href={`/blog/${post.slug}`} className="block group">
-        <div className="flex flex-col gap-4 w-full">
-          <div className="aspect-[384/256] bg-gray-200 rounded-2xl overflow-hidden">
+        <div className="flex flex-col gap-4 sm:gap-5 lg:gap-4 w-full">
+          <div className="aspect-[384/256] bg-gray-200 rounded-xl sm:rounded-2xl overflow-hidden">
             {post.featured_image ? (
               <Image
                 src={post.featured_image}
@@ -105,26 +105,27 @@ function BlogCard({ post, isFeatured = false }: { post: any; isFeatured?: boolea
                 width={1216}
                 height={810}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1216px"
               />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100" />
             )}
           </div>
           
-          <div className="flex flex-col gap-4 lg:gap-6">
-            <div className="flex flex-col gap-2">
-              <p className="font-semibold text-sm text-blue-600">
+          <div className="flex flex-col gap-4 sm:gap-5 lg:gap-6 px-1 sm:px-0">
+            <div className="flex flex-col gap-2 sm:gap-3">
+              <p className="font-semibold text-xs sm:text-sm text-blue-600">
                 {post.author_name} • {formatDate(post.published_at || post.created_at)}
               </p>
               
-              <div className="flex gap-3 lg:gap-4 items-start">
-                <h2 className="font-semibold text-xl lg:text-2xl text-gray-900 leading-7 lg:leading-8 flex-1 group-hover:text-blue-600 transition-colors">
+              <div className="flex gap-2 sm:gap-3 lg:gap-4 items-start">
+                <h2 className="font-semibold text-lg sm:text-xl lg:text-2xl text-gray-900 leading-6 sm:leading-7 lg:leading-8 flex-1 group-hover:text-blue-600 transition-colors">
                   {post.title}
                 </h2>
-                <ArrowUpRight className="w-5 h-5 lg:w-6 lg:h-6 text-gray-400 group-hover:text-blue-600 transition-colors flex-shrink-0 mt-1" />
+                <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-gray-400 group-hover:text-blue-600 transition-colors flex-shrink-0 mt-1" />
               </div>
               
-              <p className="text-gray-600 text-sm lg:text-base leading-5 lg:leading-6 line-clamp-2">
+              <p className="text-gray-600 text-sm sm:text-base lg:text-base leading-5 sm:leading-6 lg:leading-6 line-clamp-2">
                 {post.excerpt}
               </p>
             </div>
@@ -140,8 +141,8 @@ function BlogCard({ post, isFeatured = false }: { post: any; isFeatured?: boolea
 
   return (
     <Link href={`/blog/${post.slug}`} className="block group">
-      <div className="flex flex-col gap-4">
-        <div className="aspect-[384/256] bg-gray-200 rounded-2xl overflow-hidden">
+      <div className="flex flex-col gap-4 sm:gap-5">
+        <div className="aspect-[384/256] bg-gray-200 rounded-xl sm:rounded-2xl overflow-hidden">
           {post.featured_image ? (
             <Image
               src={post.featured_image}
@@ -149,26 +150,27 @@ function BlogCard({ post, isFeatured = false }: { post: any; isFeatured?: boolea
               width={384}
               height={256}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 384px"
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100" />
           )}
         </div>
         
-        <div className="flex flex-col gap-4 lg:gap-6">
-          <div className="flex flex-col gap-2">
-            <p className="font-semibold text-sm text-blue-600">
+        <div className="flex flex-col gap-4 sm:gap-5 lg:gap-6 px-1 sm:px-0">
+          <div className="flex flex-col gap-2 sm:gap-3">
+            <p className="font-semibold text-xs sm:text-sm text-blue-600">
               {post.author_name} • {formatDate(post.published_at || post.created_at)}
             </p>
             
-            <div className="flex gap-3 lg:gap-4 items-start">
-              <h3 className="font-semibold text-base lg:text-lg text-gray-900 leading-6 lg:leading-7 flex-1 group-hover:text-blue-600 transition-colors">
+            <div className="flex gap-2 sm:gap-3 lg:gap-4 items-start">
+              <h3 className="font-semibold text-sm sm:text-base lg:text-lg text-gray-900 leading-5 sm:leading-6 lg:leading-7 flex-1 group-hover:text-blue-600 transition-colors">
                 {post.title}
               </h3>
-              <ArrowUpRight className="w-5 h-5 lg:w-6 lg:h-6 text-gray-400 group-hover:text-blue-600 transition-colors flex-shrink-0 mt-0.5" />
+              <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-gray-400 group-hover:text-blue-600 transition-colors flex-shrink-0 mt-0.5" />
             </div>
             
-            <p className="text-gray-600 text-sm lg:text-base leading-5 lg:leading-6 line-clamp-2">
+            <p className="text-gray-600 text-xs sm:text-sm lg:text-base leading-4 sm:leading-5 lg:leading-6 line-clamp-2">
               {post.excerpt}
             </p>
           </div>
@@ -309,35 +311,35 @@ export function NewBlogClientWrapper({ searchParams }: NewBlogClientWrapperProps
   }
 
   return (
-    <div className="box-border flex flex-col gap-12 lg:gap-16 items-center justify-start pb-0 pt-16 lg:pt-24 px-0 w-full">
+    <div className="box-border flex flex-col gap-8 sm:gap-12 lg:gap-16 items-center justify-start pb-0 pt-12 sm:pt-16 lg:pt-24 px-0 w-full">
       {/* Header Section */}
-      <div className="box-border flex flex-col gap-6 lg:gap-8 items-center justify-start max-w-[1280px] px-4 lg:px-8 py-0 w-full">
-        <div className="flex flex-col gap-8 lg:gap-12 items-center justify-start w-full">
-          <div className="flex flex-col gap-4 lg:gap-6 items-center justify-start max-w-[873px]">
+      <div className="box-border flex flex-col gap-6 sm:gap-8 lg:gap-8 items-center justify-start max-w-[1280px] px-4 sm:px-6 lg:px-8 py-0 w-full">
+        <div className="flex flex-col gap-6 sm:gap-8 lg:gap-12 items-center justify-start w-full">
+          <div className="flex flex-col gap-4 sm:gap-5 lg:gap-6 items-center justify-start max-w-[873px] px-2 sm:px-0">
             <div className="flex flex-col gap-4 lg:gap-6 items-center justify-start">
-              <h1 className="font-semibold text-3xl lg:text-5xl text-gray-900 text-center leading-tight lg:leading-[60px] tracking-[-0.48px]">
+              <h1 className="font-semibold text-2xl sm:text-3xl lg:text-5xl text-gray-900 text-center leading-tight lg:leading-[60px] tracking-[-0.48px]">
                 Blog
               </h1>
             </div>
-            <p className="font-normal text-lg lg:text-xl text-gray-600 text-center leading-7 lg:leading-[30px] max-w-[768px] px-4 lg:px-0">
+            <p className="font-normal text-base sm:text-lg lg:text-xl text-gray-600 text-center leading-6 sm:leading-7 lg:leading-[30px] max-w-[768px] px-2 sm:px-4 lg:px-0">
               Check out the latest news and useful information at a glance.
             </p>
           </div>
           
           {/* Category Tabs */}
           <div className="w-full overflow-x-auto">
-            <div className="flex gap-3 items-center justify-start lg:justify-center min-w-max px-4 lg:px-0 pb-2 lg:pb-0">
+            <div className="flex gap-2 sm:gap-3 items-center justify-start lg:justify-center min-w-max px-4 sm:px-6 lg:px-0 pb-2 lg:pb-0">
               {categories.map((category) => (
                 <button
                   key={category.id}
                   onClick={() => handleCategoryChange(category.id)}
-                  className={`h-11 px-4 py-2 rounded-full border transition-colors whitespace-nowrap flex-shrink-0 ${
+                  className={`h-10 sm:h-11 px-3 sm:px-4 py-2 rounded-full border transition-colors whitespace-nowrap flex-shrink-0 ${
                     activeCategory === category.id
                       ? 'bg-blue-600 text-white border-blue-600'
                       : 'bg-white text-gray-500 border-gray-200 hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >
-                  <span className="font-semibold text-sm lg:text-base leading-6">
+                  <span className="font-semibold text-xs sm:text-sm lg:text-base leading-5 sm:leading-6">
                     {category.name}
                   </span>
                 </button>
@@ -348,13 +350,13 @@ export function NewBlogClientWrapper({ searchParams }: NewBlogClientWrapperProps
       </div>
 
       {/* Content Section */}
-      <div className="box-border flex flex-col gap-12 lg:gap-16 items-center justify-start pb-16 lg:pb-24 pt-0 px-0 w-full">
-        <div className="box-border flex flex-col gap-12 lg:gap-16 items-center justify-start max-w-[1280px] px-4 lg:px-8 py-0 w-full">
+      <div className="box-border flex flex-col gap-8 sm:gap-12 lg:gap-16 items-center justify-start pb-12 sm:pb-16 lg:pb-24 pt-0 px-0 w-full">
+        <div className="box-border flex flex-col gap-8 sm:gap-12 lg:gap-16 items-center justify-start max-w-[1280px] px-4 sm:px-6 lg:px-8 py-0 w-full">
           {posts.length === 0 ? (
-            <div className="flex flex-col items-center gap-4 py-12 lg:py-16">
-              <div className="text-gray-400 text-4xl lg:text-6xl">📝</div>
-              <h3 className="text-lg lg:text-xl font-semibold text-gray-900">No blog posts found</h3>
-              <p className="text-gray-600 text-center px-4">No posts available for the selected category.</p>
+            <div className="flex flex-col items-center gap-3 sm:gap-4 py-8 sm:py-12 lg:py-16 px-4">
+              <div className="text-gray-400 text-3xl sm:text-4xl lg:text-6xl">📝</div>
+              <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-900 text-center">No blog posts found</h3>
+              <p className="text-sm sm:text-base text-gray-600 text-center px-2">No posts available for the selected category.</p>
             </div>
           ) : (
             <>
@@ -367,7 +369,7 @@ export function NewBlogClientWrapper({ searchParams }: NewBlogClientWrapperProps
               
               {/* Other Posts Grid */}
               {otherPosts.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 w-full">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-8 w-full">
                   {otherPosts.map((post) => (
                     <BlogCard key={post.id} post={post} />
                   ))}
