@@ -4,7 +4,7 @@ import { MetadataRoute } from 'next'
 async function getBlogPosts() {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://stg-landing.showon.ai/api/v1'}/blogs?published=true&limit=100`, {
-      cache: 'no-store'
+      next: { revalidate: 3600 } // Revalidate every hour
     });
     
     if (!response.ok) {
