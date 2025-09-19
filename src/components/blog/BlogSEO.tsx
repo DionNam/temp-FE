@@ -4,12 +4,14 @@ import React from 'react';
 import Head from 'next/head';
 import { BlogPost } from '@/types/blog';
 import { generateSlug } from '@/lib/utils';
+import { useNonce } from '@/utils/nonceProvider';
 
 interface BlogSEOProps {
   post: BlogPost;
 }
 
 export function BlogSEO({ post }: BlogSEOProps) {
+  const nonce = useNonce();
   const author = React.useMemo(() => {
     if (typeof post.author === 'string') {
       return { name: post.author, url: '', bio: '' };
@@ -103,6 +105,7 @@ export function BlogSEO({ post }: BlogSEOProps) {
       
       <script
         type="application/ld+json"
+        {...(nonce && { nonce })}
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd, null, 2) }}
       />
     </Head>

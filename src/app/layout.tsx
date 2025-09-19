@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import "./globals.css";
 import { QueryProvider } from "@/providers/QueryProvider";
+import { getNonce } from "@/utils/nonce";
+import { NonceProvider } from "@/utils/nonceProvider";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -369,11 +371,13 @@ const structuredData = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const nonce = await getNonce();
+  
   return (
     <html lang="en">
       <head>
@@ -436,17 +440,23 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="ShowOnAI" />
         <meta name="application-name" content="ShowOnAI" />
         
+        {/* Nonce for client components */}
+        {nonce && <meta name="csp-nonce" content={nonce} />}
+        
         <script
           type="application/ld+json"
+          {...(nonce && { nonce })}
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(structuredData),
           }}
         />
       </head>
       <body className={`${manrope.variable} antialiased`}>
-        <QueryProvider>
-          {children}
-        </QueryProvider>
+        <NonceProvider nonce={nonce || undefined}>
+          <QueryProvider>
+            {children}
+          </QueryProvider>
+        </NonceProvider>
       </body>
     </html>
   );

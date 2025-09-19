@@ -17,6 +17,9 @@ export function middleware(request: NextRequest) {
     },
   });
 
+  // Set the nonce in response headers so it can be accessed by getNonce()
+  response.headers.set('x-nonce', nonce);
+
   // Set CSP header with nonce
   response.headers.set(
     'Content-Security-Policy',

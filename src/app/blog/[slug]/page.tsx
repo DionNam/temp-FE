@@ -9,11 +9,13 @@ import { useBlogBySlug, useRelatedBlogs } from '@/hooks/useBlogQueries';
 import { useToast, ToastContainer } from '@/components/ui/toast';
 import Link from 'next/link';
 import Head from 'next/head';
+import { useNonce } from '@/utils/nonceProvider';
 
 function BlogPostContent() {
   const params = useParams();
   const slug = params.slug as string;
   const { toasts, removeToast } = useToast();
+  const nonce = useNonce();
 
   // Use real API data with slug
   const { data: post, isLoading, error } = useBlogBySlug(slug);
@@ -250,6 +252,7 @@ function BlogPostContent() {
         {/* Main structured data */}
         <script
           type="application/ld+json"
+          {...(nonce && { nonce })}
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd, null, 2) }}
         />
       </Head>
