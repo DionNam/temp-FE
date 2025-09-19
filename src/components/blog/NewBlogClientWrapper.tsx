@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, use, useEffect } from "react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { getBlogCategories, getCategoryDisplayName, getCategorySlug } from "@/config/blog";
 import { useBlogs } from "@/hooks/useBlogQueries";
-import { getBlogCategories, getCategorySlug, getCategoryDisplayName } from "@/config/blog";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useEffect, useState } from "react";
 import { BlogCard } from "./shared";
 
 interface NewBlogClientWrapperProps {
