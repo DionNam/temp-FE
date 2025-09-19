@@ -6,7 +6,6 @@ import Image from 'next/image';
 interface FooterProps {
   className?: string;
 }
-
 const Footer = React.memo(function Footer({ className }: FooterProps) {
   return (
     <footer className={`relative bg-gradient-to-b from-[#66afff00] to-[#0669ff00] px-4 sm:px-6 lg:px-8 overflow-hidden ${className}`} style={{ aspectRatio: '4/1' }}>
