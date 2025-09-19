@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'ShowOnAI - AI Search Optimization for Maximum Brand Visibility',
     short_name: 'ShowOnAI',
-    description: 'Maximize your brand exposure in generative AI platforms like ChatGPT, Gemini, and Perplexity with advanced GEO strategies.',
+    description: 'GEO insights powered by data: scoring & auditing',
     start_url: '/',
     display: 'standalone',
     orientation: 'portrait',
@@ -13,6 +13,16 @@ export default function manifest(): MetadataRoute.Manifest {
     lang: 'en',
     categories: ['business', 'productivity', 'marketing'],
     icons: [
+      {
+        src: '/favicon.svg',
+        type: 'image/svg+xml',
+        purpose: 'any',
+      },
+      {
+        src: '/showonai_logo_only.svg',
+        type: 'image/svg+xml',
+        purpose: 'any',
+      },
       {
         src: '/favicon-16x16.png',
         sizes: '16x16',

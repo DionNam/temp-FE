@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     default: "ShowOnAI - AI Search Optimization for Maximum Brand Visibility | GEO & SEO Expert",
     template: "%s | ShowOnAI",
   },
-  description: "Maximize your brand exposure in generative AI platforms like ChatGPT, Gemini, and Perplexity. Achieve top rankings in AI search results with GEO (Generative Engine Optimization) strategy and expand customer touchpoints.",
+  description: "GEO insights powered by data: scoring & auditing",
   keywords: [
     "GEO", "Generative Engine Optimization", "AI search optimization", "ChatGPT optimization", 
     "Gemini search", "Perplexity optimization", "generative AI SEO", "brand visibility", 
@@ -69,22 +69,15 @@ export const metadata: Metadata = {
     alternateLocale: ["ko_KR"],
     url: "https://showonai.com",
     siteName: "ShowOnAI",
-    title: "ShowOnAI - AI Search Optimization for Maximum Brand Visibility",
-    description: "Maximize your brand exposure in generative AI platforms like ChatGPT, Gemini, and Perplexity. Achieve top rankings in AI search results with GEO strategy and expand customer touchpoints.",
+    title: "ShowOnAI - GEO insights powered by data",
+    description: "GEO insights powered by data: scoring & auditing",
     images: [
       {
-        url: "https://showonai.com/og-image-main.jpg",
+        url: "https://showonai.com/share_image.png",
         width: 1200,
         height: 630,
-        alt: "ShowOnAI - AI Search Optimization Solution for Maximum Brand Visibility",
-        type: "image/jpeg",
-      },
-      {
-        url: "https://showonai.com/og-image-square.jpg",
-        width: 1200,
-        height: 1200,
-        alt: "ShowOnAI - GEO and AI Search Optimization Expert",
-        type: "image/jpeg",
+        alt: "GEO insights powered by data: scoring & auditing",
+        type: "image/png",
       },
     ],
     videos: [
@@ -101,11 +94,11 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@showonai",
     creator: "@showonai",
-    title: "ShowOnAI - AI Search Optimization for Maximum Brand Visibility",
-    description: "Maximize your brand exposure in generative AI platforms like ChatGPT, Gemini, and Perplexity. Achieve top rankings in AI search results with GEO strategy.",
+    title: "ShowOnAI - GEO insights powered by data",
+    description: "GEO insights powered by data: scoring & auditing",
     images: {
-      url: "https://showonai.com/og-image-main.jpg",
-      alt: "ShowOnAI - AI Search Optimization Solution",
+      url: "https://showonai.com/share_image.png",
+      alt: "GEO insights powered by data: scoring & auditing",
     },
   },
 
@@ -128,6 +121,8 @@ export const metadata: Metadata = {
   
   icons: {
     icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/showonai_logo_only.svg", type: "image/svg+xml" },
       { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
       { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
       { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
@@ -382,7 +377,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <meta name="description" content="Maximize your brand exposure in generative AI platforms like ChatGPT, Gemini, and Perplexity. Achieve top rankings in AI search results with GEO strategy and expand customer touchpoints. Start with free AI visibility audit." />
+        <meta name="description" content="GEO insights powered by data: scoring & auditing" />
         <meta name="keywords" content="GEO, SEO, AI search optimization, brand optimization, ChatGPT optimization, generative AI, search engine optimization, AI visibility, Perplexity AI, Gemini AI" />
         
         {/* Enhanced SEO Meta Tags */}
@@ -431,6 +426,8 @@ export default function RootLayout({
         <link rel="preload" href="/brand-sov.webp" as="image" />
         <link rel="preload" href="/showonai-logo.png" as="image" />
         
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" type="image/svg+xml" href="/showonai_logo_only.svg" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
