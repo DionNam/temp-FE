@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getBlogCategories } from '@/config/blog';
 
 interface BlogPost {
   id: string;

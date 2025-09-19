@@ -63,7 +63,7 @@ export const blogApi = {
   },
 
   getBlogBySlug: (slug: string): Promise<BlogPost> => {
-    return apiRequest<BlogPost>(`/blogs/slug/${slug}`);
+    return apiRequest<{ data: BlogPost }>(`/blogs/slug/${slug}`).then(response => response.data);
   },
 
   createBlog: (data: CreateBlogRequest): Promise<BlogPost> => {

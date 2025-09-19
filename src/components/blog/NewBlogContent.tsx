@@ -3,154 +3,15 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ArrowUpRight, Copy, Twitter, Facebook, Linkedin } from "lucide-react";
-
-interface BlogPost {
-  id: string;
-  title: string;
-  content: string;
-  excerpt?: string;
-  category: string;
-  author_name: string;
-  author_email?: string;
-  featured_image?: string;
-  published_at?: string;
-  created_at: string;
-}
+import { ArrowLeft, Copy, Twitter, Facebook, Linkedin } from "lucide-react";
+import { BlogPost, CategoryBadge, AuthorAvatar, BlogCard, formatDate } from "./shared";
 
 interface NewBlogContentProps {
   post: BlogPost;
   relatedPosts?: BlogPost[];
 }
 
-const categoryColors = {
-  "Design": {
-    bg: "bg-orange-50",
-    border: "border-orange-200",
-    text: "text-orange-800"
-  },
-  "Product": {
-    bg: "bg-sky-50",
-    border: "border-sky-200",
-    text: "text-sky-800"
-  },
-  "Tools": {
-    bg: "bg-pink-50",
-    border: "border-pink-200",
-    text: "text-pink-800"
-  },
-  "Leadership": {
-    bg: "bg-purple-50",
-    border: "border-purple-200",
-    text: "text-purple-800"
-  },
-  "Research": {
-    bg: "bg-gray-50",
-    border: "border-gray-200",
-    text: "text-gray-800"
-  },
-  "default": {
-    bg: "bg-blue-50",
-    border: "border-blue-200",
-    text: "text-blue-800"
-  }
-};
-
-function CategoryBadge({ category }: { category: string }) {
-  const colors = categoryColors[category as keyof typeof categoryColors] || categoryColors.default;
-  
-  return (
-    <div className={`${colors.bg} border ${colors.border} rounded-full px-3 py-1 inline-flex items-center`}>
-      <span className={`font-medium text-sm ${colors.text}`}>
-        {category}
-      </span>
-    </div>
-  );
-}
-
-function RelatedBlogCard({ post }: { post: BlogPost }) {
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      day: 'numeric',
-      month: 'short', 
-      year: 'numeric'
-    });
-  };
-
-  return (
-    <Link href={`/blog/${post.slug || post.id}`} className="block group">
-      <div className="flex flex-col gap-4">
-        <div className="aspect-[384/256] bg-gray-200 rounded-xl lg:rounded-2xl overflow-hidden">
-          {post.featured_image ? (
-            <Image
-              src={post.featured_image}
-              alt={post.title}
-              width={384}
-              height={256}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            />
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100" />
-          )}
-        </div>
-        
-        <div className="flex flex-col gap-4 lg:gap-6">
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full overflow-hidden flex-shrink-0">
-                {post.avatar || (typeof post.author === 'object' && post.author?.avatar) ? (
-                  <Image
-                    src={post.avatar || (typeof post.author === 'object' && post.author?.avatar) || ''}
-                    alt={post.author_name}
-                    width={24}
-                    height={24}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
-                    <span className="text-xs font-semibold text-gray-700">
-                      {post.author_name.charAt(0)}
-                    </span>
-                  </div>
-                )}
-              </div>
-              <p className="font-semibold text-sm text-blue-600">
-                {post.author_name} • {formatDate(post.published_at || post.created_at)}
-              </p>
-            </div>
-            
-            <div className="flex gap-3 lg:gap-4 items-start">
-              <h3 className="font-semibold text-base lg:text-lg text-gray-900 leading-6 lg:leading-7 flex-1 group-hover:text-blue-600 transition-colors">
-                {post.title}
-              </h3>
-              <ArrowUpRight className="w-5 h-5 lg:w-6 lg:h-6 text-gray-400 group-hover:text-blue-600 transition-colors flex-shrink-0 mt-0.5" />
-            </div>
-            
-            <p className="text-gray-600 text-sm lg:text-base leading-5 lg:leading-6 line-clamp-2">
-              {post.excerpt}
-            </p>
-          </div>
-          
-          <div className="flex flex-wrap gap-2">
-            <CategoryBadge category={post.category} />
-          </div>
-        </div>
-      </div>
-    </Link>
-  );
-}
-
 export function NewBlogContent({ post, relatedPosts = [] }: NewBlogContentProps) {
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      day: 'numeric',
-      month: 'short', 
-      year: 'numeric'
-    });
-  };
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -214,23 +75,7 @@ export function NewBlogContent({ post, relatedPosts = [] }: NewBlogContentProps)
               
               {/* Author Info */}
               <div className="flex gap-3 items-center justify-start">
-                <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden">
-                  {post.avatar || (typeof post.author === 'object' && post.author?.avatar) ? (
-                    <Image
-                      src={post.avatar || (typeof post.author === 'object' && post.author?.avatar) || ''}
-                      alt={post.author_name}
-                      width={48}
-                      height={48}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
-                      <span className="text-base lg:text-lg font-semibold text-gray-700">
-                        {post.author_name.charAt(0)}
-                      </span>
-                    </div>
-                  )}
-                </div>
+                <AuthorAvatar post={post} size="md" />
                 <div className="flex flex-col items-start justify-start text-sm lg:text-base">
                   <p className="font-semibold text-gray-900">
                     {post.author_name}
@@ -270,7 +115,7 @@ export function NewBlogContent({ post, relatedPosts = [] }: NewBlogContentProps)
                 {/* Blog Content */}
                 <div 
                   className="blog-content max-w-none w-full"
-                  dangerouslySetInnerHTML={{ __html: post.content }}
+                  dangerouslySetInnerHTML={{ __html: post.content || '' }}
                 />
                 
                 <style jsx>{`
@@ -483,7 +328,7 @@ export function NewBlogContent({ post, relatedPosts = [] }: NewBlogContentProps)
           <div className="box-border flex flex-col gap-6 sm:gap-8 lg:gap-8 items-start justify-start max-w-[1280px] px-4 sm:px-6 lg:px-8 w-full">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-8 w-full">
               {relatedPosts.slice(0, 3).map((relatedPost) => (
-                <RelatedBlogCard key={relatedPost.id} post={relatedPost} />
+                <BlogCard key={relatedPost.id} post={relatedPost} variant="related" />
               ))}
             </div>
           </div>

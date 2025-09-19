@@ -1,187 +1,13 @@
 "use client";
 
-import React, { useState, useEffect, use } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { ArrowUpRight, ArrowLeft, ArrowRight } from "lucide-react";
+import React, { useState, use, useEffect } from "react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useBlogs } from "@/hooks/useBlogQueries";
-import { useBlogCategories } from "@/hooks/useBlogFilters";
 import { getBlogCategories, getCategorySlug, getCategoryDisplayName } from "@/config/blog";
+import { BlogCard } from "./shared";
 
 interface NewBlogClientWrapperProps {
   searchParams: Promise<{ page?: string; category?: string; limit?: string }>;
-}
-
-const categoryColors = {
-  "Content Marketing": {
-    bg: "bg-blue-50",
-    border: "border-blue-200",
-    text: "text-blue-800"
-  },
-  "Data and Research": {
-    bg: "bg-green-50",
-    border: "border-green-200",
-    text: "text-green-800"
-  },
-  "Case Study": {
-    bg: "bg-purple-50",
-    border: "border-purple-200",
-    text: "text-purple-800"
-  },
-  // Legacy categories for backward compatibility
-  "Design": {
-    bg: "bg-orange-50",
-    border: "border-orange-200",
-    text: "text-orange-800"
-  },
-  "Product": {
-    bg: "bg-sky-50",
-    border: "border-sky-200",
-    text: "text-sky-800"
-  },
-  "Tools": {
-    bg: "bg-pink-50",
-    border: "border-pink-200",
-    text: "text-pink-800"
-  },
-  "Leadership": {
-    bg: "bg-purple-50",
-    border: "border-purple-200",
-    text: "text-purple-800"
-  },
-  "Research": {
-    bg: "bg-gray-50",
-    border: "border-gray-200",
-    text: "text-gray-800"
-  },
-  "tutorial": {
-    bg: "bg-indigo-50",
-    border: "border-indigo-200",
-    text: "text-indigo-800"
-  },
-  "opinion": {
-    bg: "bg-red-50",
-    border: "border-red-200",
-    text: "text-red-800"
-  },
-  "default": {
-    bg: "bg-gray-50",
-    border: "border-gray-200",
-    text: "text-gray-800"
-  }
-};
-
-function CategoryBadge({ category }: { category: string }) {
-  const colors = categoryColors[category as keyof typeof categoryColors] || categoryColors.default;
-  
-  return (
-    <div className={`${colors.bg} border ${colors.border} rounded-full px-3 py-1 inline-flex items-center`}>
-      <span className={`font-medium text-sm ${colors.text}`}>
-        {category}
-      </span>
-    </div>
-  );
-}
-
-function BlogCard({ post, isFeatured = false }: { post: any; isFeatured?: boolean }) {
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      day: 'numeric',
-      month: 'short', 
-      year: 'numeric'
-    });
-  };
-
-  if (isFeatured) {
-    return (
-      <Link href={`/blog/${post.slug}`} className="block group">
-        <div className="flex flex-col gap-4 sm:gap-5 lg:gap-4 w-full">
-          <div className="aspect-[384/256] bg-gray-200 rounded-xl sm:rounded-2xl overflow-hidden">
-            {post.featured_image ? (
-              <Image
-                src={post.featured_image}
-                alt={post.title}
-                width={1216}
-                height={810}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1216px"
-              />
-            ) : (
-              <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100" />
-            )}
-          </div>
-          
-          <div className="flex flex-col gap-4 sm:gap-5 lg:gap-6 px-1 sm:px-0">
-            <div className="flex flex-col gap-2 sm:gap-3">
-              <p className="font-semibold text-xs sm:text-sm text-blue-600">
-                {post.author_name} • {formatDate(post.published_at || post.created_at)}
-              </p>
-              
-              <div className="flex gap-2 sm:gap-3 lg:gap-4 items-start">
-                <h2 className="font-semibold text-lg sm:text-xl lg:text-2xl text-gray-900 leading-6 sm:leading-7 lg:leading-8 flex-1 group-hover:text-blue-600 transition-colors">
-                  {post.title}
-                </h2>
-                <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-gray-400 group-hover:text-blue-600 transition-colors flex-shrink-0 mt-1" />
-              </div>
-              
-              <p className="text-gray-600 text-sm sm:text-base lg:text-base leading-5 sm:leading-6 lg:leading-6 line-clamp-2">
-                {post.excerpt}
-              </p>
-            </div>
-            
-            <div className="flex flex-wrap gap-2">
-              <CategoryBadge category={post.category} />
-            </div>
-          </div>
-        </div>
-      </Link>
-    );
-  }
-
-  return (
-    <Link href={`/blog/${post.slug}`} className="block group">
-      <div className="flex flex-col gap-4 sm:gap-5">
-        <div className="aspect-[384/256] bg-gray-200 rounded-xl sm:rounded-2xl overflow-hidden">
-          {post.featured_image ? (
-            <Image
-              src={post.featured_image}
-              alt={post.title}
-              width={384}
-              height={256}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 384px"
-            />
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100" />
-          )}
-        </div>
-        
-        <div className="flex flex-col gap-4 sm:gap-5 lg:gap-6 px-1 sm:px-0">
-          <div className="flex flex-col gap-2 sm:gap-3">
-            <p className="font-semibold text-xs sm:text-sm text-blue-600">
-              {post.author_name} • {formatDate(post.published_at || post.created_at)}
-            </p>
-            
-            <div className="flex gap-2 sm:gap-3 lg:gap-4 items-start">
-              <h3 className="font-semibold text-sm sm:text-base lg:text-lg text-gray-900 leading-5 sm:leading-6 lg:leading-7 flex-1 group-hover:text-blue-600 transition-colors">
-                {post.title}
-              </h3>
-              <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-gray-400 group-hover:text-blue-600 transition-colors flex-shrink-0 mt-0.5" />
-            </div>
-            
-            <p className="text-gray-600 text-xs sm:text-sm lg:text-base leading-4 sm:leading-5 lg:leading-6 line-clamp-2">
-              {post.excerpt}
-            </p>
-          </div>
-          
-          <div className="flex flex-wrap gap-2">
-            <CategoryBadge category={post.category} />
-          </div>
-        </div>
-      </div>
-    </Link>
-  );
 }
 
 function Pagination({ currentPage, totalPages, onPageChange }: {
@@ -262,9 +88,25 @@ function Pagination({ currentPage, totalPages, onPageChange }: {
 }
 
 export function NewBlogClientWrapper({ searchParams }: NewBlogClientWrapperProps) {
-  const params = use(searchParams);
-  const [activeCategory, setActiveCategory] = useState(params.category || 'all');
-  const [currentPage, setCurrentPage] = useState(parseInt(params.page || '1'));
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [paramsLoaded, setParamsLoaded] = useState(false);
+  
+  useEffect(() => {
+    const loadParams = async () => {
+      try {
+        const params = await searchParams;
+        setActiveCategory(params.category || 'all');
+        setCurrentPage(parseInt(params.page || '1'));
+        setParamsLoaded(true);
+      } catch (error) {
+        console.error('Error loading search params:', error);
+        setParamsLoaded(true);
+      }
+    };
+    
+    loadParams();
+  }, [searchParams]);
   
   // Convert category slug back to category name for API call
   const getActualCategoryName = (categorySlug: string) => {
@@ -273,7 +115,6 @@ export function NewBlogClientWrapper({ searchParams }: NewBlogClientWrapperProps
     return category || categorySlug;
   };
   
-  const { data: categoriesData } = useBlogCategories();
   const { data: blogData, isLoading } = useBlogs({
     page: currentPage,
     limit: 9,
@@ -302,7 +143,7 @@ export function NewBlogClientWrapper({ searchParams }: NewBlogClientWrapperProps
     setCurrentPage(page);
   };
 
-  if (isLoading) {
+  if (isLoading || !paramsLoaded) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-gray-500">Loading...</div>
@@ -363,7 +204,7 @@ export function NewBlogClientWrapper({ searchParams }: NewBlogClientWrapperProps
               {/* Featured Post */}
               {featuredPost && (
                 <div className="w-full">
-                  <BlogCard post={featuredPost} isFeatured />
+                  <BlogCard post={featuredPost} variant="featured" />
                 </div>
               )}
               
@@ -371,7 +212,7 @@ export function NewBlogClientWrapper({ searchParams }: NewBlogClientWrapperProps
               {otherPosts.length > 0 && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 lg:gap-8 w-full">
                   {otherPosts.map((post) => (
-                    <BlogCard key={post.id} post={post} />
+                    <BlogCard key={post.id} post={post} variant="default" />
                   ))}
                 </div>
               )}

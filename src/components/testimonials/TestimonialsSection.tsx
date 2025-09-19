@@ -31,9 +31,6 @@ interface TestimonialCard {
   personRole: string;
 }
 
-interface TestimonialsProps {
-  className?: string;
-}
 
 const testimonials: TestimonialCard[] = [
   {
@@ -119,7 +116,7 @@ const testimonials: TestimonialCard[] = [
   }
 ];
 
-export default function TestimonialsSection({ className }: TestimonialsProps) {
+export default function TestimonialsSection() {
   const mobileScrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = React.useState(0);
 

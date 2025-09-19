@@ -18,7 +18,7 @@ export default function DataVisualizationSection({ className }: DataVisualizatio
               <div className="flex flex-col gap-5 items-center justify-start text-center max-w-[800px] w-full">
                 <div className="flex flex-col gap-3 items-center justify-start w-full">
                   <div className="text-[14px] sm:text-[16px] text-blue-600 font-semibold w-full">
-                    <p className="leading-[20px] sm:leading-[24px]">We didn't rely on guesses.</p>
+                    <p className="leading-[20px] sm:leading-[24px]">We didn&apos;t rely on guesses.</p>
                   </div>
                   <div className="text-[#181d27] text-[28px] sm:text-[32px] lg:text-[36px] font-semibold tracking-[-0.56px] sm:tracking-[-0.64px] lg:tracking-[-0.72px] w-full">
                     <p className="leading-[34px] sm:leading-[38px] lg:leading-[44px]">How we found what matters?</p>

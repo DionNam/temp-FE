@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 
 interface FeaturesSectionAiGapAuditProps {
   className?: string;
@@ -30,7 +29,6 @@ const auditSteps = [
 ];
 
 export default function FeaturesSectionAiGapAudit({ className }: FeaturesSectionAiGapAuditProps) {
-  const router = useRouter();
   const [activeStep, setActiveStep] = useState(1);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
@@ -75,7 +73,7 @@ export default function FeaturesSectionAiGapAudit({ className }: FeaturesSection
                 </div>
               </div>
               <div className="text-[#535862] text-[16px] sm:text-[18px] lg:text-[20px] font-normal w-full">
-                <p className="leading-[24px] sm:leading-[26px] lg:leading-[30px]">Easily audit your content and receive clear, actionable guidance to refine it for maximum AI visibility. Our platform identifies areas for improvement, helping you close the gap with competitors and elevate your content's presence.</p>
+                <p className="leading-[24px] sm:leading-[26px] lg:leading-[30px]">Easily audit your content and receive clear, actionable guidance to refine it for maximum AI visibility. Our platform identifies areas for improvement, helping you close the gap with competitors and elevate your content&apos;s presence.</p>
               </div>
             </div>
           </div>
@@ -97,7 +95,7 @@ export default function FeaturesSectionAiGapAudit({ className }: FeaturesSection
 
             {/* Right Side - Interactive Steps */}
             <div className="flex-1 min-w-0 max-w-[560px] flex flex-col w-full order-1 lg:order-2">
-              {auditSteps.map((step, index) => (
+              {auditSteps.map((step) => (
                 <div
                   key={step.id}
                   className={`group flex flex-col gap-3 sm:gap-4 items-start justify-start pl-4 sm:pl-6 pr-2 sm:pr-4 py-5 sm:py-7 relative cursor-pointer transition-all duration-300 rounded-r-lg hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-blue-25/25 hover:shadow-sm ${

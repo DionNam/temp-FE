@@ -6,7 +6,6 @@ import { Header } from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { NewBlogContent } from '@/components/blog/NewBlogContent';
 import { useBlogBySlug, useRelatedBlogs } from '@/hooks/useBlogQueries';
-import { extractIdFromSlug } from '@/lib/utils';
 import { useToast, ToastContainer } from '@/components/ui/toast';
 import Link from 'next/link';
 import Head from 'next/head';
@@ -18,7 +17,7 @@ function BlogPostContent() {
 
   // Use real API data with slug
   const { data: post, isLoading, error } = useBlogBySlug(slug);
-  const { data: relatedPosts } = useRelatedBlogs(post?.data?.id || '');
+  const { data: relatedPosts } = useRelatedBlogs(post?.id || '');
 
   if (!slug && !isLoading) {
     return (
@@ -95,27 +94,27 @@ function BlogPostContent() {
   }
 
   // SEO data
-  const pageTitle = post.data.seo_title || `${post.data.title} | ShowOnAI Blog - GEO & AI Search Optimization Insights`;
-  const pageDescription = post.data.seo_description || post.data.excerpt || `Discover insights on ${post.data.category.toLowerCase()} and AI search optimization. Learn about GEO (Generative Engine Optimization) strategies for ChatGPT, Gemini, and Perplexity.`;
+  const pageTitle = post.seo_title || `${post.title} | ShowOnAI Blog - GEO & AI Search Optimization Insights`;
+  const pageDescription = post.seo_description || post.excerpt || `Discover insights on ${post.category?.toLowerCase() || 'AI search'} and AI search optimization. Learn about GEO (Generative Engine Optimization) strategies for ChatGPT, Gemini, and Perplexity.`;
   const canonicalUrl = `https://showonai.com/blog/${slug}`;
-  const featuredImage = post.data.featured_image || 'https://showonai.com/og-blog-default.jpg';
+  const featuredImage = post.featured_image || 'https://showonai.com/og-blog-default.jpg';
   
   // Generate keywords based on content
   const contentKeywords = [
     'ShowOnAI', 'GEO', 'AI search optimization', 'generative engine optimization',
     'ChatGPT optimization', 'Gemini AI', 'Perplexity AI', 'SEO', 'digital marketing',
-    post.data.category?.toLowerCase(), 'AI marketing', 'brand visibility', 'search optimization'
+    post.category?.toLowerCase() || 'AI search', 'AI marketing', 'brand visibility', 'search optimization'
   ].filter(Boolean).join(', ');
   
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    "headline": post.data.title,
+    "headline": post.title,
     "description": pageDescription,
-    "image": post.data.featured_image ? [post.data.featured_image] : ['https://showonai.com/og-blog-default.jpg'],
+    "image": post.featured_image ? [post.featured_image] : ['https://showonai.com/og-blog-default.jpg'],
     "author": {
       "@type": "Person",
-      "name": post.data.author_name || 'ShowOnAI Team',
+      "name": post.author_name || 'ShowOnAI Team',
       "url": "https://showonai.com/about"
     },
     "publisher": {
@@ -129,8 +128,8 @@ function BlogPostContent() {
         "height": 48
       }
     },
-    "datePublished": post.data.published_at || post.data.created_at,
-    "dateModified": post.data.updated_at || post.data.published_at || post.data.created_at,
+    "datePublished": post.published_at || post.created_at,
+    "dateModified": post.updated_at || post.published_at || post.created_at,
     "mainEntityOfPage": {
       "@type": "WebPage",
       "@id": canonicalUrl
@@ -152,17 +151,17 @@ function BlogPostContent() {
       },
       {
         "@type": "Thing",
-        "name": post.data.category
+        "name": post.category
       }
     ],
     "keywords": contentKeywords,
-    "wordCount": post.data.content ? post.data.content.replace(/<[^>]*>/g, '').split(' ').length : undefined,
+    "wordCount": post.content ? post.content.replace(/<[^>]*>/g, '').split(' ').length : undefined,
     "inLanguage": "en-US",
     "copyrightHolder": {
       "@type": "Organization",
       "name": "ShowOnAI"
     },
-    "copyrightYear": new Date(post.data.created_at).getFullYear()
+    "copyrightYear": new Date(post.created_at).getFullYear()
   };
 
   return (
@@ -171,7 +170,7 @@ function BlogPostContent() {
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
         <meta name="keywords" content={contentKeywords} />
-        <meta name="author" content={post.data.author_name || 'ShowOnAI Team'} />
+        <meta name="author" content={post.author_name || 'ShowOnAI Team'} />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
         <meta name="googlebot" content="index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1" />
         
@@ -183,7 +182,7 @@ function BlogPostContent() {
         <meta property="og:image" content={featuredImage} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-        <meta property="og:image:alt" content={`${post.data.title} - ShowOnAI Blog`} />
+        <meta property="og:image:alt" content={`${post.title} - ShowOnAI Blog`} />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:type" content="article" />
         <meta property="og:site_name" content="ShowOnAI" />
@@ -196,17 +195,17 @@ function BlogPostContent() {
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
         <meta name="twitter:image" content={featuredImage} />
-        <meta name="twitter:image:alt" content={`${post.data.title} - ShowOnAI Blog`} />
+        <meta name="twitter:image:alt" content={`${post.title} - ShowOnAI Blog`} />
         
         {/* Article specific */}
-        <meta property="article:author" content={post.data.author_name || 'ShowOnAI Team'} />
-        <meta property="article:published_time" content={post.data.published_at || post.data.created_at} />
-        <meta property="article:modified_time" content={post.data.updated_at || post.data.published_at || post.data.created_at} />
-        <meta property="article:section" content={post.data.category} />
+        <meta property="article:author" content={post.author_name || 'ShowOnAI Team'} />
+        <meta property="article:published_time" content={post.published_at || post.created_at} />
+        <meta property="article:modified_time" content={post.updated_at || post.published_at || post.created_at} />
+        <meta property="article:section" content={post.category} />
         <meta property="article:tag" content="AI search optimization" />
         <meta property="article:tag" content="GEO" />
         <meta property="article:tag" content="generative engine optimization" />
-        {post.data.category && <meta property="article:tag" content={post.data.category} />}
+        {post.category && <meta property="article:tag" content={post.category} />}
         
         {/* Additional SEO */}
         <meta name="theme-color" content="#2353DF" />
@@ -240,7 +239,7 @@ function BlogPostContent() {
                 {
                   "@type": "ListItem",
                   "position": 3,
-                  "name": post.data.title,
+                  "name": post.title,
                   "item": canonicalUrl
                 }
               ]
@@ -258,7 +257,7 @@ function BlogPostContent() {
       <div className="min-h-screen bg-white">
         <ToastContainer toasts={toasts} removeToast={removeToast} />
         <Header />
-        <NewBlogContent post={post.data} relatedPosts={relatedPosts?.data} />
+        <NewBlogContent post={post} relatedPosts={relatedPosts?.data} />
         <Footer />
       </div>
     </>

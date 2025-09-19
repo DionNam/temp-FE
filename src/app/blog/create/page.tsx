@@ -25,7 +25,6 @@ function CreateBlogContent() {
   const editId = searchParams.get("edit");
   const fromManagement = searchParams.get("from") === "management";
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { toasts, removeToast, success, error: showError } = useToast();
@@ -57,7 +56,7 @@ function CreateBlogContent() {
   } = useUpdateBlog();
   const { data: existingBlog, isLoading: fetchLoading } = useBlog(editId);
   const { data: authors, loading: authorsLoading } = useAuthors();
-  const { data: categories, loading: categoriesLoading } = useBlogCategories();
+  const { loading: categoriesLoading } = useBlogCategories();
 
   const isEditing = !!editId;
   const isLoading = createLoading || updateLoading;
@@ -66,9 +65,7 @@ function CreateBlogContent() {
   useEffect(() => {
     setIsMounted(true);
     // Only allow access if coming from management page AND user is authenticated
-    if (fromManagement && isBlogAuthenticated()) {
-      setIsAuthenticated(true);
-    } else {
+    if (!fromManagement || !isBlogAuthenticated()) {
       // Redirect to management page if not properly authenticated
       router.push('/blog/management');
     }
