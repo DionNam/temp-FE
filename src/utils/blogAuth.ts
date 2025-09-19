@@ -39,6 +39,6 @@ export const clearBlogAuthSession = (): void => {
 
 export const checkBlogPassword = (password: string): boolean => {
   // Fallback to default password for testing if env var is not set
-  const blogPassword = process.env.NEXT_PUBLIC_BLOG_PASSWORD || 'admin123';
+  const blogPassword = process.env.NEXT_PUBLIC_BLOG_PASSWORD;
   return password === blogPassword;
 };
